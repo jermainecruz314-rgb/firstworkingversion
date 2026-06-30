@@ -4,7 +4,7 @@ import SecurityBadge from '../components/SecurityBadge.jsx'
 import { buildFamilyImpact, buildCascadeSummary } from '../logic.js'
 
 // Family-impact content — terracotta styling for cascade and index pathways.
-export default function FamilyImpact({ profile }) {
+export default function FamilyImpact({ profile, onOpenFamilyTalk }) {
   const isCascade = profile.pathwayType === 'cascade'
   const content = isCascade
     ? buildCascadeSummary(profile)
@@ -33,6 +33,14 @@ export default function FamilyImpact({ profile }) {
             </div>
           ))}
         </div>
+
+        <button
+          type="button"
+          className="btn btn-secondary"
+          onClick={onOpenFamilyTalk}
+        >
+          Talking to your family →
+        </button>
       </div>
     </section>
   )

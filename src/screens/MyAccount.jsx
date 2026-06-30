@@ -5,7 +5,7 @@ import { formatDate } from '../utils.js'
 import { CONSENT_DATA_POINTS } from '../mockHealthHub.js'
 
 // Profile and data-security settings for the signed-in patient.
-export default function MyAccount({ profile, dataAccessGranted, onToggleAccess }) {
+export default function MyAccount({ profile, dataAccessGranted, onToggleAccess, onOpenFaq }) {
   const [deleteRequested, setDeleteRequested] = useState(false)
   const isCascade = profile.pathwayType === 'cascade'
 
@@ -73,6 +73,18 @@ export default function MyAccount({ profile, dataAccessGranted, onToggleAccess }
             your health record. You can re-enable access at any time.
           </p>
         )}
+      </div>
+
+      <div className="card">
+        <span className="eyebrow">Privacy &amp; insurance</span>
+        <h2 className="section-title">Common questions</h2>
+        <p className="body-text">
+          Warm, plain-language answers about insurance, data access, and your
+          right to change your mind.
+        </p>
+        <button type="button" className="btn btn-secondary" onClick={onOpenFaq}>
+          Read the FAQ
+        </button>
       </div>
 
       <div className="card">

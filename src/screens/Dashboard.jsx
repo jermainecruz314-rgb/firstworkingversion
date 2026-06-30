@@ -1,11 +1,12 @@
 import Stepper from '../components/Stepper.jsx'
 import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 import SecurityBadge from '../components/SecurityBadge.jsx'
+import DownloadInfoPackButton from '../components/DownloadInfoPackButton.jsx'
+import { buildReminders } from '../reminders.js'
 
-// Central hub after the personalised landing page. Every other screen is
-// reachable from here — not a forced linear sequence.
 export default function Dashboard({ profile, onNavigate }) {
   const isCascade = profile.pathwayType === 'cascade'
+  const reminderPreview = buildReminders(profile).filter((r) => r.id !== 'all-clear')[0]
 
   const cards = [
     {
@@ -25,6 +26,12 @@ export default function Dashboard({ profile, onNavigate }) {
       family: true,
     },
     {
+      id: 'familyTalk',
+      title: 'Talking to Your Family',
+      body: 'A gentle guide and shareable message for starting the conversation.',
+      family: true,
+    },
+    {
       id: 'cost',
       title: 'Cost Transparency',
       body: 'See an honest estimate of what the genetic test may cost you.',
@@ -33,8 +40,20 @@ export default function Dashboard({ profile, onNavigate }) {
     {
       id: 'book',
       title: 'Book Appointment',
-      body: `Current status: ${profile.appointmentStatus}`,
+      body: `Status: ${profile.appointmentStatus}${profile.appointmentSlotLabel ? ` · ${profile.appointmentSlotLabel}` : ''}`,
       icon: '✓',
+    },
+    {
+      id: 'reminders',
+      title: 'Reminders',
+      body: reminderPreview?.message ?? 'No reminders right now',
+      icon: '◷',
+    },
+    {
+      id: 'faq',
+      title: 'Privacy & Insurance FAQ',
+      body: 'Answers about insurance, who sees your results, and your rights.',
+      icon: '?',
     },
     {
       id: 'account',
@@ -66,6 +85,8 @@ export default function Dashboard({ profile, onNavigate }) {
         </p>
         <Stepper currentStage={0} />
       </div>
+
+      <DownloadInfoPackButton profile={profile} className="dash-download" />
 
       <div className="dash-grid">
         {cards.map((card) => (

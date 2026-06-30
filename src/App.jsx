@@ -6,10 +6,14 @@ import PersonalisedLanding from './screens/PersonalisedLanding.jsx'
 import Dashboard from './screens/Dashboard.jsx'
 import WhyThisMatters from './screens/WhyThisMatters.jsx'
 import FamilyImpact from './screens/FamilyImpact.jsx'
+import FamilyConversation from './screens/FamilyConversation.jsx'
 import CostTransparency from './screens/CostTransparency.jsx'
 import BookAppointment from './screens/BookAppointment.jsx'
+import Reminders from './screens/Reminders.jsx'
+import PrivacyFaq from './screens/PrivacyFaq.jsx'
 import MyAccount from './screens/MyAccount.jsx'
 import NavBar from './components/NavBar.jsx'
+import LanguageToggle from './components/LanguageToggle.jsx'
 import { fetchPatientProfile } from './mockHealthHub.js'
 
 const SCREENS = {
@@ -20,18 +24,23 @@ const SCREENS = {
   DASHBOARD: 'dashboard',
   WHY: 'why',
   FAMILY: 'family',
+  FAMILY_TALK: 'familyTalk',
   COST: 'cost',
   BOOK: 'book',
+  REMINDERS: 'reminders',
+  FAQ: 'faq',
   ACCOUNT: 'account',
 }
 
-// Screens that show the bottom navigation bar.
 const NAV_SCREENS = new Set([
   SCREENS.DASHBOARD,
   SCREENS.WHY,
   SCREENS.FAMILY,
+  SCREENS.FAMILY_TALK,
   SCREENS.COST,
   SCREENS.BOOK,
+  SCREENS.REMINDERS,
+  SCREENS.FAQ,
   SCREENS.ACCOUNT,
 ])
 
@@ -42,12 +51,18 @@ export default function App() {
   const [dataAccessGranted, setDataAccessGranted] = useState(true)
 
   const showNav = NAV_SCREENS.has(currentScreen)
+  const showLang = profile && currentScreen !== SCREENS.LOGIN && currentScreen !== SCREENS.LOADING
 
   const handleSignIn = async () => {
     if (!selectedProfileId) return
     setCurrentScreen(SCREENS.LOADING)
     const data = await fetchPatientProfile(selectedProfileId)
-    setProfile(data)
+    setProfile({
+      ...data,
+      appointmentSlotId: null,
+      appointmentSlotLabel: null,
+      appointmentDate: null,
+    })
     setCurrentScreen(SCREENS.CONSENT)
   }
 
@@ -56,12 +71,19 @@ export default function App() {
     setCurrentScreen(SCREENS.LANDING)
   }
 
+  const setLanguage = (lang) => {
+    setProfile((p) => (p ? { ...p, preferredLanguage: lang } : p))
+  }
+
   const navigateFromDashboard = (target) => {
     const map = {
       why: SCREENS.WHY,
       family: SCREENS.FAMILY,
+      familyTalk: SCREENS.FAMILY_TALK,
       cost: SCREENS.COST,
       book: SCREENS.BOOK,
+      reminders: SCREENS.REMINDERS,
+      faq: SCREENS.FAQ,
       account: SCREENS.ACCOUNT,
     }
     setCurrentScreen(map[target] ?? SCREENS.DASHBOARD)
@@ -75,11 +97,22 @@ export default function App() {
   const navCurrent =
     currentScreen === SCREENS.ACCOUNT ? 'account' : 'home'
 
-  const updateAppointmentStatus = () => {
+  const handleBook = (slot) => {
     setProfile((p) => ({
       ...p,
-      appointmentStatus: 'Request sent — awaiting confirmation',
+      appointmentStatus: 'Booked',
+      appointmentSlotId: slot.id,
+      appointmentSlotLabel: slot.label,
+      appointmentDate: slot.date,
     }))
+  }
+
+  const handleRemindLater = () => {
+    setProfile((p) => ({
+      ...p,
+      appointmentStatus: 'Reminder scheduled',
+    }))
+    setCurrentScreen(SCREENS.DASHBOARD)
   }
 
   return (
@@ -87,6 +120,12 @@ export default function App() {
       <header className="app-header">
         <div className="app-brand">
           <span className="app-name">FH Pathway Companion</span>
+          {showLang && (
+            <LanguageToggle
+              value={profile.preferredLanguage}
+              onChange={setLanguage}
+            />
+          )}
         </div>
       </header>
 
@@ -115,7 +154,13 @@ export default function App() {
           <WhyThisMatters profile={profile} />
         )}
         {currentScreen === SCREENS.FAMILY && profile && (
-          <FamilyImpact profile={profile} />
+          <FamilyImpact
+            profile={profile}
+            onOpenFamilyTalk={() => setCurrentScreen(SCREENS.FAMILY_TALK)}
+          />
+        )}
+        {currentScreen === SCREENS.FAMILY_TALK && profile && (
+          <FamilyConversation profile={profile} />
         )}
         {currentScreen === SCREENS.COST && profile && (
           <CostTransparency profile={profile} />
@@ -123,14 +168,22 @@ export default function App() {
         {currentScreen === SCREENS.BOOK && profile && (
           <BookAppointment
             profile={profile}
-            onBooked={updateAppointmentStatus}
+            onBook={handleBook}
+            onRemindLater={handleRemindLater}
           />
+        )}
+        {currentScreen === SCREENS.REMINDERS && profile && (
+          <Reminders profile={profile} />
+        )}
+        {currentScreen === SCREENS.FAQ && profile && (
+          <PrivacyFaq />
         )}
         {currentScreen === SCREENS.ACCOUNT && profile && (
           <MyAccount
             profile={profile}
             dataAccessGranted={dataAccessGranted}
             onToggleAccess={setDataAccessGranted}
+            onOpenFaq={() => setCurrentScreen(SCREENS.FAQ)}
           />
         )}
       </main>

@@ -1,14 +1,16 @@
 import Stepper from '../components/Stepper.jsx'
 import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 import SecurityBadge from '../components/SecurityBadge.jsx'
+import DownloadInfoPackButton from '../components/DownloadInfoPackButton.jsx'
 import { buildRiskSummary, buildCascadeSummary, LDL_THRESHOLD } from '../logic.js'
+import { getStrings } from '../translations.js'
 
-// Personalised "why this matters" summary — driven by the signed-in profile.
 export default function WhyThisMatters({ profile }) {
   const isCascade = profile.pathwayType === 'cascade'
   const summary = isCascade
     ? buildCascadeSummary(profile)
     : buildRiskSummary(profile, LDL_THRESHOLD)
+  const t = getStrings(profile.preferredLanguage).why
 
   return (
     <section className="screen">
@@ -16,20 +18,17 @@ export default function WhyThisMatters({ profile }) {
       <SecurityBadge />
 
       <div className="card">
-        <span className="eyebrow">Why this matters to you</span>
-        <h1 className="screen-title">Let&apos;s make sense of your result</h1>
+        <span className="eyebrow">{t.eyebrow}</span>
+        <h1 className="screen-title">{t.title}</h1>
 
         {!isCascade && profile.ldlValue != null && (
           <div className="highlight">
-            <p className="highlight-label">Your LDL reading</p>
+            <p className="highlight-label">{t.ldlLabel}</p>
             <p className="highlight-value">
               {profile.ldlValue} <span className="unit">mmol/L</span>
             </p>
             <p className="highlight-note">
-              This is above the {LDL_THRESHOLD} mmol/L level we look out for
-              {summary.aboveThreshold > 0
-                ? ` — by ${summary.aboveThreshold} mmol/L.`
-                : '.'}
+              {t.aboveThreshold(LDL_THRESHOLD, summary.aboveThreshold ?? 0)}
             </p>
           </div>
         )}
@@ -38,7 +37,7 @@ export default function WhyThisMatters({ profile }) {
           <div className="highlight family-highlight">
             <div className="family-head">
               <FamilyTreeIcon size={22} />
-              <p className="highlight-label">Cascade screening</p>
+              <p className="highlight-label">{t.cascadeLabel}</p>
             </div>
             <p className="highlight-note">{profile.relationToIndex}</p>
           </div>
@@ -63,6 +62,12 @@ export default function WhyThisMatters({ profile }) {
             )
           })}
         </div>
+
+        <DownloadInfoPackButton
+          profile={profile}
+          label={t.downloadPack}
+          doneLabel={t.downloadDone}
+        />
       </div>
     </section>
   )

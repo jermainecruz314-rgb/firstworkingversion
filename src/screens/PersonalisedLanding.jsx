@@ -1,22 +1,20 @@
 import SecurityBadge from '../components/SecurityBadge.jsx'
 import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 import { formatDate } from '../utils.js'
+import { getStrings } from '../translations.js'
 
-// Personalised landing page — feels like data pulled from a real health record.
 export default function PersonalisedLanding({ profile, onContinue }) {
   const isCascade = profile.pathwayType === 'cascade'
+  const t = getStrings(profile.preferredLanguage).landing
 
   return (
     <section className="screen">
       <SecurityBadge />
 
       <div className="card">
-        <span className="eyebrow">Your referral summary</span>
-        <h1 className="screen-title">Hello, {profile.name}</h1>
-        <p className="lead">
-          We&apos;ve pulled together the details from your referral so you can see
-          exactly where things stand.
-        </p>
+        <span className="eyebrow">{t.eyebrow}</span>
+        <h1 className="screen-title">{t.greeting(profile.name)}</h1>
+        <p className="lead">{t.lead}</p>
 
         <dl className="record-list">
           <RecordRow label="Referred by" value={profile.referredBy} />
@@ -49,14 +47,10 @@ export default function PersonalisedLanding({ profile, onContinue }) {
           <RecordRow label="Preferred language" value={profile.preferredLanguage} />
         </dl>
 
-        <p className="body-text">
-          This is an invitation to learn more through Singapore&apos;s National FH
-          Genetic Testing Program. There&apos;s nothing you need to worry about right
-          now — take your time.
-        </p>
+        <p className="body-text">{t.reassurance}</p>
 
         <button className="btn btn-primary" onClick={onContinue}>
-          Go to my dashboard
+          {t.cta}
         </button>
       </div>
     </section>
