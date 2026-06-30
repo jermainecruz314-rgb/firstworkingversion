@@ -28,9 +28,6 @@ export default function App() {
     <div className="app">
       <header className="app-header">
         <div className="app-brand">
-          <span className="app-mark" aria-hidden="true">
-            ♥
-          </span>
           <span className="app-name">FH Pathway Companion</span>
         </div>
       </header>

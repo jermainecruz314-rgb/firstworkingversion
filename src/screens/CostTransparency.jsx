@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Stepper from '../components/Stepper.jsx'
+import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 import {
   PATIENT_TYPE_OPTIONS,
   RESIDENCY_OPTIONS,
@@ -28,6 +29,7 @@ export default function CostTransparency() {
   const set = (field, value) => setForm((p) => ({ ...p, [field]: value }))
 
   const isCitizen = form.residency === 'citizen'
+  const isCascade = form.patientType === 'cascade'
 
   // Recalculated on every render → fully live.
   const cost = calculateSubsidisedCost(form)
@@ -45,8 +47,11 @@ export default function CostTransparency() {
         </p>
 
         {/* About the test */}
-        <div className="form-group">
-          <p className="group-title">About your test</p>
+        <div className={`form-group${isCascade ? ' family' : ''}`}>
+          <div className="group-title-row">
+            {isCascade && <FamilyTreeIcon size={22} />}
+            <p className="group-title">About your test</p>
+          </div>
           <label className="field">
             <span className="field-label">Which describes you?</span>
             <select
@@ -129,11 +134,14 @@ export default function CostTransparency() {
             checked={form.useMediSave}
             onChange={(v) => set('useMediSave', v)}
           />
-          {form.patientType === 'cascade' && form.useMediSave && (
-            <p className="helper-note">
-              Cascade screening relatives can use MediSave even before a
-              diagnosis (a documented MOH exception).
-            </p>
+          {isCascade && form.useMediSave && (
+            <div className="helper-note family">
+              <FamilyTreeIcon size={22} />
+              <span>
+                Cascade screening relatives can use MediSave even before a
+                diagnosis (a documented MOH exception).
+              </span>
+            </div>
           )}
 
           {form.useMediSave && (

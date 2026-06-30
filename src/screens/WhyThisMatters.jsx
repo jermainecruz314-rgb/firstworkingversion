@@ -1,4 +1,5 @@
 import Stepper from '../components/Stepper.jsx'
+import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 import { buildRiskSummary, LDL_THRESHOLD } from '../logic.js'
 
 // Screen 2: a personalised "why this matters to me" summary.
@@ -28,15 +29,24 @@ export default function WhyThisMatters({ patient, onContinue }) {
           </p>
         </div>
 
-        <p className="lead">{summary.intro}</p>
+        <p className="lead explain">{summary.intro}</p>
 
         <div className="info-list">
-          {summary.points.map((point) => (
-            <div className="info-item" key={point.title}>
-              <h2 className="info-title">{point.title}</h2>
-              <p className="info-body">{point.body}</p>
-            </div>
-          ))}
+          {summary.points.map((point) => {
+            const isFamily = point.title.toLowerCase().includes('family')
+            return (
+              <div
+                className={`info-item${isFamily ? ' family' : ''}`}
+                key={point.title}
+              >
+                <div className="family-head">
+                  {isFamily && <FamilyTreeIcon size={24} />}
+                  <h2 className="info-title">{point.title}</h2>
+                </div>
+                <p className="info-body explain">{point.body}</p>
+              </div>
+            )
+          })}
         </div>
 
         <button className="btn btn-primary" onClick={onContinue}>

@@ -1,9 +1,12 @@
+import Stepper from '../components/Stepper.jsx'
 import { formatDate } from '../utils.js'
 
 // Screen 1: a warm, reassuring referral notification.
 export default function ReferralNotification({ patient, onContinue }) {
   return (
     <section className="screen">
+      <Stepper currentStage={0} />
+
       <div className="card">
         <span className="eyebrow">A note from your care team</span>
         <h1 className="screen-title">Hello {patient.name}</h1>
