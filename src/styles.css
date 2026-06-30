@@ -398,6 +398,18 @@ body {
   text-align: center;
 }
 
+.hsg-note {
+  margin: 0;
+  font-size: 13.5px;
+  color: var(--teal-700);
+  background: var(--teal-50);
+  border: 1px solid var(--teal-100);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  text-align: center;
+  font-weight: 600;
+}
+
 /* Cost breakdown (Screen 3) */
 .cost-breakdown {
   border: 1px solid var(--line);

@@ -207,6 +207,13 @@ export default function CostTransparency() {
           structure (MOH, 2025)
         </p>
 
+        {cost.copayWaived && (
+          <p className="hsg-note">
+            Healthier SG enrolment waives the standard MediSave copay, reducing
+            your cost further.
+          </p>
+        )}
+
         {booked ? (
           <div className="confirmation" role="status">
             <span className="confirmation-icon" aria-hidden="true">
