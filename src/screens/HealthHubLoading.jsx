@@ -1,5 +1,4 @@
-// A short, reassuring loading state shown while the mock HealthHub data is
-// "fetched" (simulated with an artificial delay in App).
+// Shown while the mock patient record is "fetched" after sign-in.
 export default function HealthHubLoading() {
   return (
     <section className="screen auth-screen">

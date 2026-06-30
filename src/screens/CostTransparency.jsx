@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Stepper from '../components/Stepper.jsx'
 import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
-import ConnectHealthHubBanner from '../components/ConnectHealthHubBanner.jsx'
+import SecurityBadge from '../components/SecurityBadge.jsx'
 import {
   PATIENT_TYPE_OPTIONS,
   RESIDENCY_OPTIONS,
@@ -14,9 +14,9 @@ import {
 // Screen 3: a live cost calculator built on Singapore's national FH Genetic
 // Testing Programme subsidy structure. All figures come from
 // calculateSubsidisedCost() in logic.js, recalculated on every change.
-export default function CostTransparency({ showConnect, onConnect }) {
+export default function CostTransparency({ profile }) {
   const [form, setForm] = useState({
-    patientType: 'index',
+    patientType: profile?.pathwayType ?? 'index',
     residency: 'citizen',
     incomeTier: 'tier1',
     seniorScheme: 'none',
@@ -25,21 +25,16 @@ export default function CostTransparency({ showConnect, onConnect }) {
     isSenior60: false,
     healthierSG: false,
   })
-  const [booked, setBooked] = useState(false)
-
   const set = (field, value) => setForm((p) => ({ ...p, [field]: value }))
 
   const isCitizen = form.residency === 'citizen'
   const isCascade = form.patientType === 'cascade'
-
-  // Recalculated on every render → fully live.
   const cost = calculateSubsidisedCost(form)
 
   return (
     <section className="screen">
       <Stepper currentStage={2} />
-
-      {showConnect && <ConnectHealthHubBanner onConnect={onConnect} />}
+      <SecurityBadge />
 
       <div className="card">
         <span className="eyebrow">Clear, upfront costs</span>
@@ -223,25 +218,6 @@ export default function CostTransparency({ showConnect, onConnect }) {
             Healthier SG enrolment waives the standard MediSave copay, reducing
             your cost further.
           </p>
-        )}
-
-        {booked ? (
-          <div className="confirmation" role="status">
-            <span className="confirmation-icon" aria-hidden="true">
-              ✓
-            </span>
-            <div>
-              <p className="confirmation-title">Appointment request sent</p>
-              <p className="confirmation-body">
-                Our care team will reach out shortly to confirm a time that suits
-                you. There&apos;s nothing more you need to do for now.
-              </p>
-            </div>
-          </div>
-        ) : (
-          <button className="btn btn-primary" onClick={() => setBooked(true)}>
-            Book my appointment
-          </button>
         )}
       </div>
     </section>

@@ -112,6 +112,69 @@ export function buildRiskSummary(patient, threshold = LDL_THRESHOLD) {
   }
 }
 
+// Personalised summary for cascade-screening relatives — driven by profile data.
+export function buildCascadeSummary(profile) {
+  const { name, relationToIndex, inheritanceRisk } = profile
+
+  const intro =
+    `${name}, you've been invited for cascade screening because you are a ` +
+    `first-degree relative of someone with confirmed FH. This is a gentle next ` +
+    `step — not a diagnosis, just a chance to understand your own risk.`
+
+  return {
+    intro,
+    points: [
+      {
+        title: 'Your connection to the proband',
+        body: `You are the ${relationToIndex?.toLowerCase() ?? 'relative of a confirmed FH patient'}. ` +
+          `Cascade screening helps check whether you carry the same gene variant.`,
+      },
+      {
+        title: 'What the inheritance risk means',
+        body: `For first-degree relatives, there is typically a ${inheritanceRisk ?? '50% chance of carrying the same gene variant'}. ` +
+          `A genetic test gives you a clear answer, rather than living with uncertainty.`,
+      },
+      {
+        title: 'Why testing early helps',
+        body:
+          `If FH is found, treatment can start early — often before cholesterol causes harm. ` +
+          `If it isn't, you and your family can move forward with confidence.`,
+      },
+    ],
+  }
+}
+
+// Family-impact content for index patients (extracted for the Family Impact screen).
+export function buildFamilyImpact(profile) {
+  const { name, ldlValue } = profile
+  const reading = ldlValue != null ? `your ${ldlValue} mmol/L reading` : 'your result'
+
+  return {
+    intro:
+      `${name}, if genetic testing confirms FH, your family may benefit from knowing too.`,
+    points: [
+      {
+        title: 'Who may be affected',
+        body:
+          `Each of your first-degree relatives — parents, brothers, sisters, and children — ` +
+          `has about a 50% chance of carrying the same gene variant.`,
+      },
+      {
+        title: 'Why cascade screening matters',
+        body:
+          `Relatives can be invited for cascade screening through the Genetic Assessment Centre. ` +
+          `Early testing means earlier support, often before cholesterol rises.`,
+      },
+      {
+        title: 'A shared journey',
+        body:
+          `FH runs in families, but it doesn't have to define them. A clear genetic answer for ` +
+          `${reading} can open the door for your loved ones to be checked with care and dignity.`,
+      },
+    ],
+  }
+}
+
 const round2 = (n) => Number(n.toFixed(2))
 
 // Resolve the subsidy rate from residency + (for citizens) income tier.

@@ -1,6 +1,8 @@
-// Entry screen: a calm, centred mock sign-in. No real authentication —
-// "Sign in with Singpass" simply transitions forward for the demo.
-export default function Login({ onSignIn, onGuest }) {
+import { PROFILE_OPTIONS } from '../mockHealthHub.js'
+
+// Entry screen: mock Singpass sign-in with demo profile picker.
+// Every user must log in — there is no guest path.
+export default function Login({ selectedProfile, onSelectProfile, onSignIn }) {
   return (
     <section className="screen auth-screen">
       <div className="card auth-card">
@@ -11,12 +13,30 @@ export default function Login({ onSignIn, onGuest }) {
           journey.
         </p>
 
-        <button className="btn btn-primary" onClick={onSignIn}>
-          Sign in with Singpass
-        </button>
+        <div className="demo-picker">
+          <p className="group-title">Choose a demo profile</p>
+          <div className="demo-options">
+            {PROFILE_OPTIONS.map((opt) => (
+              <button
+                key={opt.id}
+                type="button"
+                className={`demo-option${selectedProfile === opt.id ? ' selected' : ''}${
+                  opt.id === 'cascade' ? ' family' : ''
+                }`}
+                onClick={() => onSelectProfile(opt.id)}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
-        <button className="btn-link" onClick={onGuest}>
-          Continue as guest
+        <button
+          className="btn btn-primary"
+          onClick={onSignIn}
+          disabled={!selectedProfile}
+        >
+          Sign in with Singpass
         </button>
 
         <p className="muted auth-foot">
