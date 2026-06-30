@@ -287,6 +287,117 @@ body {
   box-shadow: 0 0 0 3px var(--teal-100);
 }
 
+/* Form groups (Screen 3) */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: var(--teal-50);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+}
+
+.group-title {
+  margin: 0;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+  color: var(--teal-700);
+}
+
+.helper-note {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-soft);
+  background: #fff;
+  border: 1px solid var(--teal-100);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+}
+
+/* Toggle switch */
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+}
+
+.toggle-track {
+  flex: none;
+  width: 46px;
+  height: 27px;
+  border-radius: 999px;
+  background: #c9ddd9;
+  position: relative;
+  transition: background 0.2s ease;
+}
+
+.toggle.on .toggle-track {
+  background: var(--teal-600);
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+}
+
+.toggle.on .toggle-thumb {
+  transform: translateX(19px);
+}
+
+.toggle-label {
+  font-size: 14.5px;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* Checkboxes */
+.checkbox-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+
+.check input {
+  margin-top: 2px;
+  width: 18px;
+  height: 18px;
+  accent-color: var(--teal-600);
+  flex: none;
+}
+
+.source-note {
+  margin: 0;
+  font-size: 12.5px;
+  color: var(--muted);
+  font-style: italic;
+  text-align: center;
+}
+
 /* Cost breakdown (Screen 3) */
 .cost-breakdown {
   border: 1px solid var(--line);
@@ -305,7 +416,18 @@ body {
 }
 
 .cost-row.subtle {
+  font-size: 14px;
   color: var(--ink-soft);
+}
+
+.cost-row.strong .cost-label {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.cost-row.strong .cost-value {
+  font-weight: 800;
+  color: var(--teal-700);
 }
 
 .cost-label {

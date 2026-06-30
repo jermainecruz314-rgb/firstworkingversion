@@ -16,18 +16,48 @@ no routing library.
    actual LDL value (what FH is, why genetic testing adds value, and the ~50%
    inheritance risk to first-degree relatives). A pathway stepper
    (Referral → Counselling → Test → Results) shows where the patient is.
-3. **Cost Transparency** — a live cost calculator (`calculateCost()` in
-   `src/logic.js`). It applies a subsidy based on the citizenship dropdown
-   (70% Citizen / 50% PR / 0% Foreigner) to a mock $300 base cost, then
-   applies MediSave (up to $200), and shows the final out-of-pocket amount.
-   Recalculates instantly as the dropdown changes.
+3. **Cost Transparency** — a live cost calculator (`calculateSubsidisedCost()`
+   in `src/logic.js`) based on Singapore's national FH Genetic Testing
+   Programme subsidy structure (MOH, 2025). It shows three headline numbers:
+   pre-subsidy cost, cost after subsidy, and final out-of-pocket cash.
+   Everything recalculates instantly as inputs change.
+
+### Cost model (Screen 3)
+
+- **Base cost** by patient type: index patient `$764`, cascade-screening
+  relative `$334`.
+- **Subsidy** by residency: Singapore Citizens get an income-tiered subsidy
+  (70% / 60% / 50% / 40% / 30% by per-person monthly household income);
+  PRs get a flat 25%; foreigners 0%.
+- **Senior top-ups** (citizens only): Pioneer Generation = extra 50% off the
+  already-subsidised amount; Merdeka Generation = extra 25% off.
+- **MediSave**: optional toggle. Annual limit `$500` (or `$700` with 2+ chronic
+  conditions), plus a `$400` Flexi-MediSave top-up for ages 60+. A 15% cash
+  co-pay applies to the MediSave-covered portion, **waived** for Healthier SG
+  enrollees. Cascade relatives may use MediSave even before diagnosis (a
+  documented MOH exception — not gated here).
+
+The whole calculation is isolated in `calculateSubsidisedCost()` so it's easy
+to point to during a demo.
+
+#### Validation against MOH-published ranges
+
+| Scenario | Index | Cascade |
+| --- | --- | --- |
+| Max subsidy + Pioneer + MediSave, **Healthier SG** (no co-pay) | `$0` | `$0` |
+| Max subsidy + Pioneer + MediSave, **standard 15% co-pay** | `$17.19` (~$18) | `$7.51` (~$8) |
+| PR, no MediSave (~75% of base) | `$573.00` | `$250.50` |
+
+> Note: the MOH-published low-end figures ($18 index / $8 cascade) correspond
+> to the **standard 15% MediSave co-pay**. Healthier SG enrollees have that
+> co-pay waived, so they land even lower (≈$0).
 
 ## Data-driven, not hardcoded
 
 The personalised text on Screen 2 and the cost breakdown on Screen 3 are
 produced by pure functions in `src/logic.js`, driven by the mock patient data
-and the citizenship dropdown. Changing the LDL value or citizenship status
-changes what's displayed.
+and the form inputs. Changing the LDL value, patient type, residency, income
+tier, senior scheme, or MediSave options changes what's displayed.
 
 A small **Test panel** (bottom-right) lets you edit the mock patient data
 (name, LDL value, referral date) and jump between screens to try different
@@ -46,11 +76,12 @@ npm run preview  # preview the production build
 
 | Field          | Value        |
 | -------------- | ------------ |
-| name           | Wei Ling     |
-| ldlValue       | 6.2 mmol/L   |
-| referralDate   | today's date |
-| LDL threshold  | 5.5 mmol/L   |
-| base test cost | $300         |
-| MediSave cap   | $200         |
+| name                | Wei Ling     |
+| ldlValue            | 6.2 mmol/L   |
+| referralDate        | today's date |
+| LDL threshold       | 5.5 mmol/L   |
+| base cost (index)   | $764         |
+| base cost (cascade) | $334         |
+| MediSave limit      | $500 / $700  |
 
 > All clinical and cost values are mock data for this prototype.

@@ -1,23 +1,36 @@
 import { useState } from 'react'
 import Stepper from '../components/Stepper.jsx'
 import {
-  CITIZENSHIP_OPTIONS,
-  calculateCost,
+  PATIENT_TYPE_OPTIONS,
+  RESIDENCY_OPTIONS,
+  INCOME_TIERS,
+  SENIOR_SCHEMES,
+  calculateSubsidisedCost,
   formatSGD,
 } from '../logic.js'
 
-// Screen 3: a live cost calculator driven by the citizenship dropdown.
-export default function CostTransparency({ onBook }) {
-  const [citizenship, setCitizenship] = useState('citizen')
+// Screen 3: a live cost calculator built on Singapore's national FH Genetic
+// Testing Programme subsidy structure. All figures come from
+// calculateSubsidisedCost() in logic.js, recalculated on every change.
+export default function CostTransparency() {
+  const [form, setForm] = useState({
+    patientType: 'index',
+    residency: 'citizen',
+    incomeTier: 'tier1',
+    seniorScheme: 'none',
+    useMediSave: true,
+    hasChronicConditions: false,
+    isSenior60: false,
+    healthierSG: false,
+  })
   const [booked, setBooked] = useState(false)
 
-  // Recalculated on every render, so changing the dropdown updates live.
-  const cost = calculateCost(citizenship)
+  const set = (field, value) => setForm((p) => ({ ...p, [field]: value }))
 
-  const handleBook = () => {
-    setBooked(true)
-    if (onBook) onBook()
-  }
+  const isCitizen = form.residency === 'citizen'
+
+  // Recalculated on every render → fully live.
+  const cost = calculateSubsidisedCost(form)
 
   return (
     <section className="screen">
@@ -27,62 +40,171 @@ export default function CostTransparency({ onBook }) {
         <span className="eyebrow">Clear, upfront costs</span>
         <h1 className="screen-title">What the test may cost you</h1>
         <p className="lead">
-          We believe in no surprises. Here&apos;s an honest, estimated breakdown —
-          it updates instantly as you tell us a little more about yourself.
+          We believe in no surprises. Tell us a little about yourself and your
+          estimate updates instantly.
         </p>
 
-        <label className="field">
-          <span className="field-label">Your residency status</span>
-          <select
-            className="select"
-            value={citizenship}
-            onChange={(e) => setCitizenship(e.target.value)}
-          >
-            {CITIZENSHIP_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-        </label>
+        {/* About the test */}
+        <div className="form-group">
+          <p className="group-title">About your test</p>
+          <label className="field">
+            <span className="field-label">Which describes you?</span>
+            <select
+              className="select"
+              value={form.patientType}
+              onChange={(e) => set('patientType', e.target.value)}
+            >
+              {PATIENT_TYPE_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
 
+        {/* About you */}
+        <div className="form-group">
+          <p className="group-title">About you</p>
+          <label className="field">
+            <span className="field-label">Residency status</span>
+            <select
+              className="select"
+              value={form.residency}
+              onChange={(e) => set('residency', e.target.value)}
+            >
+              {RESIDENCY_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {isCitizen && (
+            <>
+              <label className="field">
+                <span className="field-label">
+                  Monthly household income per person
+                </span>
+                <select
+                  className="select"
+                  value={form.incomeTier}
+                  onChange={(e) => set('incomeTier', e.target.value)}
+                >
+                  {INCOME_TIERS.map((t) => (
+                    <option key={t.value} value={t.value}>
+                      {t.label} ({Math.round(t.rate * 100)}% subsidy)
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="field">
+                <span className="field-label">Senior support scheme</span>
+                <select
+                  className="select"
+                  value={form.seniorScheme}
+                  onChange={(e) => set('seniorScheme', e.target.value)}
+                >
+                  {Object.entries(SENIOR_SCHEMES).map(([key, s]) => (
+                    <option key={key} value={key}>
+                      {s.label}
+                      {s.extraOff > 0
+                        ? ` (extra ${Math.round(s.extraOff * 100)}% off)`
+                        : ''}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </>
+          )}
+        </div>
+
+        {/* MediSave */}
+        <div className="form-group">
+          <p className="group-title">MediSave</p>
+          <Toggle
+            label="Use MediSave for this test"
+            checked={form.useMediSave}
+            onChange={(v) => set('useMediSave', v)}
+          />
+          {form.patientType === 'cascade' && form.useMediSave && (
+            <p className="helper-note">
+              Cascade screening relatives can use MediSave even before a
+              diagnosis (a documented MOH exception).
+            </p>
+          )}
+
+          {form.useMediSave && (
+            <div className="checkbox-stack">
+              <Check
+                label="I have 2 or more chronic conditions (raises limit to $700/yr)"
+                checked={form.hasChronicConditions}
+                onChange={(v) => set('hasChronicConditions', v)}
+              />
+              <Check
+                label="I am aged 60 or above (adds $400 Flexi-MediSave)"
+                checked={form.isSenior60}
+                onChange={(v) => set('isSenior60', v)}
+              />
+              <Check
+                label="I'm enrolled in Healthier SG with my regular doctor (waives the 15% cash co-pay)"
+                checked={form.healthierSG}
+                onChange={(v) => set('healthierSG', v)}
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Headline numbers */}
         <div className="cost-breakdown">
-          <Row label="Test cost" value={formatSGD(cost.baseTestCost)} />
+          <Row label="Pre-subsidy test cost" value={formatSGD(cost.preSubsidy)} />
           <Row
             label={`Subsidy (${cost.subsidyPercent}%)`}
             value={`− ${formatSGD(cost.subsidyAmount)}`}
             tone="credit"
           />
+          {cost.seniorEligible && (
+            <Row
+              label={`${cost.seniorSchemeLabel} (extra ${cost.seniorExtraPercent}% off)`}
+              value={`− ${formatSGD(cost.seniorDiscount)}`}
+              tone="credit"
+            />
+          )}
           <Row
-            label="After subsidy"
+            label="Cost after subsidy (before MediSave)"
             value={formatSGD(cost.afterSubsidy)}
-            subtle
+            strong
           />
-          <Row
-            label={
-              cost.mediSaveEligible
-                ? `MediSave applied (up to ${formatSGD(cost.mediSaveCap)})`
-                : 'MediSave'
-            }
-            value={
-              cost.mediSaveEligible
-                ? `− ${formatSGD(cost.mediSaveApplied)}`
-                : 'Not available'
-            }
-            tone={cost.mediSaveEligible ? 'credit' : undefined}
-          />
+          {cost.useMediSave && (
+            <>
+              <Row
+                label={`MediSave covers (limit ${formatSGD(cost.mediSaveLimit)})`}
+                value={`− ${formatSGD(cost.mediSavePaid)}`}
+                tone="credit"
+                subtle
+              />
+              <Row
+                label={
+                  cost.copayWaived
+                    ? '15% cash co-pay (waived — Healthier SG)'
+                    : '15% cash co-pay on MediSave portion'
+                }
+                value={cost.copayWaived ? formatSGD(0) : formatSGD(cost.cashCopay)}
+                subtle
+              />
+            </>
+          )}
           <div className="cost-total">
-            <span>Estimated out-of-pocket</span>
-            <strong>{formatSGD(cost.finalPayable)}</strong>
+            <span>Final out-of-pocket (cash)</span>
+            <strong>{formatSGD(cost.finalCash)}</strong>
           </div>
         </div>
 
-        <p className="muted">
-          {cost.mediSaveEligible
-            ? `Good news — MediSave can be used for this test, covering up to ${formatSGD(
-                cost.mediSaveCap,
-              )}. The amount above is what you'd pay after MediSave.`
-            : 'MediSave is not available for this test.'}
+        <p className="source-note">
+          Based on Singapore&apos;s national FH Genetic Testing Programme subsidy
+          structure (MOH, 2025)
         </p>
 
         {booked ? (
@@ -99,7 +221,7 @@ export default function CostTransparency({ onBook }) {
             </div>
           </div>
         ) : (
-          <button className="btn btn-primary" onClick={handleBook}>
+          <button className="btn btn-primary" onClick={() => setBooked(true)}>
             Book my appointment
           </button>
         )}
@@ -108,13 +230,43 @@ export default function CostTransparency({ onBook }) {
   )
 }
 
-function Row({ label, value, tone, subtle }) {
+function Row({ label, value, tone, subtle, strong }) {
   return (
-    <div className={`cost-row${subtle ? ' subtle' : ''}`}>
+    <div className={`cost-row${subtle ? ' subtle' : ''}${strong ? ' strong' : ''}`}>
       <span className="cost-label">{label}</span>
       <span className={`cost-value${tone === 'credit' ? ' credit' : ''}`}>
         {value}
       </span>
     </div>
+  )
+}
+
+function Toggle({ label, checked, onChange }) {
+  return (
+    <button
+      type="button"
+      className={`toggle${checked ? ' on' : ''}`}
+      role="switch"
+      aria-checked={checked}
+      onClick={() => onChange(!checked)}
+    >
+      <span className="toggle-track">
+        <span className="toggle-thumb" />
+      </span>
+      <span className="toggle-label">{label}</span>
+    </button>
+  )
+}
+
+function Check({ label, checked, onChange }) {
+  return (
+    <label className="check">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+      />
+      <span>{label}</span>
+    </label>
   )
 }
