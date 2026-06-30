@@ -1,23 +1,22 @@
 import { useState } from 'react'
 import SecurityBadge from '../components/SecurityBadge.jsx'
-import { FAQ_ITEMS } from '../faqContent.js'
+import { getFaqItems } from '../i18n/index.js'
 
-export default function PrivacyFaq() {
-  const [openId, setOpenId] = useState(FAQ_ITEMS[0]?.id ?? null)
+export default function PrivacyFaq({ t }) {
+  const items = getFaqItems(t)
+  const [openId, setOpenId] = useState(items[0]?.id ?? null)
 
   return (
     <section className="screen">
-      <SecurityBadge />
+      <SecurityBadge t={t} />
 
       <div className="card">
-        <span className="eyebrow">Your questions answered</span>
-        <h1 className="screen-title">Privacy &amp; insurance</h1>
-        <p className="lead">
-          Honest, plain-language answers — so you can make decisions with confidence.
-        </p>
+        <span className="eyebrow">{t('faqEyebrow')}</span>
+        <h1 className="screen-title">{t('faqTitle')}</h1>
+        <p className="lead">{t('faqLead')}</p>
 
         <div className="accordion">
-          {FAQ_ITEMS.map((item) => {
+          {items.map((item) => {
             const open = openId === item.id
             return (
               <div key={item.id} className={`accordion-item${open ? ' open' : ''}`}>

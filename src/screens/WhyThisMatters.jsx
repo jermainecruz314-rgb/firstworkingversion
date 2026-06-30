@@ -2,33 +2,37 @@ import Stepper from '../components/Stepper.jsx'
 import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 import SecurityBadge from '../components/SecurityBadge.jsx'
 import DownloadInfoPackButton from '../components/DownloadInfoPackButton.jsx'
-import { buildRiskSummary, buildCascadeSummary, LDL_THRESHOLD } from '../logic.js'
-import { getStrings } from '../translations.js'
+import { buildRiskSummaryT, buildCascadeSummaryT } from '../i18n/index.js'
+import { LDL_THRESHOLD } from '../logic.js'
 
-export default function WhyThisMatters({ profile }) {
+export default function WhyThisMatters({ profile, t }) {
   const isCascade = profile.pathwayType === 'cascade'
   const summary = isCascade
-    ? buildCascadeSummary(profile)
-    : buildRiskSummary(profile, LDL_THRESHOLD)
-  const t = getStrings(profile.preferredLanguage).why
+    ? buildCascadeSummaryT(t, profile)
+    : buildRiskSummaryT(t, profile, LDL_THRESHOLD)
 
   return (
     <section className="screen">
-      <Stepper currentStage={1} />
-      <SecurityBadge />
+      <Stepper currentStage={profile.pathwayStage ?? 1} t={t} />
+      <SecurityBadge t={t} />
 
       <div className="card">
-        <span className="eyebrow">{t.eyebrow}</span>
-        <h1 className="screen-title">{t.title}</h1>
+        <span className="eyebrow">{t('whyEyebrow')}</span>
+        <h1 className="screen-title">{t('whyTitle')}</h1>
 
         {!isCascade && profile.ldlValue != null && (
           <div className="highlight">
-            <p className="highlight-label">{t.ldlLabel}</p>
+            <p className="highlight-label">{t('whyLdlLabel')}</p>
             <p className="highlight-value">
               {profile.ldlValue} <span className="unit">mmol/L</span>
             </p>
             <p className="highlight-note">
-              {t.aboveThreshold(LDL_THRESHOLD, summary.aboveThreshold ?? 0)}
+              {summary.aboveThreshold > 0
+                ? t('whyAboveThresholdWithAbove', {
+                    threshold: LDL_THRESHOLD,
+                    above: summary.aboveThreshold,
+                  })
+                : t('whyAboveThresholdNoAbove', { threshold: LDL_THRESHOLD })}
             </p>
           </div>
         )}
@@ -37,7 +41,7 @@ export default function WhyThisMatters({ profile }) {
           <div className="highlight family-highlight">
             <div className="family-head">
               <FamilyTreeIcon size={22} />
-              <p className="highlight-label">{t.cascadeLabel}</p>
+              <p className="highlight-label">{t('whyCascadeLabel')}</p>
             </div>
             <p className="highlight-note">{profile.relationToIndex}</p>
           </div>
@@ -63,11 +67,7 @@ export default function WhyThisMatters({ profile }) {
           })}
         </div>
 
-        <DownloadInfoPackButton
-          profile={profile}
-          label={t.downloadPack}
-          doneLabel={t.downloadDone}
-        />
+        <DownloadInfoPackButton profile={profile} t={t} />
       </div>
     </section>
   )

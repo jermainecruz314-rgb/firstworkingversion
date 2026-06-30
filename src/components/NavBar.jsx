@@ -1,15 +1,13 @@
-// Persistent bottom navigation — Home and My Account — from the dashboard
-// onward so the patient can always return to the hub.
-export default function NavBar({ current, onNavigate }) {
+export default function NavBar({ current, onNavigate, t }) {
   return (
-    <nav className="nav-bar" aria-label="Main navigation">
+    <nav className="nav-bar" aria-label={t('pathwayProgress')}>
       <button
         type="button"
         className={`nav-item${current === 'home' ? ' active' : ''}`}
         onClick={() => onNavigate('home')}
       >
         <NavIconHome />
-        <span>Home</span>
+        <span>{t('navHome')}</span>
       </button>
       <button
         type="button"
@@ -17,7 +15,7 @@ export default function NavBar({ current, onNavigate }) {
         onClick={() => onNavigate('account')}
       >
         <NavIconUser />
-        <span>My Account</span>
+        <span>{t('navAccount')}</span>
       </button>
     </nav>
   )

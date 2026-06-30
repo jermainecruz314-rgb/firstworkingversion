@@ -1,19 +1,17 @@
 import SecurityBadge from '../components/SecurityBadge.jsx'
-import { buildReminders } from '../reminders.js'
+import { buildRemindersT } from '../i18n/index.js'
 
-export default function Reminders({ profile }) {
-  const reminders = buildReminders(profile)
+export default function Reminders({ profile, t }) {
+  const reminders = buildRemindersT(t, profile)
 
   return (
     <section className="screen">
-      <SecurityBadge />
+      <SecurityBadge t={t} />
 
       <div className="card">
-        <span className="eyebrow">Stay on track</span>
-        <h1 className="screen-title">Reminders</h1>
-        <p className="lead">
-          Gentle nudges to help you move through your pathway at your own pace.
-        </p>
+        <span className="eyebrow">{t('remindersEyebrow')}</span>
+        <h1 className="screen-title">{t('remindersTitle')}</h1>
+        <p className="lead">{t('remindersLead')}</p>
 
         <div className="reminder-list">
           {reminders.map((r) => (

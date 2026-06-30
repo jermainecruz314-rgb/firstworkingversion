@@ -1,11 +1,10 @@
-// Shown while the mock patient record is "fetched" after sign-in.
-export default function HealthHubLoading() {
+export default function HealthHubLoading({ t }) {
   return (
     <section className="screen auth-screen">
       <div className="card loading-card">
         <span className="spinner" aria-hidden="true" />
-        <p className="lead">Securely retrieving your records from HealthHub…</p>
-        <p className="muted">This will only take a moment.</p>
+        <p className="lead">{t('loadingLead')}</p>
+        <p className="muted">{t('loadingNote')}</p>
       </div>
     </section>
   )

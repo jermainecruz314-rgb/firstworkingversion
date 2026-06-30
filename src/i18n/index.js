@@ -180,6 +180,15 @@ export function buildRemindersT(t, profile, todayIso = mockTodayISO()) {
       })
     }
 
+    if (appointmentStatus === 'Completed') {
+      reminders.push({
+        id: 'results-ready',
+        tone: 'appointment',
+        message: t('remindersMessageCompleted'),
+        detail: t('remindersDetailCompleted'),
+      })
+    }
+
     if (appointmentStatus === 'Reminder scheduled') {
       reminders.push({
         id: 'reminder-later',

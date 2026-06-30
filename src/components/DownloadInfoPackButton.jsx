@@ -4,15 +4,14 @@ import Toast from './Toast.jsx'
 
 export default function DownloadInfoPackButton({
   profile,
-  label = 'Download info pack',
-  doneLabel = 'Info pack downloaded',
+  t,
   className = '',
 }) {
   const [toast, setToast] = useState('')
 
   const handleDownload = () => {
     downloadInfoPack(profile)
-    setToast(doneLabel)
+    setToast(t('downloadInfoPackDone'))
     setTimeout(() => setToast(''), 2800)
   }
 
@@ -23,7 +22,7 @@ export default function DownloadInfoPackButton({
         className={`btn btn-secondary ${className}`.trim()}
         onClick={handleDownload}
       >
-        {label}
+        {t('downloadInfoPack')}
       </button>
       <Toast message={toast} visible={!!toast} />
     </>

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import Login from './screens/Login.jsx'
 import Consent from './screens/Consent.jsx'
 import HealthHubLoading from './screens/HealthHubLoading.jsx'
@@ -14,6 +14,7 @@ import PrivacyFaq from './screens/PrivacyFaq.jsx'
 import MyAccount from './screens/MyAccount.jsx'
 import NavBar from './components/NavBar.jsx'
 import LanguageToggle from './components/LanguageToggle.jsx'
+import { createT } from './i18n/index.js'
 import { fetchPatientProfile } from './mockHealthHub.js'
 
 const SCREENS = {
@@ -46,33 +47,32 @@ const NAV_SCREENS = new Set([
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState(SCREENS.LOGIN)
+  const [language, setLanguageState] = useState('en')
   const [selectedProfileId, setSelectedProfileId] = useState(null)
   const [profile, setProfile] = useState(null)
   const [dataAccessGranted, setDataAccessGranted] = useState(true)
 
+  const t = useMemo(() => createT(language), [language])
   const showNav = NAV_SCREENS.has(currentScreen)
-  const showLang = profile && currentScreen !== SCREENS.LOGIN && currentScreen !== SCREENS.LOADING
+  const showHeaderLang =
+    profile && currentScreen !== SCREENS.LOGIN && currentScreen !== SCREENS.LOADING
+
+  const setLanguage = (lang) => {
+    setLanguageState(lang)
+    setProfile((p) => (p ? { ...p, preferredLanguage: lang } : p))
+  }
 
   const handleSignIn = async () => {
     if (!selectedProfileId) return
     setCurrentScreen(SCREENS.LOADING)
     const data = await fetchPatientProfile(selectedProfileId)
-    setProfile({
-      ...data,
-      appointmentSlotId: null,
-      appointmentSlotLabel: null,
-      appointmentDate: null,
-    })
+    setProfile({ ...data, preferredLanguage: language })
     setCurrentScreen(SCREENS.CONSENT)
   }
 
   const handleConsent = () => {
     setDataAccessGranted(true)
     setCurrentScreen(SCREENS.LANDING)
-  }
-
-  const setLanguage = (lang) => {
-    setProfile((p) => (p ? { ...p, preferredLanguage: lang } : p))
   }
 
   const navigateFromDashboard = (target) => {
@@ -94,8 +94,7 @@ export default function App() {
     if (tab === 'account') setCurrentScreen(SCREENS.ACCOUNT)
   }
 
-  const navCurrent =
-    currentScreen === SCREENS.ACCOUNT ? 'account' : 'home'
+  const navCurrent = currentScreen === SCREENS.ACCOUNT ? 'account' : 'home'
 
   const handleBook = (slot) => {
     setProfile((p) => ({
@@ -115,16 +114,15 @@ export default function App() {
     setCurrentScreen(SCREENS.DASHBOARD)
   }
 
+  const screenProps = { profile, t }
+
   return (
     <div className={`app${showNav ? ' has-nav' : ''}`}>
       <header className="app-header">
         <div className="app-brand">
-          <span className="app-name">FH Pathway Companion</span>
-          {showLang && (
-            <LanguageToggle
-              value={profile.preferredLanguage}
-              onChange={setLanguage}
-            />
+          <span className="app-name">{t('appName')}</span>
+          {showHeaderLang && (
+            <LanguageToggle value={language} onChange={setLanguage} t={t} />
           )}
         </div>
       </header>
@@ -132,74 +130,95 @@ export default function App() {
       <main className="app-main">
         {currentScreen === SCREENS.LOGIN && (
           <Login
+            language={language}
+            onLanguageChange={setLanguage}
             selectedProfile={selectedProfileId}
             onSelectProfile={setSelectedProfileId}
             onSignIn={handleSignIn}
+            t={t}
           />
         )}
-        {currentScreen === SCREENS.LOADING && <HealthHubLoading />}
+        {currentScreen === SCREENS.LOADING && <HealthHubLoading t={t} />}
         {currentScreen === SCREENS.CONSENT && (
-          <Consent onConsent={handleConsent} />
+          <Consent onConsent={handleConsent} t={t} />
         )}
         {currentScreen === SCREENS.LANDING && profile && (
           <PersonalisedLanding
             profile={profile}
             onContinue={() => setCurrentScreen(SCREENS.DASHBOARD)}
+            t={t}
           />
         )}
         {currentScreen === SCREENS.DASHBOARD && profile && (
-          <Dashboard profile={profile} onNavigate={navigateFromDashboard} />
+          <Dashboard profile={profile} onNavigate={navigateFromDashboard} t={t} />
         )}
         {currentScreen === SCREENS.WHY && profile && (
-          <WhyThisMatters profile={profile} />
+          <WhyThisMatters {...screenProps} />
         )}
         {currentScreen === SCREENS.FAMILY && profile && (
           <FamilyImpact
-            profile={profile}
+            {...screenProps}
             onOpenFamilyTalk={() => setCurrentScreen(SCREENS.FAMILY_TALK)}
           />
         )}
         {currentScreen === SCREENS.FAMILY_TALK && profile && (
-          <FamilyConversation profile={profile} />
+          <FamilyConversation {...screenProps} />
         )}
         {currentScreen === SCREENS.COST && profile && (
-          <CostTransparency profile={profile} />
+          <CostTransparency {...screenProps} />
         )}
         {currentScreen === SCREENS.BOOK && profile && (
           <BookAppointment
             profile={profile}
             onBook={handleBook}
             onRemindLater={handleRemindLater}
+            t={t}
           />
         )}
         {currentScreen === SCREENS.REMINDERS && profile && (
-          <Reminders profile={profile} />
+          <Reminders {...screenProps} />
         )}
-        {currentScreen === SCREENS.FAQ && profile && (
-          <PrivacyFaq />
-        )}
+        {currentScreen === SCREENS.FAQ && profile && <PrivacyFaq t={t} />}
         {currentScreen === SCREENS.ACCOUNT && profile && (
           <MyAccount
             profile={profile}
             dataAccessGranted={dataAccessGranted}
             onToggleAccess={setDataAccessGranted}
             onOpenFaq={() => setCurrentScreen(SCREENS.FAQ)}
+            t={t}
           />
         )}
       </main>
 
-      {showNav && <NavBar current={navCurrent} onNavigate={handleNav} />}
+      {showNav && <NavBar current={navCurrent} onNavigate={handleNav} t={t} />}
 
       <TestPanel
         profile={profile}
         currentScreen={currentScreen}
         setCurrentScreen={setCurrentScreen}
+        t={t}
       />
     </div>
   )
 }
 
-function TestPanel({ profile, currentScreen, setCurrentScreen }) {
+const SCREEN_LABEL_KEYS = {
+  LOGIN: 'screenLogin',
+  LOADING: 'screenLoading',
+  CONSENT: 'screenConsent',
+  LANDING: 'screenLanding',
+  DASHBOARD: 'screenDashboard',
+  WHY: 'screenWhy',
+  FAMILY: 'screenFamily',
+  FAMILY_TALK: 'screenFamilyTalk',
+  COST: 'screenCost',
+  BOOK: 'screenBook',
+  REMINDERS: 'screenReminders',
+  FAQ: 'screenFaq',
+  ACCOUNT: 'screenAccount',
+}
+
+function TestPanel({ profile, currentScreen, setCurrentScreen, t }) {
   const [open, setOpen] = useState(false)
 
   return (
@@ -209,12 +228,12 @@ function TestPanel({ profile, currentScreen, setCurrentScreen }) {
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
       >
-        {open ? 'Close test panel' : 'Test panel'}
+        {open ? t('testPanelClose') : t('testPanelOpen')}
       </button>
 
       {open && (
         <div className="test-panel-body">
-          <p className="test-panel-title">Jump to screen</p>
+          <p className="test-panel-title">{t('testPanelJumpToScreen')}</p>
           <div className="test-panel-nav">
             {Object.entries(SCREENS).map(([key, value]) => (
               <button
@@ -223,7 +242,7 @@ function TestPanel({ profile, currentScreen, setCurrentScreen }) {
                 onClick={() => setCurrentScreen(value)}
                 disabled={value !== SCREENS.LOGIN && value !== SCREENS.LOADING && !profile}
               >
-                {key.toLowerCase()}
+                {t(SCREEN_LABEL_KEYS[key] ?? key)}
               </button>
             ))}
           </div>

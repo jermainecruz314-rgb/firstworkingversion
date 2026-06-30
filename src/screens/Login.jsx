@@ -1,31 +1,37 @@
-import { PROFILE_OPTIONS } from '../mockHealthHub.js'
+import LanguagePicker from '../components/LanguagePicker.jsx'
+import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 
-// Entry screen: mock Singpass sign-in with demo profile picker.
-// Every user must log in — there is no guest path.
-export default function Login({ selectedProfile, onSelectProfile, onSignIn }) {
+const PROFILE_CARDS = [
+  { id: 'weiLing', nameKey: 'loginProfileWeiLing', descKey: 'profileWeiLingDesc' },
+  { id: 'marcus', nameKey: 'loginProfileMarcus', descKey: 'profileMarcusDesc', family: true },
+  { id: 'aishah', nameKey: 'loginProfileAishah', descKey: 'profileAishahDesc' },
+]
+
+export default function Login({ language, onLanguageChange, selectedProfile, onSelectProfile, onSignIn, t }) {
   return (
     <section className="screen auth-screen">
       <div className="card auth-card">
-        <span className="eyebrow">Welcome</span>
-        <h1 className="screen-title">FH Pathway Companion</h1>
-        <p className="lead">
-          Sign in to securely link your health records and personalise your
-          journey.
-        </p>
+        <span className="eyebrow">{t('loginWelcome')}</span>
+        <h1 className="screen-title">{t('loginTitle')}</h1>
+        <p className="lead">{t('loginLead')}</p>
+
+        <LanguagePicker value={language} onChange={onLanguageChange} t={t} />
 
         <div className="demo-picker">
-          <p className="group-title">Choose a demo profile</p>
-          <div className="demo-options">
-            {PROFILE_OPTIONS.map((opt) => (
+          <p className="group-title">{t('loginChooseProfile')}</p>
+          <div className="profile-card-grid">
+            {PROFILE_CARDS.map((card) => (
               <button
-                key={opt.id}
+                key={card.id}
                 type="button"
-                className={`demo-option${selectedProfile === opt.id ? ' selected' : ''}${
-                  opt.id === 'cascade' ? ' family' : ''
+                className={`profile-card${selectedProfile === card.id ? ' selected' : ''}${
+                  card.family ? ' family' : ''
                 }`}
-                onClick={() => onSelectProfile(opt.id)}
+                onClick={() => onSelectProfile(card.id)}
               >
-                {opt.label}
+                {card.family && <FamilyTreeIcon size={22} />}
+                <span className="profile-card-name">{t(card.nameKey)}</span>
+                <span className="profile-card-desc">{t(card.descKey)}</span>
               </button>
             ))}
           </div>
@@ -36,12 +42,10 @@ export default function Login({ selectedProfile, onSelectProfile, onSignIn }) {
           onClick={onSignIn}
           disabled={!selectedProfile}
         >
-          Sign in with Singpass
+          {t('loginSignIn')}
         </button>
 
-        <p className="muted auth-foot">
-          A simulated sign-in for demonstration. No real account is used.
-        </p>
+        <p className="muted auth-foot">{t('loginDemoFoot')}</p>
       </div>
     </section>
   )

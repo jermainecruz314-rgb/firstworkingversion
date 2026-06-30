@@ -2,91 +2,100 @@ import Stepper from '../components/Stepper.jsx'
 import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 import SecurityBadge from '../components/SecurityBadge.jsx'
 import DownloadInfoPackButton from '../components/DownloadInfoPackButton.jsx'
-import { buildReminders } from '../reminders.js'
+import { buildRemindersT, translateStatus } from '../i18n/index.js'
 
-export default function Dashboard({ profile, onNavigate }) {
+export default function Dashboard({ profile, onNavigate, t }) {
   const isCascade = profile.pathwayType === 'cascade'
-  const reminderPreview = buildReminders(profile).filter((r) => r.id !== 'all-clear')[0]
+  const isComplete = profile.appointmentStatus === 'Completed'
+  const reminderPreview = buildRemindersT(t, profile).filter((r) => r.id !== 'all-clear')[0]
+  const stage = profile.pathwayStage ?? 0
+
+  const statusLabel = translateStatus(profile.appointmentStatus, t)
+  const bookBody = profile.appointmentSlotLabel
+    ? t('dashboardCardBookBodyStatusSlot', {
+        status: statusLabel,
+        slot: profile.appointmentSlotLabel,
+      })
+    : t('dashboardCardBookBodyStatus', { status: statusLabel })
 
   const cards = [
     {
       id: 'why',
-      title: 'Why This Matters To Me',
-      body: isCascade
-        ? 'Understand your cascade screening invitation and what it means for you.'
-        : 'A plain-language summary of your LDL result and why testing helps.',
+      title: t('dashboardCardWhyTitle'),
+      body: isCascade ? t('dashboardCardWhyBodyCascade') : t('dashboardCardWhyBodyIndex'),
       icon: '◆',
     },
     {
       id: 'family',
-      title: 'Family Impact',
-      body: isCascade
-        ? 'How FH runs in families and what your result could mean for loved ones.'
-        : 'What a positive result could mean for your relatives and cascade screening.',
+      title: t('dashboardCardFamilyTitle'),
+      body: isCascade ? t('dashboardCardFamilyBodyCascade') : t('dashboardCardFamilyBodyIndex'),
       family: true,
     },
     {
       id: 'familyTalk',
-      title: 'Talking to Your Family',
-      body: 'A gentle guide and shareable message for starting the conversation.',
+      title: t('dashboardCardFamilyTalkTitle'),
+      body: t('dashboardCardFamilyTalkBody'),
       family: true,
     },
     {
       id: 'cost',
-      title: 'Cost Transparency',
-      body: 'See an honest estimate of what the genetic test may cost you.',
+      title: t('dashboardCardCostTitle'),
+      body: t('dashboardCardCostBody'),
       icon: '$',
     },
     {
       id: 'book',
-      title: 'Book Appointment',
-      body: `Status: ${profile.appointmentStatus}${profile.appointmentSlotLabel ? ` · ${profile.appointmentSlotLabel}` : ''}`,
+      title: t('dashboardCardBookTitle'),
+      body: bookBody,
       icon: '✓',
     },
     {
       id: 'reminders',
-      title: 'Reminders',
-      body: reminderPreview?.message ?? 'No reminders right now',
+      title: t('dashboardCardRemindersTitle'),
+      body: reminderPreview?.message ?? t('dashboardCardRemindersBodyNone'),
       icon: '◷',
     },
     {
       id: 'faq',
-      title: 'Privacy & Insurance FAQ',
-      body: 'Answers about insurance, who sees your results, and your rights.',
+      title: t('dashboardCardFaqTitle'),
+      body: t('dashboardCardFaqBody'),
       icon: '?',
     },
     {
       id: 'account',
-      title: 'My Account',
-      body: 'View your profile, manage data access, and read about data security.',
+      title: t('dashboardCardAccountTitle'),
+      body: t('dashboardCardAccountBody'),
       icon: '◎',
     },
   ]
 
   return (
     <section className="screen">
-      <SecurityBadge />
+      <SecurityBadge t={t} />
 
       <div className="card dashboard-hero">
-        <span className="eyebrow">Your pathway</span>
+        <span className="eyebrow">{t('dashboardEyebrow')}</span>
         <h1 className="screen-title">
           {isCascade ? (
             <span className="dashboard-title-row">
               <FamilyTreeIcon size={26} />
-              Welcome back, {profile.name.split(' ')[0]}
+              {isComplete
+                ? t('dashboardCompletedTitle')
+                : t('dashboardWelcomeBack', { firstName: profile.name.split(' ')[0] })}
             </span>
+          ) : isComplete ? (
+            t('dashboardCompletedTitle')
           ) : (
-            <>Welcome back, {profile.name.split(' ')[0]}</>
+            t('dashboardWelcomeBack', { firstName: profile.name.split(' ')[0] })
           )}
         </h1>
         <p className="lead">
-          Here&apos;s where you are in your journey. Tap any section below whenever
-          you&apos;re ready.
+          {isComplete ? t('dashboardCompletedLead') : t('dashboardLead')}
         </p>
-        <Stepper currentStage={0} />
+        <Stepper currentStage={stage} t={t} />
       </div>
 
-      <DownloadInfoPackButton profile={profile} className="dash-download" />
+      <DownloadInfoPackButton profile={profile} t={t} className="dash-download" />
 
       <div className="dash-grid">
         {cards.map((card) => (

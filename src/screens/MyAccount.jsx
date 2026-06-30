@@ -2,52 +2,60 @@ import { useState } from 'react'
 import SecurityBadge from '../components/SecurityBadge.jsx'
 import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 import { formatDate } from '../utils.js'
-import { CONSENT_DATA_POINTS } from '../mockHealthHub.js'
+import { translateStatus, LANG_OPTIONS } from '../i18n/index.js'
 
-// Profile and data-security settings for the signed-in patient.
-export default function MyAccount({ profile, dataAccessGranted, onToggleAccess, onOpenFaq }) {
+export default function MyAccount({ profile, dataAccessGranted, onToggleAccess, onOpenFaq, t }) {
   const [deleteRequested, setDeleteRequested] = useState(false)
   const isCascade = profile.pathwayType === 'cascade'
 
+  const consentPoints = [
+    'consentPointReferralDetails',
+    'consentPointCholesterolResults',
+    'consentPointAppointmentStatus',
+    'consentPointPreferredLanguage',
+    'consentPointCareTeamContact',
+  ]
+
+  const langLabel =
+    LANG_OPTIONS.find((o) => o.code === profile.preferredLanguage)?.native ??
+    profile.preferredLanguage
+
   return (
     <section className="screen">
-      <SecurityBadge />
+      <SecurityBadge t={t} />
 
       <div className="card">
-        <span className="eyebrow">My account</span>
-        <h1 className="screen-title">Your profile</h1>
+        <span className="eyebrow">{t('accountEyebrow')}</span>
+        <h1 className="screen-title">{t('accountTitle')}</h1>
 
         <dl className="record-list">
-          <RecordRow label="Name" value={profile.name} />
+          <RecordRow label={t('labelName')} value={profile.name} />
           <RecordRow
-            label="Pathway"
+            label={t('labelPathway')}
             value={
               isCascade ? (
                 <span className="record-family">
                   <FamilyTreeIcon size={18} />
-                  Cascade screening
+                  {t('pathwayCascade')}
                 </span>
               ) : (
-                'Index patient'
+                t('pathwayIndex')
               )
             }
           />
-          <RecordRow label="Referred by" value={profile.referredBy} />
-          <RecordRow label="Referral date" value={formatDate(profile.referralDate)} />
-          <RecordRow label="Language" value={profile.preferredLanguage} />
+          <RecordRow label={t('labelReferredBy')} value={profile.referredBy} />
+          <RecordRow label={t('labelReferralDate')} value={formatDate(profile.referralDate)} />
+          <RecordRow label={t('labelLanguage')} value={langLabel} />
         </dl>
       </div>
 
       <div className="card">
-        <span className="eyebrow">Manage data access</span>
-        <h2 className="section-title">Health information access</h2>
-        <p className="body-text">
-          FH Pathway Companion can read the following from your health record to
-          personalise your journey:
-        </p>
+        <span className="eyebrow">{t('accountDataEyebrow')}</span>
+        <h2 className="section-title">{t('accountDataTitle')}</h2>
+        <p className="body-text">{t('accountDataLead')}</p>
         <ul className="consent-list compact">
-          {CONSENT_DATA_POINTS.map((item) => (
-            <li key={item}>{item}</li>
+          {consentPoints.map((key) => (
+            <li key={key}>{t(key)}</li>
           ))}
         </ul>
 
@@ -63,56 +71,39 @@ export default function MyAccount({ profile, dataAccessGranted, onToggleAccess, 
               <span className="toggle-thumb" />
             </span>
             <span className="toggle-label">
-              {dataAccessGranted ? 'Access granted' : 'Access revoked'}
+              {dataAccessGranted ? t('accountAccessGranted') : t('accountAccessRevoked')}
             </span>
           </button>
         </div>
         {!dataAccessGranted && (
-          <p className="helper-note">
-            With access revoked, personalised details will no longer update from
-            your health record. You can re-enable access at any time.
-          </p>
+          <p className="helper-note">{t('accountAccessRevokedNote')}</p>
         )}
       </div>
 
       <div className="card">
-        <span className="eyebrow">Privacy &amp; insurance</span>
-        <h2 className="section-title">Common questions</h2>
-        <p className="body-text">
-          Warm, plain-language answers about insurance, data access, and your
-          right to change your mind.
-        </p>
+        <span className="eyebrow">{t('accountFaqEyebrow')}</span>
+        <h2 className="section-title">{t('accountFaqTitle')}</h2>
+        <p className="body-text">{t('accountFaqLead')}</p>
         <button type="button" className="btn btn-secondary" onClick={onOpenFaq}>
-          Read the FAQ
+          {t('accountFaqButton')}
         </button>
       </div>
 
       <div className="card">
-        <span className="eyebrow">Data security</span>
-        <h2 className="section-title">How we protect your information</h2>
+        <span className="eyebrow">{t('accountSecurityEyebrow')}</span>
+        <h2 className="section-title">{t('accountSecurityTitle')}</h2>
         <div className="info-list">
           <div className="info-item">
-            <p className="info-body">
-              Your information is stored securely and only used to personalise
-              your journey through this program.
-            </p>
+            <p className="info-body">{t('accountSecurityPoint1')}</p>
           </div>
           <div className="info-item">
-            <p className="info-body">
-              Your data is not shared with insurers. Under Singapore&apos;s MOH
-              moratorium, genetic test results from the national FH programme
-              cannot be used by life or health insurers to affect your coverage or
-              premiums.
-            </p>
+            <p className="info-body">{t('accountSecurityPoint2')}</p>
           </div>
           <div className="info-item">
-            <p className="info-body">
-              You can request your data be deleted at any time.
-            </p>
+            <p className="info-body">{t('accountSecurityPoint3')}</p>
             {deleteRequested ? (
               <p className="confirmation-inline" role="status">
-                Your deletion request has been noted. Our care team will follow
-                up within 5 working days.
+                {t('accountDeleteRequested')}
               </p>
             ) : (
               <button
@@ -120,7 +111,7 @@ export default function MyAccount({ profile, dataAccessGranted, onToggleAccess, 
                 className="btn btn-secondary btn-sm"
                 onClick={() => setDeleteRequested(true)}
               >
-                Request data deletion
+                {t('accountDeleteButton')}
               </button>
             )}
           </div>

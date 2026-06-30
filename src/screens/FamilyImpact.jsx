@@ -1,27 +1,26 @@
 import Stepper from '../components/Stepper.jsx'
 import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 import SecurityBadge from '../components/SecurityBadge.jsx'
-import { buildFamilyImpact, buildCascadeSummary } from '../logic.js'
+import { buildFamilyImpactT, buildCascadeSummaryT } from '../i18n/index.js'
 
-// Family-impact content — terracotta styling for cascade and index pathways.
-export default function FamilyImpact({ profile, onOpenFamilyTalk }) {
+export default function FamilyImpact({ profile, onOpenFamilyTalk, t }) {
   const isCascade = profile.pathwayType === 'cascade'
   const content = isCascade
-    ? buildCascadeSummary(profile)
-    : buildFamilyImpact(profile)
+    ? buildCascadeSummaryT(t, profile)
+    : buildFamilyImpactT(t, profile)
 
   return (
     <section className="screen">
-      <Stepper currentStage={1} />
-      <SecurityBadge />
+      <Stepper currentStage={profile.pathwayStage ?? 1} t={t} />
+      <SecurityBadge t={t} />
 
       <div className="card">
         <div className="family-head">
           <FamilyTreeIcon size={28} />
-          <span className="eyebrow family-eyebrow">Family impact</span>
+          <span className="eyebrow family-eyebrow">{t('familyImpactEyebrow')}</span>
         </div>
         <h1 className="screen-title">
-          {isCascade ? 'Your place in the family pathway' : 'A head start for your family'}
+          {isCascade ? t('familyImpactTitleCascade') : t('familyImpactTitleIndex')}
         </h1>
         <p className="lead explain">{content.intro}</p>
 
@@ -34,12 +33,8 @@ export default function FamilyImpact({ profile, onOpenFamilyTalk }) {
           ))}
         </div>
 
-        <button
-          type="button"
-          className="btn btn-secondary"
-          onClick={onOpenFamilyTalk}
-        >
-          Talking to your family →
+        <button type="button" className="btn btn-secondary" onClick={onOpenFamilyTalk}>
+          {t('familyImpactConversationCta')}
         </button>
       </div>
     </section>

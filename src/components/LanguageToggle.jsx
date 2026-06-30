@@ -1,18 +1,19 @@
-import { LANGUAGE_OPTIONS } from '../translations.js'
+import { LANG_OPTIONS } from '../i18n/index.js'
 
-export default function LanguageToggle({ value, onChange }) {
+// Compact secondary language selector in the header (after sign-in).
+export default function LanguageToggle({ value, onChange, t }) {
   return (
     <label className="lang-toggle">
-      <span className="sr-only">Language</span>
+      <span className="sr-only">{t('languageSelectAria')}</span>
       <select
         className="lang-select"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        aria-label="Select language"
+        aria-label={t('languageSelectAria')}
       >
-        {LANGUAGE_OPTIONS.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
+        {LANG_OPTIONS.map((opt) => (
+          <option key={opt.code} value={opt.code}>
+            {opt.native}
           </option>
         ))}
       </select>

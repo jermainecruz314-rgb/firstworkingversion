@@ -2,19 +2,9 @@ import { useState } from 'react'
 import Stepper from '../components/Stepper.jsx'
 import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 import SecurityBadge from '../components/SecurityBadge.jsx'
-import {
-  PATIENT_TYPE_OPTIONS,
-  RESIDENCY_OPTIONS,
-  INCOME_TIERS,
-  SENIOR_SCHEMES,
-  calculateSubsidisedCost,
-  formatSGD,
-} from '../logic.js'
+import { calculateSubsidisedCost, formatSGD } from '../logic.js'
 
-// Screen 3: a live cost calculator built on Singapore's national FH Genetic
-// Testing Programme subsidy structure. All figures come from
-// calculateSubsidisedCost() in logic.js, recalculated on every change.
-export default function CostTransparency({ profile }) {
+export default function CostTransparency({ profile, t }) {
   const [form, setForm] = useState({
     patientType: profile?.pathwayType ?? 'index',
     residency: 'citizen',
@@ -25,39 +15,57 @@ export default function CostTransparency({ profile }) {
     isSenior60: false,
     healthierSG: false,
   })
-  const set = (field, value) => setForm((p) => ({ ...p, [field]: value }))
 
+  const set = (field, value) => setForm((p) => ({ ...p, [field]: value }))
   const isCitizen = form.residency === 'citizen'
   const isCascade = form.patientType === 'cascade'
   const cost = calculateSubsidisedCost(form)
 
+  const patientTypes = [
+    { value: 'index', label: t('patientTypeIndex') },
+    { value: 'cascade', label: t('patientTypeCascade') },
+  ]
+  const residencies = [
+    { value: 'citizen', label: t('residencyCitizen') },
+    { value: 'pr', label: t('residencyPr') },
+    { value: 'foreigner', label: t('residencyForeigner') },
+  ]
+  const incomeTiers = [
+    { value: 'tier1', label: `${t('incomeTier1')} (70%)` },
+    { value: 'tier2', label: `${t('incomeTier2')} (60%)` },
+    { value: 'tier3', label: `${t('incomeTier3')} (50%)` },
+    { value: 'tier4', label: `${t('incomeTier4')} (40%)` },
+    { value: 'tier5', label: `${t('incomeTier5')} (30%)` },
+  ]
+  const seniorSchemes = [
+    { value: 'none', label: t('seniorSchemeNone') },
+    { value: 'pioneer', label: `${t('seniorSchemePioneer')} (${t('seniorSchemeExtraOff', { percent: 50 })})` },
+    { value: 'merdeka', label: `${t('seniorSchemeMerdeka')} (${t('seniorSchemeExtraOff', { percent: 25 })})` },
+  ]
+
   return (
     <section className="screen">
-      <Stepper currentStage={2} />
-      <SecurityBadge />
+      <Stepper currentStage={profile.pathwayStage ?? 2} t={t} />
+      <SecurityBadge t={t} />
 
       <div className="card">
-        <span className="eyebrow">Clear, upfront costs</span>
-        <h1 className="screen-title">What the test may cost you</h1>
-        <p className="lead">
-          We believe in no surprises. Tell us a little about yourself and your
-          estimate updates instantly.
-        </p>
+        <span className="eyebrow">{t('costEyebrow')}</span>
+        <h1 className="screen-title">{t('costTitle')}</h1>
+        <p className="lead">{t('costLead')}</p>
 
-        {/* About the test */}
         <div className={`form-group${isCascade ? ' family' : ''}`}>
           <div className="group-title-row">
             {isCascade && <FamilyTreeIcon size={22} />}
-            <p className="group-title">About your test</p>
+            <p className="group-title">{t('costAboutTest')}</p>
           </div>
           <label className="field">
-            <span className="field-label">Which describes you?</span>
+            <span className="field-label">{t('labelWhichDescribesYou')}</span>
             <select
               className="select"
               value={form.patientType}
               onChange={(e) => set('patientType', e.target.value)}
             >
-              {PATIENT_TYPE_OPTIONS.map((o) => (
+              {patientTypes.map((o) => (
                 <option key={o.value} value={o.value}>
                   {o.label}
                 </option>
@@ -66,17 +74,16 @@ export default function CostTransparency({ profile }) {
           </label>
         </div>
 
-        {/* About you */}
         <div className="form-group">
-          <p className="group-title">About you</p>
+          <p className="group-title">{t('costAboutYou')}</p>
           <label className="field">
-            <span className="field-label">Residency status</span>
+            <span className="field-label">{t('labelResidencyStatus')}</span>
             <select
               className="select"
               value={form.residency}
               onChange={(e) => set('residency', e.target.value)}
             >
-              {RESIDENCY_OPTIONS.map((o) => (
+              {residencies.map((o) => (
                 <option key={o.value} value={o.value}>
                   {o.label}
                 </option>
@@ -87,35 +94,30 @@ export default function CostTransparency({ profile }) {
           {isCitizen && (
             <>
               <label className="field">
-                <span className="field-label">
-                  Monthly household income per person
-                </span>
+                <span className="field-label">{t('labelMonthlyHouseholdIncomePerPerson')}</span>
                 <select
                   className="select"
                   value={form.incomeTier}
                   onChange={(e) => set('incomeTier', e.target.value)}
                 >
-                  {INCOME_TIERS.map((t) => (
-                    <option key={t.value} value={t.value}>
-                      {t.label} ({Math.round(t.rate * 100)}% subsidy)
+                  {incomeTiers.map((tier) => (
+                    <option key={tier.value} value={tier.value}>
+                      {tier.label}
                     </option>
                   ))}
                 </select>
               </label>
 
               <label className="field">
-                <span className="field-label">Senior support scheme</span>
+                <span className="field-label">{t('labelSeniorSupportScheme')}</span>
                 <select
                   className="select"
                   value={form.seniorScheme}
                   onChange={(e) => set('seniorScheme', e.target.value)}
                 >
-                  {Object.entries(SENIOR_SCHEMES).map(([key, s]) => (
-                    <option key={key} value={key}>
+                  {seniorSchemes.map((s) => (
+                    <option key={s.value} value={s.value}>
                       {s.label}
-                      {s.extraOff > 0
-                        ? ` (extra ${Math.round(s.extraOff * 100)}% off)`
-                        : ''}
                     </option>
                   ))}
                 </select>
@@ -124,38 +126,34 @@ export default function CostTransparency({ profile }) {
           )}
         </div>
 
-        {/* MediSave */}
         <div className="form-group">
-          <p className="group-title">MediSave</p>
+          <p className="group-title">{t('costMediSaveSection')}</p>
           <Toggle
-            label="Use MediSave for this test"
+            label={t('costUseMediSave')}
             checked={form.useMediSave}
             onChange={(v) => set('useMediSave', v)}
           />
           {isCascade && form.useMediSave && (
             <div className="helper-note family">
               <FamilyTreeIcon size={22} />
-              <span>
-                Cascade screening relatives can use MediSave even before a
-                diagnosis (a documented MOH exception).
-              </span>
+              <span>{t('costCascadeMediSaveNote')}</span>
             </div>
           )}
 
           {form.useMediSave && (
             <div className="checkbox-stack">
               <Check
-                label="I have 2 or more chronic conditions (raises limit to $700/yr)"
+                label={t('costChronicConditions')}
                 checked={form.hasChronicConditions}
                 onChange={(v) => set('hasChronicConditions', v)}
               />
               <Check
-                label="I am aged 60 or above (adds $400 Flexi-MediSave)"
+                label={t('costSenior60')}
                 checked={form.isSenior60}
                 onChange={(v) => set('isSenior60', v)}
               />
               <Check
-                label="I'm enrolled in Healthier SG with my regular doctor (waives the 15% cash co-pay)"
+                label={t('costHealthierSg')}
                 checked={form.healthierSG}
                 onChange={(v) => set('healthierSG', v)}
               />
@@ -163,62 +161,52 @@ export default function CostTransparency({ profile }) {
           )}
         </div>
 
-        {/* Headline numbers */}
         <div className="cost-breakdown">
-          <Row label="Pre-subsidy test cost" value={formatSGD(cost.preSubsidy)} />
+          <Row label={t('costRowPreSubsidy')} value={formatSGD(cost.preSubsidy)} />
           <Row
-            label={`Subsidy (${cost.subsidyPercent}%)`}
+            label={t('costRowSubsidy', { percent: cost.subsidyPercent })}
             value={`− ${formatSGD(cost.subsidyAmount)}`}
             tone="credit"
           />
           {cost.seniorEligible && (
             <Row
-              label={`${cost.seniorSchemeLabel} (extra ${cost.seniorExtraPercent}% off)`}
+              label={t('costRowSeniorExtra', {
+                scheme: cost.seniorSchemeLabel,
+                percent: cost.seniorExtraPercent,
+              })}
               value={`− ${formatSGD(cost.seniorDiscount)}`}
               tone="credit"
             />
           )}
           <Row
-            label="Cost after subsidy (before MediSave)"
+            label={t('costRowAfterSubsidy')}
             value={formatSGD(cost.afterSubsidy)}
             strong
           />
           {cost.useMediSave && (
             <>
               <Row
-                label={`MediSave covers (limit ${formatSGD(cost.mediSaveLimit)})`}
+                label={t('costRowMediSaveCover', { limit: formatSGD(cost.mediSaveLimit) })}
                 value={`− ${formatSGD(cost.mediSavePaid)}`}
                 tone="credit"
                 subtle
               />
               <Row
-                label={
-                  cost.copayWaived
-                    ? '15% cash co-pay (waived — Healthier SG)'
-                    : '15% cash co-pay on MediSave portion'
-                }
+                label={cost.copayWaived ? t('costRowCopayWaived') : t('costRowCopay')}
                 value={cost.copayWaived ? formatSGD(0) : formatSGD(cost.cashCopay)}
                 subtle
               />
             </>
           )}
           <div className="cost-total">
-            <span>Final out-of-pocket (cash)</span>
+            <span>{t('costFinalOutOfPocket')}</span>
             <strong>{formatSGD(cost.finalCash)}</strong>
           </div>
         </div>
 
-        <p className="source-note">
-          Based on Singapore&apos;s national FH Genetic Testing Programme subsidy
-          structure (MOH, 2025)
-        </p>
+        <p className="source-note">{t('costMohNote')}</p>
 
-        {cost.copayWaived && (
-          <p className="hsg-note">
-            Healthier SG enrolment waives the standard MediSave copay, reducing
-            your cost further.
-          </p>
-        )}
+        {cost.copayWaived && <p className="hsg-note">{t('costHsgNote')}</p>}
       </div>
     </section>
   )
@@ -228,9 +216,7 @@ function Row({ label, value, tone, subtle, strong }) {
   return (
     <div className={`cost-row${subtle ? ' subtle' : ''}${strong ? ' strong' : ''}`}>
       <span className="cost-label">{label}</span>
-      <span className={`cost-value${tone === 'credit' ? ' credit' : ''}`}>
-        {value}
-      </span>
+      <span className={`cost-value${tone === 'credit' ? ' credit' : ''}`}>{value}</span>
     </div>
   )
 }
@@ -255,11 +241,7 @@ function Toggle({ label, checked, onChange }) {
 function Check({ label, checked, onChange }) {
   return (
     <label className="check">
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={(e) => onChange(e.target.checked)}
-      />
+      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} />
       <span>{label}</span>
     </label>
   )

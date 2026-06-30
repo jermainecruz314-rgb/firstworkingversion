@@ -2,12 +2,15 @@ import Stepper from '../components/Stepper.jsx'
 import SecurityBadge from '../components/SecurityBadge.jsx'
 import Toast from '../components/Toast.jsx'
 import { GAC_SLOTS } from '../reminders.js'
+import { translateStatus } from '../i18n/index.js'
+import { useState } from 'react'
 
-export default function BookAppointment({ profile, onBook, onRemindLater }) {
+export default function BookAppointment({ profile, onBook, onRemindLater, t }) {
   const [selectedSlot, setSelectedSlot] = useState(null)
   const [toast, setToast] = useState('')
 
   const isBooked = profile.appointmentStatus === 'Booked'
+  const isCompleted = profile.appointmentStatus === 'Completed'
   const displaySlot =
     profile.appointmentSlotLabel ??
     GAC_SLOTS.find((s) => s.id === profile.appointmentSlotId)?.label
@@ -19,32 +22,50 @@ export default function BookAppointment({ profile, onBook, onRemindLater }) {
   }
 
   const handleAddToCalendar = () => {
-    setToast('Added to calendar (demo)')
+    setToast(t('toastCalendarAdded'))
     setTimeout(() => setToast(''), 2800)
+  }
+
+  if (isCompleted) {
+    return (
+      <section className="screen">
+        <Stepper currentStage={profile.pathwayStage ?? 3} t={t} />
+        <SecurityBadge t={t} />
+        <div className="card">
+          <span className="eyebrow">{t('bookCompletedEyebrow')}</span>
+          <h1 className="screen-title">{t('bookCompletedTitle')}</h1>
+          <p className="lead">{t('bookCompletedLead')}</p>
+          <dl className="record-list">
+            <div className="record-row">
+              <dt>{t('labelStatus')}</dt>
+              <dd>{translateStatus(profile.appointmentStatus, t)}</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+    )
   }
 
   return (
     <section className="screen">
-      <Stepper currentStage={1} />
-      <SecurityBadge />
+      <Stepper currentStage={profile.pathwayStage ?? 1} t={t} />
+      <SecurityBadge t={t} />
 
       {!isBooked ? (
         <div className="card">
-          <span className="eyebrow">Genetic Assessment Centre</span>
-          <h1 className="screen-title">Choose a time</h1>
-          <p className="lead">
-            Pick a slot that suits you. All appointments are at the Genetic
-            Assessment Centre (GAC).
-          </p>
+          <span className="eyebrow">{t('bookEyebrow')}</span>
+          <h1 className="screen-title">{t('bookTitle')}</h1>
+          <p className="lead">{t('bookLead')}</p>
 
           {profile.appointmentStatus === 'Reminder scheduled' && (
-            <p className="helper-note">
-              You asked us to remind you later — whenever you&apos;re ready, choose a
-              time below.
-            </p>
+            <p className="helper-note">{t('bookReminderLaterNote')}</p>
           )}
 
-          <div className="slot-list" role="radiogroup" aria-label="Available appointment times">
+          <div
+            className="slot-list"
+            role="radiogroup"
+            aria-label={t('labelAvailableAppointmentTimes')}
+          >
             {GAC_SLOTS.map((slot) => (
               <button
                 key={slot.id}
@@ -59,32 +80,28 @@ export default function BookAppointment({ profile, onBook, onRemindLater }) {
             ))}
           </div>
 
-          <button
-            className="btn btn-primary"
-            onClick={handleConfirm}
-            disabled={!selectedSlot}
-          >
-            Confirm appointment
+          <button className="btn btn-primary" onClick={handleConfirm} disabled={!selectedSlot}>
+            {t('bookConfirm')}
           </button>
           <button type="button" className="btn btn-secondary" onClick={onRemindLater}>
-            Not ready yet, remind me later
+            {t('bookRemindLater')}
           </button>
         </div>
       ) : (
         <div className="card">
-          <span className="eyebrow">You&apos;re all set</span>
-          <h1 className="screen-title">Appointment confirmed</h1>
+          <span className="eyebrow">{t('bookConfirmedEyebrow')}</span>
+          <h1 className="screen-title">{t('bookConfirmedTitle')}</h1>
 
           <div className="confirmation" role="status">
             <span className="confirmation-icon" aria-hidden="true">
               ✓
             </span>
             <div>
-              <p className="confirmation-title">See you at the GAC</p>
+              <p className="confirmation-title">{t('bookConfirmedHeading')}</p>
               <p className="confirmation-body">
                 <strong>{displaySlot}</strong>
                 <br />
-                Genetic Assessment Centre
+                {t('bookLocation')}
                 <br />
                 {profile.name}
               </p>
@@ -93,13 +110,13 @@ export default function BookAppointment({ profile, onBook, onRemindLater }) {
 
           <dl className="record-list">
             <div className="record-row">
-              <dt>Status</dt>
-              <dd>{profile.appointmentStatus}</dd>
+              <dt>{t('labelStatus')}</dt>
+              <dd>{translateStatus(profile.appointmentStatus, t)}</dd>
             </div>
           </dl>
 
           <button type="button" className="btn btn-primary" onClick={handleAddToCalendar}>
-            Add to calendar
+            {t('bookAddCalendar')}
           </button>
           <Toast message={toast} visible={!!toast} />
         </div>
