@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Stepper from '../components/Stepper.jsx'
 import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
+import ConnectHealthHubBanner from '../components/ConnectHealthHubBanner.jsx'
 import {
   PATIENT_TYPE_OPTIONS,
   RESIDENCY_OPTIONS,
@@ -13,7 +14,7 @@ import {
 // Screen 3: a live cost calculator built on Singapore's national FH Genetic
 // Testing Programme subsidy structure. All figures come from
 // calculateSubsidisedCost() in logic.js, recalculated on every change.
-export default function CostTransparency() {
+export default function CostTransparency({ showConnect, onConnect }) {
   const [form, setForm] = useState({
     patientType: 'index',
     residency: 'citizen',
@@ -37,6 +38,8 @@ export default function CostTransparency() {
   return (
     <section className="screen">
       <Stepper currentStage={2} />
+
+      {showConnect && <ConnectHealthHubBanner onConnect={onConnect} />}
 
       <div className="card">
         <span className="eyebrow">Clear, upfront costs</span>

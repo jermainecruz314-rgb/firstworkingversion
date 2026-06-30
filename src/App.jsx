@@ -1,28 +1,93 @@
 import { useState } from 'react'
+import Login from './screens/Login.jsx'
+import Consent from './screens/Consent.jsx'
+import HealthHubLoading from './screens/HealthHubLoading.jsx'
 import ReferralNotification from './screens/ReferralNotification.jsx'
 import WhyThisMatters from './screens/WhyThisMatters.jsx'
 import CostTransparency from './screens/CostTransparency.jsx'
+import { fetchHealthHubData } from './mockHealthHub.js'
 import { todayISO } from './utils.js'
 
 const SCREENS = {
+  LOGIN: 'login',
+  CONSENT: 'consent',
+  LOADING: 'loading',
   REFERRAL: 'referral',
   WHY: 'why',
   COST: 'cost',
 }
 
+// The patient's starting state before any HealthHub data is loaded.
+const EMPTY_PATIENT = {
+  name: '',
+  ldlValue: null,
+  referralDate: todayISO(),
+  preferredLanguage: 'English',
+}
+
 export default function App() {
   // Simple client-side navigation — no routing library, just state.
-  const [currentScreen, setCurrentScreen] = useState(SCREENS.REFERRAL)
+  const [currentScreen, setCurrentScreen] = useState(SCREENS.LOGIN)
 
-  // Editable mock patient data so different values can be tested.
-  const [patient, setPatient] = useState({
-    name: 'Wei Ling',
-    ldlValue: 6.2,
-    referralDate: todayISO(),
-  })
+  // 'healthhub' once data is linked, 'manual' for guest / "Not now".
+  const [dataSource, setDataSource] = useState('manual')
+  const [hhConnected, setHhConnected] = useState(false)
+
+  // Where to return to once the consent flow completes (defaults to the
+  // start of the care journey, but the "Connect HealthHub" banner can set it
+  // to whichever screen the patient was on).
+  const [postConsentScreen, setPostConsentScreen] = useState(SCREENS.REFERRAL)
+
+  const [patient, setPatient] = useState(EMPTY_PATIENT)
 
   const updatePatient = (field, value) =>
     setPatient((prev) => ({ ...prev, [field]: value }))
+
+  const handleSignIn = () => setCurrentScreen(SCREENS.CONSENT)
+
+  const handleGuest = () => {
+    setDataSource('manual')
+    setCurrentScreen(SCREENS.REFERRAL)
+  }
+
+  // Consent granted → simulate the HealthHub API call, then personalise.
+  const handleAllow = async () => {
+    setCurrentScreen(SCREENS.LOADING)
+    const data = await fetchHealthHubData()
+    setPatient({
+      name: data.patientName,
+      ldlValue: data.ldlValue,
+      referralDate: data.referralDate,
+      preferredLanguage: data.preferredLanguage,
+    })
+    setDataSource('healthhub')
+    setHhConnected(true)
+    setCurrentScreen(postConsentScreen)
+  }
+
+  // "Not now" → continue without HealthHub, fall back to manual entry.
+  const handleDeny = () => {
+    setDataSource('manual')
+    setCurrentScreen(postConsentScreen)
+  }
+
+  // The persistent banner lets the patient link HealthHub later, returning
+  // to the screen they were on afterwards.
+  const handleConnectLater = () => {
+    setPostConsentScreen(currentScreen)
+    setCurrentScreen(SCREENS.CONSENT)
+  }
+
+  const showConnect = dataSource === 'manual' && !hhConnected
+  const isManual = dataSource === 'manual'
+
+  const journeyProps = {
+    patient,
+    updatePatient,
+    isManual,
+    showConnect,
+    onConnect: handleConnectLater,
+  }
 
   return (
     <div className="app">
@@ -33,19 +98,28 @@ export default function App() {
       </header>
 
       <main className="app-main">
+        {currentScreen === SCREENS.LOGIN && (
+          <Login onSignIn={handleSignIn} onGuest={handleGuest} />
+        )}
+        {currentScreen === SCREENS.CONSENT && (
+          <Consent onAllow={handleAllow} onDeny={handleDeny} />
+        )}
+        {currentScreen === SCREENS.LOADING && <HealthHubLoading />}
         {currentScreen === SCREENS.REFERRAL && (
           <ReferralNotification
-            patient={patient}
+            {...journeyProps}
             onContinue={() => setCurrentScreen(SCREENS.WHY)}
           />
         )}
         {currentScreen === SCREENS.WHY && (
           <WhyThisMatters
-            patient={patient}
+            {...journeyProps}
             onContinue={() => setCurrentScreen(SCREENS.COST)}
           />
         )}
-        {currentScreen === SCREENS.COST && <CostTransparency />}
+        {currentScreen === SCREENS.COST && (
+          <CostTransparency {...journeyProps} />
+        )}
       </main>
 
       <TestPanel
@@ -58,8 +132,8 @@ export default function App() {
   )
 }
 
-// A small, collapsible panel for testing different mock values and
-// jumping between screens. Not part of the patient-facing flow.
+// A small, collapsible panel for testing different mock values and jumping
+// between screens. Not part of the patient-facing flow.
 function TestPanel({ patient, updatePatient, currentScreen, setCurrentScreen }) {
   const [open, setOpen] = useState(false)
 
@@ -93,9 +167,12 @@ function TestPanel({ patient, updatePatient, currentScreen, setCurrentScreen }) 
               className="input"
               type="number"
               step="0.1"
-              value={patient.ldlValue}
+              value={patient.ldlValue ?? ''}
               onChange={(e) =>
-                updatePatient('ldlValue', Number(e.target.value))
+                updatePatient(
+                  'ldlValue',
+                  e.target.value === '' ? null : Number(e.target.value),
+                )
               }
             />
           </label>
@@ -112,15 +189,17 @@ function TestPanel({ patient, updatePatient, currentScreen, setCurrentScreen }) 
 
           <p className="test-panel-title">Jump to screen</p>
           <div className="test-panel-nav">
-            {Object.entries(SCREENS).map(([key, value]) => (
-              <button
-                key={value}
-                className={`chip${currentScreen === value ? ' active' : ''}`}
-                onClick={() => setCurrentScreen(value)}
-              >
-                {key.toLowerCase()}
-              </button>
-            ))}
+            {Object.entries(SCREENS)
+              .filter(([, value]) => value !== SCREENS.LOADING)
+              .map(([key, value]) => (
+                <button
+                  key={value}
+                  className={`chip${currentScreen === value ? ' active' : ''}`}
+                  onClick={() => setCurrentScreen(value)}
+                >
+                  {key.toLowerCase()}
+                </button>
+              ))}
           </div>
         </div>
       )}
