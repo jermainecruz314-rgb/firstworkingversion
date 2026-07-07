@@ -1,13 +1,37 @@
 import LanguagePicker from '../components/LanguagePicker.jsx'
 import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
+import { translatePathwayStage } from '../i18n/index.js'
 
 const PROFILE_CARDS = [
-  { id: 'weiLing', nameKey: 'loginProfileWeiLing', descKey: 'profileWeiLingDesc' },
-  { id: 'marcus', nameKey: 'loginProfileMarcus', descKey: 'profileMarcusDesc', family: true },
-  { id: 'aishah', nameKey: 'loginProfileAishah', descKey: 'profileAishahDesc' },
+  {
+    id: 'weiLing',
+    nameKey: 'loginProfileWeiLing',
+    pathwayType: 'index',
+    pathwayStage: 0,
+  },
+  {
+    id: 'marcus',
+    nameKey: 'loginProfileMarcus',
+    pathwayType: 'cascade',
+    pathwayStage: 1,
+    family: true,
+  },
+  {
+    id: 'aishah',
+    nameKey: 'loginProfileAishah',
+    pathwayType: 'index',
+    pathwayStage: 3,
+  },
 ]
 
-export default function Login({ language, onLanguageChange, selectedProfile, onSelectProfile, onSignIn, t }) {
+export default function Login({
+  language,
+  onLanguageChange,
+  selectedProfile,
+  onSelectProfile,
+  onSignIn,
+  t,
+}) {
   return (
     <section className="screen auth-screen">
       <div className="card auth-card">
@@ -20,28 +44,41 @@ export default function Login({ language, onLanguageChange, selectedProfile, onS
         <div className="demo-picker">
           <p className="group-title">{t('loginChooseProfile')}</p>
           <div className="profile-card-grid">
-            {PROFILE_CARDS.map((card) => (
-              <button
-                key={card.id}
-                type="button"
-                className={`profile-card${selectedProfile === card.id ? ' selected' : ''}${
-                  card.family ? ' family' : ''
-                }`}
-                onClick={() => onSelectProfile(card.id)}
-              >
-                {card.family && <FamilyTreeIcon size={22} />}
-                <span className="profile-card-name">{t(card.nameKey)}</span>
-                <span className="profile-card-desc">{t(card.descKey)}</span>
-              </button>
-            ))}
+            {PROFILE_CARDS.map((card) => {
+              const badgeLabel =
+                card.pathwayType === 'cascade' ? t('loginBadgeCascade') : t('loginBadgeIndex')
+              const stageLabel = translatePathwayStage(card.pathwayStage, t)
+
+              return (
+                <button
+                  key={card.id}
+                  type="button"
+                  className={`profile-card${selectedProfile === card.id ? ' selected' : ''}${
+                    card.family ? ' family' : ''
+                  }`}
+                  onClick={() => onSelectProfile(card.id)}
+                >
+                  <div className="profile-card-top">
+                    {card.family && <FamilyTreeIcon size={20} />}
+                    <span className="profile-card-name">{t(card.nameKey)}</span>
+                  </div>
+                  <span
+                    className={`profile-badge${
+                      card.pathwayType === 'cascade' ? ' profile-badge-cascade' : ''
+                    }`}
+                  >
+                    {badgeLabel}
+                  </span>
+                  <span className="profile-card-stage">
+                    {t('loginProfileStage', { stage: stageLabel })}
+                  </span>
+                </button>
+              )
+            })}
           </div>
         </div>
 
-        <button
-          className="btn btn-primary"
-          onClick={onSignIn}
-          disabled={!selectedProfile}
-        >
+        <button className="btn btn-primary btn-block" onClick={onSignIn} disabled={!selectedProfile}>
           {t('loginSignIn')}
         </button>
 

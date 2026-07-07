@@ -25,7 +25,7 @@ export default function Consent({ onConsent, t }) {
 
         <p className="privacy-note">{t('consentPrivacyNote')}</p>
 
-        <button className="btn btn-primary" onClick={onConsent}>
+        <button className="btn btn-primary btn-block" onClick={onConsent}>
           {t('consentButton')}
         </button>
       </div>

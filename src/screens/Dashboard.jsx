@@ -1,7 +1,8 @@
-import Stepper from '../components/Stepper.jsx'
+import JourneyProgress from '../components/JourneyProgress.jsx'
 import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 import SecurityBadge from '../components/SecurityBadge.jsx'
 import DownloadInfoPackButton from '../components/DownloadInfoPackButton.jsx'
+import DashIcon from '../components/DashIcon.jsx'
 import { buildRemindersT, translateStatus } from '../i18n/index.js'
 
 export default function Dashboard({ profile, onNavigate, t }) {
@@ -23,7 +24,6 @@ export default function Dashboard({ profile, onNavigate, t }) {
       id: 'why',
       title: t('dashboardCardWhyTitle'),
       body: isCascade ? t('dashboardCardWhyBodyCascade') : t('dashboardCardWhyBodyIndex'),
-      icon: '◆',
     },
     {
       id: 'family',
@@ -41,31 +41,26 @@ export default function Dashboard({ profile, onNavigate, t }) {
       id: 'cost',
       title: t('dashboardCardCostTitle'),
       body: t('dashboardCardCostBody'),
-      icon: '$',
     },
     {
       id: 'book',
       title: t('dashboardCardBookTitle'),
       body: bookBody,
-      icon: '✓',
     },
     {
       id: 'reminders',
       title: t('dashboardCardRemindersTitle'),
       body: reminderPreview?.message ?? t('dashboardCardRemindersBodyNone'),
-      icon: '◷',
     },
     {
       id: 'faq',
       title: t('dashboardCardFaqTitle'),
       body: t('dashboardCardFaqBody'),
-      icon: '?',
     },
     {
       id: 'account',
       title: t('dashboardCardAccountTitle'),
       body: t('dashboardCardAccountBody'),
-      icon: '◎',
     },
   ]
 
@@ -89,13 +84,11 @@ export default function Dashboard({ profile, onNavigate, t }) {
             t('dashboardWelcomeBack', { firstName: profile.name.split(' ')[0] })
           )}
         </h1>
-        <p className="lead">
-          {isComplete ? t('dashboardCompletedLead') : t('dashboardLead')}
-        </p>
-        <Stepper currentStage={stage} t={t} />
+        <p className="lead">{isComplete ? t('dashboardCompletedLead') : t('dashboardLead')}</p>
+        <JourneyProgress currentStage={stage} t={t} />
       </div>
 
-      <DownloadInfoPackButton profile={profile} t={t} className="dash-download" />
+      <DownloadInfoPackButton profile={profile} t={t} />
 
       <div className="dash-grid">
         {cards.map((card) => (
@@ -108,9 +101,7 @@ export default function Dashboard({ profile, onNavigate, t }) {
             {card.family ? (
               <FamilyTreeIcon size={22} className="dash-card-icon" />
             ) : (
-              <span className="dash-card-glyph" aria-hidden="true">
-                {card.icon}
-              </span>
+              <DashIcon id={card.id} />
             )}
             <span className="dash-card-title">{card.title}</span>
             <span className="dash-card-body">{card.body}</span>

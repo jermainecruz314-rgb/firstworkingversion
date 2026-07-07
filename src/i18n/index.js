@@ -73,6 +73,13 @@ export function translateStatus(status, t) {
   return key ? t(key) : status
 }
 
+const STAGE_KEYS = ['stepReferral', 'stepCounselling', 'stepTest', 'stepResults']
+
+export function translatePathwayStage(stage, t) {
+  const index = Math.min(Math.max(Number(stage) || 0, 0), STAGE_KEYS.length - 1)
+  return t(STAGE_KEYS[index])
+}
+
 export function buildRiskSummaryT(t, profile, threshold) {
   const ldl = Number(profile?.ldlValue ?? 0)
   const above = ldlAboveThreshold(ldl, threshold)

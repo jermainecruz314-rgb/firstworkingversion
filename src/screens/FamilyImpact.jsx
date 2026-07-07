@@ -33,7 +33,7 @@ export default function FamilyImpact({ profile, onOpenFamilyTalk, t }) {
           ))}
         </div>
 
-        <button type="button" className="btn btn-secondary" onClick={onOpenFamilyTalk}>
+        <button type="button" className="btn btn-secondary btn-inline" onClick={onOpenFamilyTalk}>
           {t('familyImpactConversationCta')}
         </button>
       </div>

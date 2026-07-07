@@ -13,7 +13,7 @@ import Reminders from './screens/Reminders.jsx'
 import PrivacyFaq from './screens/PrivacyFaq.jsx'
 import MyAccount from './screens/MyAccount.jsx'
 import NavBar from './components/NavBar.jsx'
-import LanguageToggle from './components/LanguageToggle.jsx'
+import AppHeader from './components/AppHeader.jsx'
 import { createT } from './i18n/index.js'
 import { fetchPatientProfile } from './mockHealthHub.js'
 
@@ -45,6 +45,26 @@ const NAV_SCREENS = new Set([
   SCREENS.ACCOUNT,
 ])
 
+const BACK_SCREENS = new Set([
+  SCREENS.WHY,
+  SCREENS.FAMILY,
+  SCREENS.FAMILY_TALK,
+  SCREENS.COST,
+  SCREENS.BOOK,
+  SCREENS.REMINDERS,
+  SCREENS.FAQ,
+])
+
+const HEADER_TITLE_KEYS = {
+  [SCREENS.WHY]: 'dashboardCardWhyTitle',
+  [SCREENS.FAMILY]: 'dashboardCardFamilyTitle',
+  [SCREENS.FAMILY_TALK]: 'dashboardCardFamilyTalkTitle',
+  [SCREENS.COST]: 'dashboardCardCostTitle',
+  [SCREENS.BOOK]: 'dashboardCardBookTitle',
+  [SCREENS.REMINDERS]: 'dashboardCardRemindersTitle',
+  [SCREENS.FAQ]: 'dashboardCardFaqTitle',
+}
+
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState(SCREENS.LOGIN)
   const [language, setLanguageState] = useState('en')
@@ -56,6 +76,9 @@ export default function App() {
   const showNav = NAV_SCREENS.has(currentScreen)
   const showHeaderLang =
     profile && currentScreen !== SCREENS.LOGIN && currentScreen !== SCREENS.LOADING
+  const showBack = BACK_SCREENS.has(currentScreen)
+  const headerTitleKey = HEADER_TITLE_KEYS[currentScreen]
+  const headerTitle = headerTitleKey ? t(headerTitleKey) : ''
 
   const setLanguage = (lang) => {
     setLanguageState(lang)
@@ -94,6 +117,8 @@ export default function App() {
     if (tab === 'account') setCurrentScreen(SCREENS.ACCOUNT)
   }
 
+  const handleBack = () => setCurrentScreen(SCREENS.DASHBOARD)
+
   const navCurrent = currentScreen === SCREENS.ACCOUNT ? 'account' : 'home'
 
   const handleBook = (slot) => {
@@ -118,14 +143,17 @@ export default function App() {
 
   return (
     <div className={`app${showNav ? ' has-nav' : ''}`}>
-      <header className="app-header">
-        <div className="app-brand">
-          <span className="app-name">{t('appName')}</span>
-          {showHeaderLang && (
-            <LanguageToggle value={language} onChange={setLanguage} t={t} />
-          )}
-        </div>
-      </header>
+      <AppHeader
+        appName={t('appName')}
+        title={headerTitle}
+        showBack={showBack}
+        onBack={handleBack}
+        showLang={showHeaderLang}
+        language={language}
+        onLanguageChange={setLanguage}
+        backLabel={t('headerBackAria')}
+        t={t}
+      />
 
       <main className="app-main">
         {currentScreen === SCREENS.LOGIN && (

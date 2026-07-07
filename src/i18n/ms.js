@@ -93,6 +93,12 @@ export default {
   dashboardCardFaqBody: "Jawapan tentang insurans, siapa yang boleh melihat keputusan anda, dan hak anda.",
   dashboardCardAccountTitle: "Akaun Saya",
   dashboardCardAccountBody: "Lihat profil anda, urus akses data, dan baca tentang keselamatan data.",
+  dashboardProgressLabel: "Perjalanan anda: {current} daripada {total} langkah selesai",
+
+  loginBadgeIndex: "Pesakit Indeks",
+  loginBadgeCascade: "Saringan Kaskad",
+  loginProfileStage: "Peringkat semasa: {stage}",
+  headerBackAria: "Kembali",
 
   whyEyebrow: "Mengapa ini penting untuk anda",
   whyTitle: "Mari kita fahami keputusan anda",
@@ -102,6 +108,12 @@ export default {
   whyCascadeLabel: "Saringan kaskad",
   downloadInfoPack: "Muat turun pek maklumat",
   downloadInfoPackDone: "Pek maklumat dimuat turun",
+  downloadInfoPackSuccessTitle: "Pek maklumat sedia",
+  downloadInfoPackSuccessBody: "Ringkasan peribadi anda telah disimpan ke peranti anda.",
+  familyConversationCopySuccessTitle: "Mesej disalin",
+  familyConversationCopySuccessBody: "Tampal ke WhatsApp, SMS, atau e-mel apabila anda bersedia untuk berkongsi.",
+  remindersEmptyTitle: "Semua terkawal",
+  remindersEmptyBody: "Tiada peringatan buat masa ini. Kami akan memaklumkan anda apabila ada perkara yang memerlukan perhatian.",
 
   riskIntro: "{name}, bacaan kolesterol LDL anda ialah {ldl} mmol/L. Ini {above} mmol/L lebih tinggi daripada paras {threshold} mmol/L yang kami beri perhatian, sebab itu pasukan penjagaan anda mencadangkan supaya perkara ini diperiksa dengan lebih dekat.",
   riskPoint1Title: "Apa makna FH untuk anda",

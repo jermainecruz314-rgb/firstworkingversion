@@ -18,7 +18,7 @@ export default function PersonalisedLanding({ profile, onContinue, t }) {
         <h1 className="screen-title">{t('landingGreeting', { name: profile.name })}</h1>
         <p className="lead">{t('landingLead')}</p>
 
-        <dl className="record-list">
+        <dl className="record-list card-data">
           <RecordRow label={t('labelReferredBy')} value={profile.referredBy} />
           <RecordRow label={t('labelReferralDate')} value={formatDate(profile.referralDate)} />
           <RecordRow
@@ -51,7 +51,7 @@ export default function PersonalisedLanding({ profile, onContinue, t }) {
 
         <p className="body-text">{t('landingReassurance')}</p>
 
-        <button className="btn btn-primary" onClick={onContinue}>
+        <button className="btn btn-primary btn-block" onClick={onContinue}>
           {t('landingCta')}
         </button>
       </div>

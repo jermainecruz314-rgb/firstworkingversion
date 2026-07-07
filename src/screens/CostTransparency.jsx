@@ -161,7 +161,7 @@ export default function CostTransparency({ profile, t }) {
           )}
         </div>
 
-        <div className="cost-breakdown">
+        <div className="cost-breakdown card-data">
           <Row label={t('costRowPreSubsidy')} value={formatSGD(cost.preSubsidy)} />
           <Row
             label={t('costRowSubsidy', { percent: cost.subsidyPercent })}

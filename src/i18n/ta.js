@@ -93,6 +93,12 @@ export default {
   dashboardCardFaqBody: "காப்பீடு, உங்கள் முடிவுகளை யார் பார்க்க முடியும், உங்கள் உரிமைகள் பற்றிய பதில்கள்.",
   dashboardCardAccountTitle: "என் கணக்கு",
   dashboardCardAccountBody: "உங்கள் சுயவிவரத்தைப் பாருங்கள், தரவு அணுகலை நிர்வகியுங்கள், தரவு பாதுகாப்பைப் பற்றி படியுங்கள்.",
+  dashboardProgressLabel: "உங்கள் பயணம்: {total} படிகளில் {current} முடிந்தது",
+
+  loginBadgeIndex: "குறியீட்டு நோயாளி",
+  loginBadgeCascade: "தொடர் பரிசோதனை",
+  loginProfileStage: "தற்போதைய நிலை: {stage}",
+  headerBackAria: "பின்செல்",
 
   whyEyebrow: "இது உங்களுக்கு ஏன் முக்கியம்",
   whyTitle: "உங்கள் முடிவை புரிந்துகொள்வோம்",
@@ -102,6 +108,12 @@ export default {
   whyCascadeLabel: "காஸ்கேட் திரையிடல்",
   downloadInfoPack: "தகவல் தொகுப்பைப் பதிவிறக்கவும்",
   downloadInfoPackDone: "தகவல் தொகுப்பு பதிவிறக்கப்பட்டது",
+  downloadInfoPackSuccessTitle: "தகவல் தொகுப்பு தயார்",
+  downloadInfoPackSuccessBody: "உங்கள் தனிப்பயன் சுருக்கம் சாதனத்தில் சேமிக்கப்பட்டது.",
+  familyConversationCopySuccessTitle: "செய்தி நகலெடுக்கப்பட்டது",
+  familyConversationCopySuccessBody: "பகிர தயாராகும்போது WhatsApp, SMS அல்லது மின்னஞ்சலில் ஒட்டவும்.",
+  remindersEmptyTitle: "எல்லாம் சரி",
+  remindersEmptyBody: "இப்போது நினைவூட்டல்கள் இல்லை. உங்கள் கவனம் தேவைப்படும்போது தெரிவிப்போம்.",
 
   riskIntro: "{name}, உங்கள் LDL கொழுப்பு அளவு {ldl} mmol/L ஆகும். இது நாம் கவனிக்கும் {threshold} mmol/L அளவை விட {above} mmol/L அதிகம்; அதனால் உங்கள் பராமரிப்பு குழு இதைப் பற்றி மேலும் கவனிக்கச் சொல்கிறது.",
   riskPoint1Title: "FH உங்களுக்கு என்ன அர்த்தம்",

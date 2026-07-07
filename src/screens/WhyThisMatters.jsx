@@ -21,7 +21,7 @@ export default function WhyThisMatters({ profile, t }) {
         <h1 className="screen-title">{t('whyTitle')}</h1>
 
         {!isCascade && profile.ldlValue != null && (
-          <div className="highlight">
+          <div className="highlight card-data">
             <p className="highlight-label">{t('whyLdlLabel')}</p>
             <p className="highlight-value">
               {profile.ldlValue} <span className="unit">mmol/L</span>

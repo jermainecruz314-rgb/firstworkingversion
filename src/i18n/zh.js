@@ -93,6 +93,12 @@ export default {
   dashboardCardFaqBody: "了解有关保险、谁能查看您的结果，以及您的权利。",
   dashboardCardAccountTitle: "我的账户",
   dashboardCardAccountBody: "查看您的档案、管理数据访问权限，并了解数据安全。",
+  dashboardProgressLabel: "您的旅程：已完成 {current} / {total} 个步骤",
+
+  loginBadgeIndex: "索引患者",
+  loginBadgeCascade: "级联筛查",
+  loginProfileStage: "当前阶段：{stage}",
+  headerBackAria: "返回",
 
   whyEyebrow: "为什么这对您重要",
   whyTitle: "让我们一起理解您的结果",
@@ -102,6 +108,12 @@ export default {
   whyCascadeLabel: "级联筛查",
   downloadInfoPack: "下载资料包",
   downloadInfoPackDone: "资料包已下载",
+  downloadInfoPackSuccessTitle: "资料包已准备好",
+  downloadInfoPackSuccessBody: "您的个性化摘要已保存到设备。",
+  familyConversationCopySuccessTitle: "消息已复制",
+  familyConversationCopySuccessBody: "准备好分享时，可粘贴到 WhatsApp、短信或电子邮件。",
+  remindersEmptyTitle: "一切就绪",
+  remindersEmptyBody: "目前没有提醒。有需要您关注的事项时，我们会通知您。",
 
   riskIntro: "{name}，您的 LDL 胆固醇数值为 {ldl} mmol/L。这比我们重点关注的 {threshold} mmol/L 水平高出 {above} mmol/L，因此护理团队建议进一步了解。",
   riskPoint1Title: "FH 对您意味着什么",

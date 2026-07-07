@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Stepper from '../components/Stepper.jsx'
 import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 import SecurityBadge from '../components/SecurityBadge.jsx'
+import SuccessState from '../components/SuccessState.jsx'
 import { buildShareMessageT } from '../i18n/index.js'
 
 const SECTIONS = [
@@ -28,7 +29,6 @@ export default function FamilyConversation({ profile, t }) {
       /* demo fallback */
     }
     setCopied(true)
-    setTimeout(() => setCopied(false), 2500)
   }
 
   return (
@@ -64,9 +64,18 @@ export default function FamilyConversation({ profile, t }) {
         <p className="group-title">{t('familyConversationShareHeading')}</p>
         <div className="share-box">
           <pre className="share-text">{message}</pre>
-          <button type="button" className="btn btn-primary" onClick={handleCopy}>
-            {copied ? t('familyConversationCopied') : t('familyConversationCopy')}
-          </button>
+          {copied ? (
+            <SuccessState
+              title={t('familyConversationCopySuccessTitle')}
+              body={t('familyConversationCopySuccessBody')}
+              actionLabel={t('familyConversationCopy')}
+              onAction={() => setCopied(false)}
+            />
+          ) : (
+            <button type="button" className="btn btn-primary btn-inline" onClick={handleCopy}>
+              {t('familyConversationCopy')}
+            </button>
+          )}
         </div>
       </div>
     </section>

@@ -93,6 +93,12 @@ export default {
   dashboardCardFaqBody: "Answers about insurance, who sees your results, and your rights.",
   dashboardCardAccountTitle: "My Account",
   dashboardCardAccountBody: "View your profile, manage data access, and read about data security.",
+  dashboardProgressLabel: "Your journey: {current} of {total} steps completed",
+
+  loginBadgeIndex: "Index Patient",
+  loginBadgeCascade: "Cascade Screening",
+  loginProfileStage: "Current stage: {stage}",
+  headerBackAria: "Go back",
 
   whyEyebrow: "Why this matters to you",
   whyTitle: "Let's make sense of your result",
@@ -102,6 +108,12 @@ export default {
   whyCascadeLabel: "Cascade screening",
   downloadInfoPack: "Download info pack",
   downloadInfoPackDone: "Info pack downloaded",
+  downloadInfoPackSuccessTitle: "Info pack ready",
+  downloadInfoPackSuccessBody: "Your personalised summary has been saved to your device.",
+  familyConversationCopySuccessTitle: "Message copied",
+  familyConversationCopySuccessBody: "Paste it into WhatsApp, SMS, or email when you're ready to share.",
+  remindersEmptyTitle: "All caught up",
+  remindersEmptyBody: "There are no reminders right now. We'll let you know when something needs your attention.",
 
   riskIntro: "{name}, your LDL cholesterol reading is {ldl} mmol/L. That's {above} mmol/L above the {threshold} mmol/L level we look out for, which is why your care team suggested taking a closer look.",
   riskPoint1Title: "What FH means for you",

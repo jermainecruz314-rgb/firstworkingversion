@@ -28,7 +28,7 @@ export default function MyAccount({ profile, dataAccessGranted, onToggleAccess, 
         <span className="eyebrow">{t('accountEyebrow')}</span>
         <h1 className="screen-title">{t('accountTitle')}</h1>
 
-        <dl className="record-list">
+        <dl className="record-list card-data">
           <RecordRow label={t('labelName')} value={profile.name} />
           <RecordRow
             label={t('labelPathway')}
@@ -84,7 +84,7 @@ export default function MyAccount({ profile, dataAccessGranted, onToggleAccess, 
         <span className="eyebrow">{t('accountFaqEyebrow')}</span>
         <h2 className="section-title">{t('accountFaqTitle')}</h2>
         <p className="body-text">{t('accountFaqLead')}</p>
-        <button type="button" className="btn btn-secondary" onClick={onOpenFaq}>
+        <button type="button" className="btn btn-secondary btn-inline" onClick={onOpenFaq}>
           {t('accountFaqButton')}
         </button>
       </div>
