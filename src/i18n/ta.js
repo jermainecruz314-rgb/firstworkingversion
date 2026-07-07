@@ -45,6 +45,15 @@ export default {
   landingLead: "நீங்கள் எந்த நிலையில் உள்ளீர்கள் என்பதை தெளிவாகப் பார்க்க, உங்கள் பரிந்துரை விவரங்களை ஒன்றாகச் சேர்த்துள்ளோம்.",
   landingReassurance: "இது சிங்கப்பூரின் தேசிய FH மரபணு பரிசோதனை திட்டத்தைப் பற்றி மேலும் அறிய ஒரு அழைப்பு. இப்போது கவலைப்பட வேண்டியதில்லை - உங்கள் நேரத்திற்கு ஏற்ப மெதுவாக முன்னேறலாம்.",
   landingCta: "என் டாஷ்போர்டுக்குச் செல்லுங்கள்",
+  landingLdlReading: "LDL {ldl} mmol/L",
+
+  mockReferredByWeiLing: "டாக்டர் சாரா லிம், தோ பாயோ பாலிகிளினிக்",
+  mockReferredByMarcusCascade: "ஜிஏசியில் இருந்து தொடர் பரிசோதனை அழைப்பு",
+  mockReferredByAishah: "டாக்டர் டான் வெய் கியாட், பிடோக் பாலிகிளினிக்",
+  mockReferralReasonLdlThreshold: "LDL முடிவு 5.5 mmol/L வரம்பை விட அதிகம்",
+  mockReferralReasonCascadeRelative: "உறுதிப்படுத்தப்பட்ட FH நோயாளியின் நெருக்கமான உறவினர்",
+  mockRelationMarcus: "வெய் லிங் டானின் மகன் (உறுதிப்படுத்தப்பட்ட FH நோயாளி)",
+  mockInheritanceRiskStandard: "அதே மரபணி மாறுபாட்டைக் கொண்டிருக்க 50% வாய்ப்பு",
 
   labelName: "பெயர்",
   labelPathway: "பாதை",

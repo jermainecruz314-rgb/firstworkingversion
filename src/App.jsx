@@ -173,6 +173,7 @@ export default function App() {
         {currentScreen === SCREENS.LANDING && profile && (
           <PersonalisedLanding
             profile={profile}
+            language={language}
             onContinue={() => setCurrentScreen(SCREENS.DASHBOARD)}
             t={t}
           />

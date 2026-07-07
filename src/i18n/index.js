@@ -80,6 +80,23 @@ export function translatePathwayStage(stage, t) {
   return t(STAGE_KEYS[index])
 }
 
+const localizedField = (t, profile, keyField, rawField) => {
+  const key = profile?.[keyField]
+  if (key) return t(key)
+  return profile?.[rawField]
+}
+
+export function localizeProfile(t, profile) {
+  if (!profile) return profile
+  return {
+    ...profile,
+    referredBy: localizedField(t, profile, 'referredByKey', 'referredBy'),
+    referralReason: localizedField(t, profile, 'referralReasonKey', 'referralReason'),
+    relationToIndex: localizedField(t, profile, 'relationToIndexKey', 'relationToIndex'),
+    inheritanceRisk: localizedField(t, profile, 'inheritanceRiskKey', 'inheritanceRisk'),
+  }
+}
+
 export function buildRiskSummaryT(t, profile, threshold) {
   const ldl = Number(profile?.ldlValue ?? 0)
   const above = ldlAboveThreshold(ldl, threshold)
@@ -118,13 +135,17 @@ export function buildCascadeSummaryT(t, profile) {
       {
         title: t('cascadePoint1Title'),
         body: t('cascadePoint1Body', {
-          relation: profile?.relationToIndex ?? t('cascadeRelationFallback'),
+          relation:
+            localizedField(t, profile, 'relationToIndexKey', 'relationToIndex') ??
+            t('cascadeRelationFallback'),
         }),
       },
       {
         title: t('cascadePoint2Title'),
         body: t('cascadePoint2Body', {
-          risk: profile?.inheritanceRisk ?? t('cascadeInheritanceFallback'),
+          risk:
+            localizedField(t, profile, 'inheritanceRiskKey', 'inheritanceRisk') ??
+            t('cascadeInheritanceFallback'),
         }),
       },
       {

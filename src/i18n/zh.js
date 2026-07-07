@@ -45,6 +45,15 @@ export default {
   landingLead: "我们已整理您的转诊详情，方便您清楚了解目前的进展。",
   landingReassurance: "这是邀请您进一步了解新加坡国家 FH 基因检测计划。您目前没有需要担心的事，请按自己的节奏慢慢了解。",
   landingCta: "前往我的仪表板",
+  landingLdlReading: "LDL {ldl} mmol/L",
+
+  mockReferredByWeiLing: "林莎拉医生，大巴窑综合诊疗所",
+  mockReferredByMarcusCascade: "遗传评估中心发出的级联筛查邀请",
+  mockReferredByAishah: "陈伟杰医生，勿洛综合诊疗所",
+  mockReferralReasonLdlThreshold: "LDL 结果高于 5.5 mmol/L 标准",
+  mockReferralReasonCascadeRelative: "确诊 FH 患者的一级亲属",
+  mockRelationMarcus: "陈慧玲之子（已确诊先证者）",
+  mockInheritanceRiskStandard: "携带相同基因变异的机会为 50%",
 
   labelName: "姓名",
   labelPathway: "路径",

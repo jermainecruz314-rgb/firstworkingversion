@@ -45,6 +45,15 @@ export default {
   landingLead: "Kami telah mengumpulkan butiran rujukan anda supaya anda dapat melihat dengan jelas kedudukan anda sekarang.",
   landingReassurance: "Ini ialah jemputan untuk mengetahui lebih lanjut melalui Program Ujian Genetik FH Kebangsaan Singapura. Tiada apa yang perlu anda risaukan sekarang - ambil masa anda.",
   landingCta: "Pergi ke papan pemuka saya",
+  landingLdlReading: "LDL {ldl} mmol/L",
+
+  mockReferredByWeiLing: "Dr. Sarah Lim, Poliklinik Toa Payoh",
+  mockReferredByMarcusCascade: "Jemputan saringan kaskad daripada GAC",
+  mockReferredByAishah: "Dr. Tan Wei Kiat, Poliklinik Bedok",
+  mockReferralReasonLdlThreshold: "Keputusan LDL melebihi ambang 5.5 mmol/L",
+  mockReferralReasonCascadeRelative: "Saudara terdekat pesakit FH yang disahkan",
+  mockRelationMarcus: "Anak lelaki Wei Ling Tan (probánd FH yang disahkan)",
+  mockInheritanceRiskStandard: "50% peluang membawa varian gen yang sama",
 
   labelName: "Nama",
   labelPathway: "Laluan",

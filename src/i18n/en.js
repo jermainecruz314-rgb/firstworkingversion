@@ -45,6 +45,15 @@ export default {
   landingLead: "We've pulled together the details from your referral so you can see exactly where things stand.",
   landingReassurance: "This is an invitation to learn more through Singapore's National FH Genetic Testing Programme. There's nothing you need to worry about right now - take your time.",
   landingCta: "Go to my dashboard",
+  landingLdlReading: "LDL {ldl} mmol/L",
+
+  mockReferredByWeiLing: "Dr. Sarah Lim, Toa Payoh Polyclinic",
+  mockReferredByMarcusCascade: "Cascade screening invitation from GAC",
+  mockReferredByAishah: "Dr. Tan Wei Kiat, Bedok Polyclinic",
+  mockReferralReasonLdlThreshold: "LDL result above 5.5 mmol/L threshold",
+  mockReferralReasonCascadeRelative: "First-degree relative of a confirmed FH patient",
+  mockRelationMarcus: "Son of Wei Ling Tan (confirmed FH proband)",
+  mockInheritanceRiskStandard: "50% chance of carrying the same gene variant",
 
   labelName: "Name",
   labelPathway: "Pathway",

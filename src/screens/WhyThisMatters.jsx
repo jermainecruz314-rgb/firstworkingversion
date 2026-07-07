@@ -2,11 +2,12 @@ import Stepper from '../components/Stepper.jsx'
 import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 import SecurityBadge from '../components/SecurityBadge.jsx'
 import DownloadInfoPackButton from '../components/DownloadInfoPackButton.jsx'
-import { buildRiskSummaryT, buildCascadeSummaryT } from '../i18n/index.js'
+import { buildRiskSummaryT, buildCascadeSummaryT, localizeProfile } from '../i18n/index.js'
 import { LDL_THRESHOLD } from '../logic.js'
 
 export default function WhyThisMatters({ profile, t }) {
   const isCascade = profile.pathwayType === 'cascade'
+  const localized = localizeProfile(t, profile)
   const summary = isCascade
     ? buildCascadeSummaryT(t, profile)
     : buildRiskSummaryT(t, profile, LDL_THRESHOLD)
@@ -43,7 +44,7 @@ export default function WhyThisMatters({ profile, t }) {
               <FamilyTreeIcon size={22} />
               <p className="highlight-label">{t('whyCascadeLabel')}</p>
             </div>
-            <p className="highlight-note">{profile.relationToIndex}</p>
+            <p className="highlight-note">{localized.relationToIndex}</p>
           </div>
         )}
 

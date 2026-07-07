@@ -1,13 +1,14 @@
 import SecurityBadge from '../components/SecurityBadge.jsx'
 import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 import { formatDate } from '../utils.js'
-import { translateStatus, LANG_OPTIONS } from '../i18n/index.js'
+import { translateStatus, LANG_OPTIONS, localizeProfile } from '../i18n/index.js'
 
-export default function PersonalisedLanding({ profile, onContinue, t }) {
+export default function PersonalisedLanding({ profile, onContinue, t, language }) {
+  const localized = localizeProfile(t, profile)
   const isCascade = profile.pathwayType === 'cascade'
+  const langCode = language ?? profile.preferredLanguage ?? 'en'
   const langLabel =
-    LANG_OPTIONS.find((o) => o.code === profile.preferredLanguage)?.native ??
-    profile.preferredLanguage
+    LANG_OPTIONS.find((o) => o.code === langCode)?.native ?? langCode
 
   return (
     <section className="screen">
@@ -19,28 +20,38 @@ export default function PersonalisedLanding({ profile, onContinue, t }) {
         <p className="lead">{t('landingLead')}</p>
 
         <dl className="record-list card-data">
-          <RecordRow label={t('labelReferredBy')} value={profile.referredBy} />
-          <RecordRow label={t('labelReferralDate')} value={formatDate(profile.referralDate)} />
+          <RecordRow label={t('labelReferredBy')} value={localized.referredBy} />
+          <RecordRow
+            label={t('labelReferralDate')}
+            value={formatDate(profile.referralDate, langCode)}
+          />
           <RecordRow
             label={t('labelReferralReason')}
             value={
               isCascade ? (
                 <span className="record-family">
                   <FamilyTreeIcon size={18} />
-                  {profile.relationToIndex}
+                  {localized.relationToIndex}
                 </span>
               ) : (
                 <>
-                  {profile.referralReason}
+                  {localized.referralReason}
                   {profile.ldlValue != null && (
-                    <span className="record-ldl"> — LDL {profile.ldlValue} mmol/L</span>
+                    <span className="record-ldl">
+                      {' '}
+                      — {t('landingLdlReading', { ldl: profile.ldlValue })}
+                    </span>
                   )}
                 </>
               )
             }
           />
-          {isCascade && profile.inheritanceRisk && (
-            <RecordRow label={t('labelInheritanceRisk')} value={profile.inheritanceRisk} family />
+          {isCascade && localized.inheritanceRisk && (
+            <RecordRow
+              label={t('labelInheritanceRisk')}
+              value={localized.inheritanceRisk}
+              family
+            />
           )}
           <RecordRow
             label={t('labelAppointment')}

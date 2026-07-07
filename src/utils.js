@@ -1,8 +1,16 @@
 // Format an ISO date string (or Date) into a friendly, readable date.
-export function formatDate(value) {
+const DATE_LOCALES = {
+  en: 'en-SG',
+  zh: 'zh-CN',
+  ms: 'ms-SG',
+  ta: 'ta-SG',
+}
+
+export function formatDate(value, lang = 'en') {
   const date = value instanceof Date ? value : new Date(value)
   if (Number.isNaN(date.getTime())) return String(value)
-  return new Intl.DateTimeFormat('en-SG', {
+  const locale = DATE_LOCALES[lang] ?? DATE_LOCALES.en
+  return new Intl.DateTimeFormat(locale, {
     day: 'numeric',
     month: 'long',
     year: 'numeric',

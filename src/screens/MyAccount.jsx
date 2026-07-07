@@ -2,11 +2,12 @@ import { useState } from 'react'
 import SecurityBadge from '../components/SecurityBadge.jsx'
 import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 import { formatDate } from '../utils.js'
-import { translateStatus, LANG_OPTIONS } from '../i18n/index.js'
+import { translateStatus, LANG_OPTIONS, localizeProfile } from '../i18n/index.js'
 
 export default function MyAccount({ profile, dataAccessGranted, onToggleAccess, onOpenFaq, t }) {
   const [deleteRequested, setDeleteRequested] = useState(false)
   const isCascade = profile.pathwayType === 'cascade'
+  const localized = localizeProfile(t, profile)
 
   const consentPoints = [
     'consentPointReferralDetails',
@@ -43,7 +44,7 @@ export default function MyAccount({ profile, dataAccessGranted, onToggleAccess, 
               )
             }
           />
-          <RecordRow label={t('labelReferredBy')} value={profile.referredBy} />
+          <RecordRow label={t('labelReferredBy')} value={localized.referredBy} />
           <RecordRow label={t('labelReferralDate')} value={formatDate(profile.referralDate)} />
           <RecordRow label={t('labelLanguage')} value={langLabel} />
         </dl>
