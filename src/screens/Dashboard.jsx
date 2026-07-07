@@ -1,20 +1,22 @@
 import PathwayIconTracker from '../components/PathwayIconTracker.jsx'
 import StatBanner from '../components/StatBanner.jsx'
 import SecurityBadge from '../components/SecurityBadge.jsx'
+import ProfileStrip from '../components/ProfileStrip.jsx'
 import DownloadInfoPackButton from '../components/DownloadInfoPackButton.jsx'
 import DashIcon from '../components/DashIcon.jsx'
 import { buildRemindersT, translateStatus } from '../i18n/index.js'
 
-const CALENDAR_ICON = (
+const PATHWAY_ICON = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-    <rect x="4" y="5" width="16" height="15" rx="2" />
-    <path d="M8 3v4M16 3v4M4 11h16" strokeLinecap="round" />
+    <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" />
+    <rect x="9" y="3" width="6" height="4" rx="1" />
+    <path d="M9 12h6M9 16h4" strokeLinecap="round" />
   </svg>
 )
 
-const ARROW_ICON = (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
-    <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+const CHEVRON = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+    <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 )
 
@@ -26,6 +28,8 @@ export default function Dashboard({ profile, onNavigate, t }) {
   const showFeaturedCta = !isComplete
 
   const statusLabel = translateStatus(profile.appointmentStatus, t)
+  const pathwayMeta = isCascade ? t('pathwayCascade') : t('pathwayIndex')
+
   const bookBody = profile.appointmentSlotLabel
     ? t('dashboardCardBookBodyStatusSlot', {
         status: statusLabel,
@@ -80,71 +84,59 @@ export default function Dashboard({ profile, onNavigate, t }) {
   const firstName = profile.name.split(' ')[0]
 
   return (
-    <section className="screen screen--dashboard">
+    <section className="screen screen--hb">
       <SecurityBadge t={t} />
+      <ProfileStrip name={profile.name} meta={pathwayMeta} />
 
-      <header className="dash-hero">
-        <p className="dash-hero-eyebrow">{t('dashboardEyebrow')}</p>
-        <h1 className="dash-hero-title">
+      <div className="hb-card hb-card--peach">
+        <p className="hb-card-kicker">{t('dashboardEyebrow')}</p>
+        <h1 className="hb-card-title">
           {isComplete
             ? t('dashboardCompletedTitle')
             : t('dashboardWelcomeBack', { firstName })}
         </h1>
-        <p className="dash-hero-lead">
+        <p className="hb-card-lead">
           {isComplete ? t('dashboardCompletedLead') : t('dashboardLead')}
         </p>
-
-        <div className="dash-hero-tracker">
-          <PathwayIconTracker currentStage={stage} t={t} variant="warm" />
-        </div>
-
+        <PathwayIconTracker currentStage={stage} t={t} variant="hb" />
         <StatBanner />
-      </header>
+      </div>
 
       {showFeaturedCta && (
-        <button
-          type="button"
-          className="dash-cta tap-card"
-          onClick={() => onNavigate('book')}
-        >
-          <span className="dash-cta-icon">{CALENDAR_ICON}</span>
-          <span className="dash-cta-copy">
-            <span className="dash-cta-label">Book My Appointment</span>
-            <span className="dash-cta-hint">Genetic Assessment Centre, NHCS</span>
-          </span>
-          <span className="dash-cta-arrow">{ARROW_ICON}</span>
+        <button type="button" className="hb-btn-orange tap-card" onClick={() => onNavigate('book')}>
+          Book My Appointment
         </button>
       )}
 
-      <div className="dash-section">
-        <h2 className="dash-section-heading">Your pathway</h2>
-        <nav className="dash-list" aria-label={t('dashboardEyebrow')}>
-          {cards.map((card) => (
-            <button
-              key={card.id}
-              type="button"
-              className={`dash-row tap-card dash-row--${card.id}${
-                card.featured ? ' dash-row--featured' : ''
-              }`}
-              onClick={() => onNavigate(card.id)}
-            >
-              <span className="dash-row-icon" aria-hidden="true">
-                <DashIcon id={card.id} />
-              </span>
-              <span className="dash-row-copy">
-                <span className="dash-row-title">{card.title}</span>
-                {card.featured && (
-                  <span className="dash-row-pullquote">
-                    1 in 250 people carry an FH gene variant
-                  </span>
-                )}
-                <span className="dash-row-body">{card.body}</span>
-              </span>
-              <span className="dash-row-arrow">{ARROW_ICON}</span>
-            </button>
-          ))}
-        </nav>
+      <div className="hb-divider" />
+
+      <div className="hb-section-head">
+        <span className="hb-section-icon">{PATHWAY_ICON}</span>
+        <h2 className="hb-section-title">Your pathway</h2>
       </div>
+
+      <nav className="hb-menu" aria-label={t('dashboardEyebrow')}>
+        {cards.map((card) => (
+          <button
+            key={card.id}
+            type="button"
+            className={`hb-menu-item tap-card${card.featured ? ' hb-menu-item--featured' : ''}`}
+            onClick={() => onNavigate(card.id)}
+          >
+            <span className="hb-menu-icon">
+              <DashIcon id={card.id} />
+            </span>
+            <span className="hb-menu-copy">
+              <span className="hb-menu-title">{card.title}</span>
+              {card.featured && (
+                <span className="hb-menu-note">1 in 250 people carry an FH gene variant</span>
+              )}
+              <span className="hb-menu-body">{card.body}</span>
+            </span>
+            <span className="hb-menu-chevron">{CHEVRON}</span>
+          </button>
+        ))}
+      </nav>
 
       <DownloadInfoPackButton profile={profile} t={t} variant="link" className="dash-download-link" />
     </section>

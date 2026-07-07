@@ -38,18 +38,19 @@ const STAGES = [
   },
 ]
 
+function trackerClass(variant) {
+  if (variant === 'greeting') return ' pathway-icon-tracker--greeting'
+  if (variant === 'warm') return ' pathway-icon-tracker--warm'
+  if (variant === 'hb') return ' pathway-icon-tracker--hb'
+  return ''
+}
+
 export default function PathwayIconTracker({ currentStage = 0, t, variant = 'default' }) {
   const stage = Math.min(Math.max(Number(currentStage) || 0, 0), STAGES.length - 1)
 
   return (
     <div
-      className={`pathway-icon-tracker${
-        variant === 'greeting'
-          ? ' pathway-icon-tracker--greeting'
-          : variant === 'warm'
-            ? ' pathway-icon-tracker--warm'
-            : ''
-      }`}
+      className={`pathway-icon-tracker${trackerClass(variant)}`}
       aria-label={t('pathwayProgress')}
     >
       <div className="pathway-icon-tracker-row">

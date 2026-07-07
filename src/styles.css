@@ -1,58 +1,66 @@
 :root {
-  /* Warm clinical companion palette */
-  --blue-primary: #2c5282;
-  --blue-dark: #1e3a5f;
-  --teal-secondary: #3d7a72;
-  --warm-accent: #c45c26;
-  --warm-accent-deep: #a34a1c;
-  --green-success: #3d7a5c;
-  --family-teal: #3d7a72;
+  /* Health Buddy palette */
+  --hb-orange: #e87524;
+  --hb-orange-dark: #cf6518;
+  --hb-orange-soft: #fff0e3;
+  --hb-peach: #fdebd8;
+  --hb-yellow: #fff9e0;
+  --hb-green: #43a047;
+  --hb-blue: #1b4f9b;
 
-  --bg: #f5f0e8;
-  --bg-warm: #fffdf9;
-  --card: #fffdf9;
-  --card-alt: #f8f3eb;
-  --ink: #121f2e;
-  --ink-soft: #3f4f5f;
-  --muted: #566676;
-  --label: #7a8794;
-  --line: rgba(28, 42, 58, 0.1);
-  --line-soft: rgba(28, 42, 58, 0.06);
-  --tint: #f3ece2;
-  --family-soft: rgba(61, 122, 114, 0.08);
-  --skeleton: #e8e0d4;
+  --blue-primary: var(--hb-blue);
+  --blue-dark: #153f7c;
+  --teal-secondary: #007b8a;
+  --warm-accent: var(--hb-orange);
+  --warm-accent-deep: var(--hb-orange-dark);
+  --green-success: var(--hb-green);
+  --family-teal: #007b8a;
 
-  --primary: var(--blue-primary);
+  --bg: #ffffff;
+  --bg-warm: #ffffff;
+  --card: #ffffff;
+  --card-alt: #fff8f2;
+  --ink: #222222;
+  --ink-soft: #555555;
+  --muted: #666666;
+  --label: #888888;
+  --line: #e8e8e8;
+  --line-soft: #f0f0f0;
+  --tint: var(--hb-orange-soft);
+  --family-soft: rgba(0, 123, 138, 0.08);
+  --skeleton: #ececec;
+
+  --primary: var(--hb-blue);
   --primary-dark: var(--blue-dark);
   --secondary: var(--teal-secondary);
-  --header: #1c2a3a;
-  --highlight: var(--warm-accent);
-  --success: var(--green-success);
-  --featured: var(--warm-accent);
-  --terracotta: var(--warm-accent);
-  --terracotta-soft: rgba(196, 92, 38, 0.1);
-  --amber: var(--warm-accent);
-  --sage-soft: rgba(61, 122, 92, 0.1);
+  --header: #ffffff;
+  --highlight: var(--hb-orange);
+  --success: var(--hb-green);
+  --featured: var(--hb-orange);
+  --terracotta: var(--hb-orange);
+  --terracotta-soft: var(--hb-orange-soft);
+  --amber: var(--hb-orange);
+  --sage-soft: #eef9f0;
 
-  --shadow-card: 0 1px 0 rgba(28, 42, 58, 0.04), 0 8px 24px rgba(28, 42, 58, 0.06);
-  --shadow-sm: 0 1px 0 rgba(28, 42, 58, 0.04), 0 4px 12px rgba(28, 42, 58, 0.05);
-  --shadow-md: 0 2px 0 rgba(28, 42, 58, 0.04), 0 12px 32px rgba(28, 42, 58, 0.08);
-  --focus-ring: 0 0 0 3px rgba(196, 92, 38, 0.18);
+  --shadow-card: none;
+  --shadow-sm: none;
+  --shadow-md: 0 2px 12px rgba(0, 0, 0, 0.06);
+  --focus-ring: 0 0 0 3px rgba(232, 117, 36, 0.25);
 
-  --radius-lg: 16px;
+  --radius-lg: 14px;
   --radius-md: 12px;
   --radius-sm: 8px;
-  --radius-btn: 10px;
-  --radius-greeting: 18px;
+  --radius-btn: 24px;
+  --radius-greeting: 14px;
   --radius-tile: 10px;
 
-  --space-screen: 18px;
-  --space-card: 20px;
-  --space-section: 14px;
+  --space-screen: 16px;
+  --space-card: 18px;
+  --space-section: 12px;
   --space-label: 8px;
 
-  --sans: 'DM Sans', system-ui, -apple-system, sans-serif;
-  --serif: 'Lora', Georgia, 'Times New Roman', serif;
+  --sans: 'Nunito', system-ui, -apple-system, sans-serif;
+  --serif: var(--sans);
 
   --maxw: 460px;
 }
@@ -70,12 +78,9 @@ body {
 body {
   font-family: var(--sans);
   color: var(--ink);
-  background:
-    radial-gradient(ellipse 90% 60% at 100% -10%, rgba(196, 92, 38, 0.07), transparent 55%),
-    radial-gradient(ellipse 70% 50% at -10% 100%, rgba(44, 82, 130, 0.06), transparent 50%),
-    var(--bg);
+  background: var(--bg);
   -webkit-font-smoothing: antialiased;
-  line-height: 1.55;
+  line-height: 1.5;
   font-size: 15px;
 }
 
@@ -84,8 +89,10 @@ body {
 .dash-hero-title,
 .landing-intro-title,
 .consent-sheet-title,
-.referral-sheet-name {
-  font-family: var(--serif);
+.referral-sheet-name,
+.hb-card-title {
+  font-family: var(--sans);
+  font-weight: 800;
 }
 
 /* Numbers should not shift width when they recalculate. */
@@ -103,18 +110,19 @@ body {
   flex-direction: column;
 }
 
-/* Header — SingHealth institutional blue */
+/* Header — Health Buddy white bar */
 .app-header {
   position: sticky;
   top: 0;
   z-index: 30;
   height: 56px;
-  background: var(--primary);
-  border-bottom: none;
+  background: #ffffff;
+  border-bottom: 1px solid var(--line);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 var(--space-screen);
+  box-shadow: none;
 }
 
 .app-header-inner {
@@ -142,9 +150,9 @@ body {
 .app-header-title {
   margin: 0;
   font-family: var(--sans);
-  font-size: 16px;
-  font-weight: 600;
-  color: #ffffff;
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--ink);
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
@@ -163,20 +171,20 @@ body {
   height: 40px;
   margin-left: -8px;
   border-radius: var(--radius-sm);
-  color: #ffffff;
+  color: var(--ink);
   transition: background 0.15s ease;
 }
 
 .header-back:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--line-soft);
 }
 
 .app-name {
   font-family: var(--sans);
-  font-weight: 600;
-  font-size: 16px;
-  color: #ffffff;
-  letter-spacing: 0.1px;
+  font-weight: 800;
+  font-size: 17px;
+  color: var(--ink);
+  letter-spacing: 0;
 }
 
 /* Layout */
@@ -3760,4 +3768,437 @@ body {
   .pathway-icon-tracker--warm .pathway-icon-node--current .pathway-icon-circle {
     animation: none;
   }
+}
+
+/* ── Health Buddy alignment ─────────────────────────────────── */
+
+.screen--hb {
+  gap: 14px;
+}
+
+.trust-line {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.trust-line-icon {
+  color: var(--hb-green);
+}
+
+/* Profile strip — orange avatar like Health Buddy */
+.hb-profile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 4px 0 8px;
+}
+
+.hb-avatar {
+  flex: none;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--hb-orange);
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hb-profile-name {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+}
+
+.hb-profile-meta {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+/* Tinted section cards */
+.hb-card {
+  border-radius: 14px;
+  padding: 18px 16px;
+  border: none;
+  box-shadow: none;
+}
+
+.hb-card--peach {
+  background: var(--hb-peach);
+}
+
+.hb-card--yellow {
+  background: var(--hb-yellow);
+}
+
+.hb-card--white {
+  background: #ffffff;
+  border: 1px solid var(--line);
+}
+
+.hb-card-kicker {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--hb-orange);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.hb-card-title {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.hb-card-lead {
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+.hb-card .pathway-icon-tracker {
+  margin-top: 16px;
+}
+
+.hb-card .stat-strip {
+  margin: 14px -4px 0;
+  padding: 14px 4px 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  background: transparent;
+  border-radius: 0;
+}
+
+.stat-strip-value {
+  font-family: var(--sans);
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--hb-orange);
+}
+
+.stat-strip-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+/* Orange CTA — Health Buddy "CLICK HERE" style */
+.hb-btn-orange {
+  appearance: none;
+  cursor: pointer;
+  width: 100%;
+  border: none;
+  border-radius: 28px;
+  padding: 15px 20px;
+  background: var(--hb-orange);
+  color: #ffffff;
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-align: center;
+  box-shadow: none;
+}
+
+.hb-btn-orange:hover {
+  background: var(--hb-orange-dark);
+}
+
+.hb-divider {
+  height: 1px;
+  background: var(--line);
+  margin: 4px 0;
+}
+
+/* Section heading with orange icon */
+.hb-section-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0;
+}
+
+.hb-section-icon {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  color: var(--hb-orange);
+}
+
+.hb-section-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.hb-section-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--hb-orange);
+}
+
+/* Menu list — device-list style */
+.hb-menu {
+  display: flex;
+  flex-direction: column;
+}
+
+.hb-menu-item {
+  appearance: none;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 0;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  text-align: left;
+  font-family: var(--sans);
+}
+
+.hb-menu-item:last-child {
+  border-bottom: none;
+}
+
+.hb-menu-item--featured {
+  background: var(--hb-orange-soft);
+  margin: 0 -16px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.hb-menu-icon {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  color: var(--hb-orange);
+}
+
+.hb-menu-icon .dash-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.hb-menu-copy {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hb-menu-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.hb-menu-note {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--hb-orange);
+  line-height: 1.35;
+}
+
+.hb-menu-body {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hb-menu-chevron {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 4px;
+  color: var(--label);
+}
+
+.hb-menu-chevron svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Referral detail list */
+.hb-referral-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.hb-referral-visual {
+  padding: 16px 16px 0;
+}
+
+.hb-detail-list {
+  margin: 0;
+  padding: 8px 0;
+}
+
+.hb-detail-row {
+  padding: 12px 16px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.hb-detail-row dt {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--label);
+}
+
+.hb-detail-row dd {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.45;
+}
+
+.hb-promo-card {
+  text-align: center;
+}
+
+.hb-promo-text {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+/* Consent check rows */
+.consent-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.consent-line:last-child {
+  border-bottom: none;
+}
+
+.consent-line-check {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--hb-green);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1px;
+}
+
+.consent-line-check svg {
+  width: 12px;
+  height: 12px;
+}
+
+.consent-line-text {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.45;
+}
+
+.consent-icon-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Pathway tracker on peach */
+.pathway-icon-tracker--hb .pathway-icon-node--complete .pathway-icon-circle {
+  background: var(--hb-green);
+  color: #fff;
+}
+
+.pathway-icon-tracker--hb .pathway-icon-node--current .pathway-icon-circle {
+  background: var(--hb-orange);
+  color: #fff;
+}
+
+.pathway-icon-tracker--hb .pathway-icon-node--upcoming .pathway-icon-circle {
+  background: #fff;
+  border: 2px solid #ddd;
+  color: #bbb;
+}
+
+.pathway-icon-tracker--hb .pathway-icon-connector--complete {
+  background: var(--hb-green);
+}
+
+.pathway-icon-tracker--hb .pathway-icon-node--current .pathway-icon-label {
+  color: var(--hb-orange);
+  font-weight: 800;
+}
+
+.pathway-icon-tracker--hb .pathway-icon-label {
+  color: var(--muted);
+  font-weight: 700;
+}
+
+/* Nav + language on white header */
+.nav-item.active {
+  color: var(--hb-orange);
+}
+
+.nav-item.active::before {
+  background: var(--hb-orange);
+}
+
+.lang-select {
+  color: var(--ink);
+  background: var(--line-soft);
+  border: 1px solid var(--line);
+}
+
+.nav-bar {
+  background: #ffffff;
+  border-top: 1px solid var(--line);
+  box-shadow: none;
+}
+
+.eyebrow {
+  color: var(--hb-orange);
+  font-weight: 800;
+}
+
+.ldl-gauge-gradient {
+  background: linear-gradient(90deg, var(--hb-green) 0%, var(--hb-orange) 100%);
+}
+
+.ldl-value-number,
+.ldl-gauge-label--result {
+  color: var(--hb-blue);
+}
+
+.ldl-threshold-badge {
+  color: var(--hb-orange);
+  background: var(--hb-orange-soft);
+  font-weight: 800;
 }

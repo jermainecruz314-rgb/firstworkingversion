@@ -1,49 +1,17 @@
 import SecurityBadge from '../components/SecurityBadge.jsx'
+import ProfileStrip from '../components/ProfileStrip.jsx'
 import LdlGauge from '../components/LdlGauge.jsx'
 import FamilyTreeDiagram from '../components/FamilyTreeDiagram.jsx'
 import { formatDate } from '../utils.js'
 import { translateStatus, LANG_OPTIONS, localizeProfile } from '../i18n/index.js'
 import { LDL_THRESHOLD } from '../logic.js'
 
-const DETAIL_ICONS = {
-  referredBy: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-      <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-      <circle cx="9" cy="7" r="4" />
-      <path d="M19 8v6M22 11h-6" strokeLinecap="round" />
-    </svg>
-  ),
-  referralDate: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-      <rect x="4" y="5" width="16" height="15" rx="2" />
-      <path d="M8 3v4M16 3v4M4 11h16" strokeLinecap="round" />
-    </svg>
-  ),
-  referralReason: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-      <path d="M14 2H6a2 2 0 0 0-2 2v16l4-2 4 2 4-2 4 2V8z" strokeLinejoin="round" />
-    </svg>
-  ),
-  inheritanceRisk: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-      <path d="M16 19v-1a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v1" strokeLinecap="round" />
-      <circle cx="9" cy="8" r="3" />
-      <path d="M20 19v-1a3 3 0 0 0-2-2.83M15 4.18a3 3 0 0 1 0 5.64" strokeLinecap="round" />
-    </svg>
-  ),
-  appointment: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" />
-      <path d="M12 7v5l3 2" strokeLinecap="round" />
-    </svg>
-  ),
-  language: (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-      <circle cx="12" cy="12" r="9" />
-      <path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18" strokeLinecap="round" />
-    </svg>
-  ),
-}
+const REFERRAL_ICON = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+    <path d="M14 2H6a2 2 0 0 0-2 2v16l4-2 4 2 4-2 4 2V8z" strokeLinejoin="round" />
+    <path d="M9 12h6M9 16h4" strokeLinecap="round" />
+  </svg>
+)
 
 export default function PersonalisedLanding({ profile, onContinue, t, language }) {
   const localized = localizeProfile(t, profile)
@@ -79,7 +47,6 @@ export default function PersonalisedLanding({ profile, onContinue, t, language }
           )}
         </>
       ),
-      family: isCascade,
     },
   ]
 
@@ -88,7 +55,6 @@ export default function PersonalisedLanding({ profile, onContinue, t, language }
       id: 'inheritanceRisk',
       label: t('labelInheritanceRisk'),
       value: localized.inheritanceRisk,
-      family: true,
     })
   }
 
@@ -102,58 +68,49 @@ export default function PersonalisedLanding({ profile, onContinue, t, language }
   )
 
   return (
-    <section className="screen screen--landing">
+    <section className="screen screen--hb">
       <SecurityBadge t={t} />
+      <ProfileStrip name={profile.name} meta={pathwayBadge} />
 
-      <header className="landing-intro">
-        <p className="landing-intro-eyebrow">{t('landingEyebrow')}</p>
-        <h1 className="landing-intro-title">{t('landingGreeting', { name: profile.name })}</h1>
-        <p className="landing-intro-lead">{t('landingLead')}</p>
-      </header>
+      <div className="hb-card hb-card--peach">
+        <p className="hb-card-kicker">{t('landingEyebrow')}</p>
+        <h1 className="hb-card-title">{t('landingGreeting', { name: profile.name })}</h1>
+        <p className="hb-card-lead">{t('landingLead')}</p>
+      </div>
 
-      <article className="referral-sheet">
-        <div className="referral-sheet-head">
-          <div>
-            <h2 className="referral-sheet-name">{profile.name}</h2>
-            <span className="referral-sheet-type">{pathwayBadge}</span>
-          </div>
-        </div>
+      <div className="hb-section-head">
+        <span className="hb-section-icon">{REFERRAL_ICON}</span>
+        <h2 className="hb-section-title">Your referral details</h2>
+      </div>
 
+      <div className="hb-card hb-card--white hb-referral-card">
         {!isCascade && profile.ldlValue != null && (
-          <div className="referral-sheet-visual">
+          <div className="hb-referral-visual">
             <LdlGauge ldlValue={profile.ldlValue} t={t} />
           </div>
         )}
 
         {isCascade && (
-          <div className="referral-sheet-visual">
+          <div className="hb-referral-visual">
             <FamilyTreeDiagram caption="FH is inherited. Each first-degree relative has a 50% chance of carrying the same gene variant." />
           </div>
         )}
 
-        <dl className="referral-sheet-details">
+        <dl className="hb-detail-list">
           {rows.map((row) => (
-            <div
-              key={row.id}
-              className={`referral-sheet-row referral-sheet-row--${row.id}${
-                row.family ? ' referral-sheet-row--family' : ''
-              }`}
-            >
-              <dt>
-                <span className="referral-sheet-icon">{DETAIL_ICONS[row.id]}</span>
-                {row.label}
-              </dt>
+            <div key={row.id} className="hb-detail-row">
+              <dt>{row.label}</dt>
               <dd>{row.value}</dd>
             </div>
           ))}
         </dl>
-      </article>
+      </div>
 
-      <aside className="landing-aside">
-        <p>{t('landingReassurance')}</p>
-      </aside>
+      <div className="hb-card hb-card--yellow hb-promo-card">
+        <p className="hb-promo-text">{t('landingReassurance')}</p>
+      </div>
 
-      <button type="button" className="btn btn-warm btn-block" onClick={onContinue}>
+      <button type="button" className="hb-btn-orange tap-card" onClick={onContinue}>
         {t('landingCta')}
       </button>
     </section>
