@@ -12,9 +12,9 @@ const CALENDAR_ICON = (
   </svg>
 )
 
-const CHEVRON_ICON = (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+const ARROW_ICON = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
+    <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 )
 
@@ -38,7 +38,7 @@ export default function Dashboard({ profile, onNavigate, t }) {
       id: 'why',
       title: t('dashboardCardWhyTitle'),
       body: isCascade ? t('dashboardCardWhyBodyCascade') : t('dashboardCardWhyBodyIndex'),
-      wide: true,
+      featured: true,
     },
     {
       id: 'family',
@@ -77,58 +77,73 @@ export default function Dashboard({ profile, onNavigate, t }) {
     },
   ]
 
+  const firstName = profile.name.split(' ')[0]
+
   return (
-    <section className="screen">
+    <section className="screen screen--dashboard">
       <SecurityBadge t={t} />
 
-      <div className="card greeting-card greeting-card--hero dashboard-greeting">
-        <span className="greeting-card-decor" aria-hidden="true" />
-        <span className="eyebrow eyebrow--hero">{t('dashboardEyebrow')}</span>
-        <h1 className="greeting-title greeting-title--hero">
+      <header className="dash-hero">
+        <p className="dash-hero-eyebrow">{t('dashboardEyebrow')}</p>
+        <h1 className="dash-hero-title">
           {isComplete
             ? t('dashboardCompletedTitle')
-            : t('dashboardWelcomeBack', { firstName: profile.name.split(' ')[0] })}
+            : t('dashboardWelcomeBack', { firstName })}
         </h1>
-        <p className="greeting-lead greeting-lead--hero">
+        <p className="dash-hero-lead">
           {isComplete ? t('dashboardCompletedLead') : t('dashboardLead')}
         </p>
-        <PathwayIconTracker currentStage={stage} t={t} variant="greeting" />
-      </div>
 
-      <StatBanner />
+        <div className="dash-hero-tracker">
+          <PathwayIconTracker currentStage={stage} t={t} variant="warm" />
+        </div>
+
+        <StatBanner />
+      </header>
 
       {showFeaturedCta && (
         <button
           type="button"
-          className="btn btn-featured btn-block btn-featured--cta"
+          className="dash-cta tap-card"
           onClick={() => onNavigate('book')}
         >
-          <span className="btn-featured-icon">{CALENDAR_ICON}</span>
-          Book My Appointment
+          <span className="dash-cta-icon">{CALENDAR_ICON}</span>
+          <span className="dash-cta-copy">
+            <span className="dash-cta-label">Book My Appointment</span>
+            <span className="dash-cta-hint">Genetic Assessment Centre, NHCS</span>
+          </span>
+          <span className="dash-cta-arrow">{ARROW_ICON}</span>
         </button>
       )}
 
-      <div className="dash-grid">
-        {cards.map((card) => (
-          <button
-            key={card.id}
-            type="button"
-            className={`dash-card tap-card${card.wide ? ' dash-card--wide' : ''}`}
-            onClick={() => onNavigate(card.id)}
-          >
-            <span className={`dash-card-tile dash-card-tile--${card.id}`}>
-              <DashIcon id={card.id} />
-            </span>
-            {card.id === 'why' && (
-              <span className="dash-stat-badge">
-                1 in 250 people carry an FH gene variant
+      <div className="dash-section">
+        <h2 className="dash-section-heading">Your pathway</h2>
+        <nav className="dash-list" aria-label={t('dashboardEyebrow')}>
+          {cards.map((card) => (
+            <button
+              key={card.id}
+              type="button"
+              className={`dash-row tap-card dash-row--${card.id}${
+                card.featured ? ' dash-row--featured' : ''
+              }`}
+              onClick={() => onNavigate(card.id)}
+            >
+              <span className="dash-row-icon" aria-hidden="true">
+                <DashIcon id={card.id} />
               </span>
-            )}
-            <span className="dash-card-title">{card.title}</span>
-            <span className="dash-card-body">{card.body}</span>
-            <span className="dash-card-chevron">{CHEVRON_ICON}</span>
-          </button>
-        ))}
+              <span className="dash-row-copy">
+                <span className="dash-row-title">{card.title}</span>
+                {card.featured && (
+                  <span className="dash-row-pullquote">
+                    1 in 250 people carry an FH gene variant
+                  </span>
+                )}
+                <span className="dash-row-body">{card.body}</span>
+              </span>
+              <span className="dash-row-arrow">{ARROW_ICON}</span>
+            </button>
+          ))}
+        </nav>
       </div>
 
       <DownloadInfoPackButton profile={profile} t={t} variant="link" className="dash-download-link" />

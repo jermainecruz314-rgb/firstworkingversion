@@ -17,14 +17,16 @@ export default function Consent({ onConsent, t }) {
   ]
 
   return (
-    <section className="screen auth-screen">
-      <div className="card">
-        <span className="eyebrow">{t('consentEyebrow')}</span>
-        <h1 className="screen-title">{t('consentTitle')}</h1>
-        <p className="lead">{t('consentLead')}</p>
+    <section className="screen screen--consent auth-screen">
+      <div className="consent-sheet">
+        <header className="consent-sheet-head">
+          <p className="consent-sheet-eyebrow">{t('consentEyebrow')}</p>
+          <h1 className="consent-sheet-title">{t('consentTitle')}</h1>
+          <p className="consent-sheet-lead">{t('consentLead')}</p>
+        </header>
 
-        <div className="consent-list-wrap">
-          <p className="consent-section-title">{t('consentWhatAccess')}</p>
+        <div className="consent-access-block">
+          <h2 className="consent-access-heading">{t('consentWhatAccess')}</h2>
           <div className="consent-icon-rows">
             {consentPoints.map((key) => (
               <ConsentIconRow key={key} iconKey={key}>
@@ -34,12 +36,12 @@ export default function Consent({ onConsent, t }) {
           </div>
         </div>
 
-        <div className="privacy-note privacy-note--positive">
-          <span className="privacy-note-icon">{SHIELD_ICON}</span>
+        <div className="consent-trust-note">
+          <span className="consent-trust-icon">{SHIELD_ICON}</span>
           <p>{t('consentPrivacyNote')}</p>
         </div>
 
-        <button className="btn btn-featured btn-block btn-featured--cta" onClick={onConsent}>
+        <button type="button" className="btn btn-warm btn-block" onClick={onConsent}>
           {t('consentButton')}
         </button>
       </div>

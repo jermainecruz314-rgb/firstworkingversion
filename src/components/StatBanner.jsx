@@ -1,20 +1,27 @@
 const STATS = [
-  { value: '1 in 250', label: 'people carry an FH gene variant', tone: 'blue' },
-  { value: '50%', label: 'chance for each first-degree relative', tone: 'orange' },
-  { value: '<10%', label: 'of FH cases in Singapore currently diagnosed', tone: 'teal' },
+  { value: '1 in 250', label: 'carry an FH gene variant', emphasis: 'people' },
+  { value: '50%', label: 'chance per first-degree relative' },
+  { value: '<10%', label: 'of FH cases diagnosed in Singapore' },
 ]
 
 export default function StatBanner() {
   return (
-    <div className="stat-banner" aria-label="FH awareness statistics">
-      <div className="stat-banner-track">
-        {STATS.map((stat) => (
-          <div key={stat.value} className={`stat-card stat-card--${stat.tone}`}>
-            <p className="stat-card-value">{stat.value}</p>
-            <p className="stat-card-label">{stat.label}</p>
-          </div>
-        ))}
-      </div>
+    <div className="stat-strip" aria-label="FH awareness statistics">
+      {STATS.map((stat, index) => (
+        <div key={stat.value} className="stat-strip-item">
+          {index > 0 && <span className="stat-strip-rule" aria-hidden="true" />}
+          <p className="stat-strip-value">{stat.value}</p>
+          <p className="stat-strip-label">
+            {stat.emphasis ? (
+              <>
+                <span className="stat-strip-emphasis">{stat.emphasis}</span> {stat.label}
+              </>
+            ) : (
+              stat.label
+            )}
+          </p>
+        </div>
+      ))}
     </div>
   )
 }

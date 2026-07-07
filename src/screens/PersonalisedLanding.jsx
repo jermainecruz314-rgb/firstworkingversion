@@ -45,13 +45,6 @@ const DETAIL_ICONS = {
   ),
 }
 
-const INFO_ICON = (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-    <circle cx="12" cy="12" r="9" />
-    <path d="M12 10v6M12 7h.01" strokeLinecap="round" />
-  </svg>
-)
-
 export default function PersonalisedLanding({ profile, onContinue, t, language }) {
   const localized = localizeProfile(t, profile)
   const isCascade = profile.pathwayType === 'cascade'
@@ -109,59 +102,58 @@ export default function PersonalisedLanding({ profile, onContinue, t, language }
   )
 
   return (
-    <section className="screen">
+    <section className="screen screen--landing">
       <SecurityBadge t={t} />
 
-      <div className="card greeting-card landing-greeting">
-        <span className="eyebrow">{t('landingEyebrow')}</span>
-        <h1 className="greeting-title">{t('landingGreeting', { name: profile.name })}</h1>
-        <p className="greeting-lead">{t('landingLead')}</p>
-      </div>
+      <header className="landing-intro">
+        <p className="landing-intro-eyebrow">{t('landingEyebrow')}</p>
+        <h1 className="landing-intro-title">{t('landingGreeting', { name: profile.name })}</h1>
+        <p className="landing-intro-lead">{t('landingLead')}</p>
+      </header>
 
-      <div className="card landing-referral-card">
-        <div className="landing-referral-header">
-          <h2 className="landing-referral-name">{profile.name}</h2>
-          <span className="landing-pathway-badge">{pathwayBadge}</span>
+      <article className="referral-sheet">
+        <div className="referral-sheet-head">
+          <div>
+            <h2 className="referral-sheet-name">{profile.name}</h2>
+            <span className="referral-sheet-type">{pathwayBadge}</span>
+          </div>
         </div>
 
-        <div className="landing-referral-body">
-          {!isCascade && profile.ldlValue != null && (
-            <div className="landing-visual-block">
-              <LdlGauge ldlValue={profile.ldlValue} t={t} />
-            </div>
-          )}
+        {!isCascade && profile.ldlValue != null && (
+          <div className="referral-sheet-visual">
+            <LdlGauge ldlValue={profile.ldlValue} t={t} />
+          </div>
+        )}
 
-          {isCascade && (
-            <div className="landing-visual-block">
-              <FamilyTreeDiagram caption="FH is inherited. Each first-degree relative has a 50% chance of carrying the same gene variant." />
-            </div>
-          )}
+        {isCascade && (
+          <div className="referral-sheet-visual">
+            <FamilyTreeDiagram caption="FH is inherited. Each first-degree relative has a 50% chance of carrying the same gene variant." />
+          </div>
+        )}
 
-          {rows.map((row, index) => (
+        <dl className="referral-sheet-details">
+          {rows.map((row) => (
             <div
               key={row.id}
-              className={`landing-detail-row${row.family ? ' family' : ''}${
-                index % 2 === 0 ? ' landing-detail-row--alt' : ''
+              className={`referral-sheet-row referral-sheet-row--${row.id}${
+                row.family ? ' referral-sheet-row--family' : ''
               }`}
             >
-              <span className={`landing-detail-icon landing-detail-icon--${row.id}`}>
-                {DETAIL_ICONS[row.id]}
-              </span>
-              <div className="landing-detail-content">
-                <span className="landing-detail-label">{row.label}</span>
-                <span className="landing-detail-value">{row.value}</span>
-              </div>
+              <dt>
+                <span className="referral-sheet-icon">{DETAIL_ICONS[row.id]}</span>
+                {row.label}
+              </dt>
+              <dd>{row.value}</dd>
             </div>
           ))}
-        </div>
-      </div>
+        </dl>
+      </article>
 
-      <div className="landing-reassurance-banner">
-        <span className="landing-reassurance-icon">{INFO_ICON}</span>
+      <aside className="landing-aside">
         <p>{t('landingReassurance')}</p>
-      </div>
+      </aside>
 
-      <button className="btn btn-featured btn-block btn-featured--cta" onClick={onContinue}>
+      <button type="button" className="btn btn-warm btn-block" onClick={onContinue}>
         {t('landingCta')}
       </button>
     </section>

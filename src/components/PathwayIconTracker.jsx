@@ -43,7 +43,13 @@ export default function PathwayIconTracker({ currentStage = 0, t, variant = 'def
 
   return (
     <div
-      className={`pathway-icon-tracker${variant === 'greeting' ? ' pathway-icon-tracker--greeting' : ''}`}
+      className={`pathway-icon-tracker${
+        variant === 'greeting'
+          ? ' pathway-icon-tracker--greeting'
+          : variant === 'warm'
+            ? ' pathway-icon-tracker--warm'
+            : ''
+      }`}
       aria-label={t('pathwayProgress')}
     >
       <div className="pathway-icon-tracker-row">
