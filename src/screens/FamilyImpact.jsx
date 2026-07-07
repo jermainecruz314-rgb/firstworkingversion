@@ -1,6 +1,7 @@
 import Stepper from '../components/Stepper.jsx'
 import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 import SecurityBadge from '../components/SecurityBadge.jsx'
+import InheritanceDiagram from '../components/InheritanceDiagram.jsx'
 import { buildFamilyImpactT, buildCascadeSummaryT } from '../i18n/index.js'
 
 export default function FamilyImpact({ profile, onOpenFamilyTalk, t }) {
@@ -22,6 +23,9 @@ export default function FamilyImpact({ profile, onOpenFamilyTalk, t }) {
         <h1 className="screen-title">
           {isCascade ? t('familyImpactTitleCascade') : t('familyImpactTitleIndex')}
         </h1>
+
+        <InheritanceDiagram caption="Each of your children and siblings has a 1 in 2 chance of carrying the same FH gene variant. Testing takes one appointment." />
+
         <p className="lead explain">{content.intro}</p>
 
         <div className="info-list">

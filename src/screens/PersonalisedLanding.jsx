@@ -1,6 +1,9 @@
 import SecurityBadge from '../components/SecurityBadge.jsx'
+import LdlGauge from '../components/LdlGauge.jsx'
+import FamilyTreeDiagram from '../components/FamilyTreeDiagram.jsx'
 import { formatDate } from '../utils.js'
 import { translateStatus, LANG_OPTIONS, localizeProfile } from '../i18n/index.js'
+import { LDL_THRESHOLD } from '../logic.js'
 
 const DETAIL_ICONS = {
   referredBy: (
@@ -42,12 +45,20 @@ const DETAIL_ICONS = {
   ),
 }
 
+const INFO_ICON = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+    <circle cx="12" cy="12" r="9" />
+    <path d="M12 10v6M12 7h.01" strokeLinecap="round" />
+  </svg>
+)
+
 export default function PersonalisedLanding({ profile, onContinue, t, language }) {
   const localized = localizeProfile(t, profile)
   const isCascade = profile.pathwayType === 'cascade'
   const langCode = language ?? profile.preferredLanguage ?? 'en'
   const langLabel =
     LANG_OPTIONS.find((o) => o.code === langCode)?.native ?? langCode
+  const pathwayBadge = isCascade ? t('pathwayCascade') : t('pathwayIndex')
 
   const rows = [
     { id: 'referredBy', label: t('labelReferredBy'), value: localized.referredBy },
@@ -65,9 +76,12 @@ export default function PersonalisedLanding({ profile, onContinue, t, language }
         <>
           {localized.referralReason}
           {profile.ldlValue != null && (
-            <span className="record-ldl">
-              {' '}
-              — {t('landingLdlReading', { ldl: profile.ldlValue })}
+            <span className="ldl-value-display">
+              <span className="ldl-value-number">{profile.ldlValue}</span>
+              <span className="ldl-value-unit">mmol/L</span>
+              {profile.ldlValue > LDL_THRESHOLD && (
+                <span className="ldl-threshold-badge">Above threshold</span>
+              )}
             </span>
           )}
         </>
@@ -104,26 +118,50 @@ export default function PersonalisedLanding({ profile, onContinue, t, language }
         <p className="greeting-lead">{t('landingLead')}</p>
       </div>
 
-      <div className="card card-data landing-details-card">
-        {rows.map((row) => (
-          <div
-            key={row.id}
-            className={`landing-detail-row${row.family ? ' family' : ''}`}
-          >
-            <span className={`landing-detail-icon landing-detail-icon--${row.id}`}>
-              {DETAIL_ICONS[row.id]}
-            </span>
-            <div className="landing-detail-content">
-              <span className="landing-detail-label">{row.label}</span>
-              <span className="landing-detail-value">{row.value}</span>
+      <div className="card landing-referral-card">
+        <div className="landing-referral-header">
+          <h2 className="landing-referral-name">{profile.name}</h2>
+          <span className="landing-pathway-badge">{pathwayBadge}</span>
+        </div>
+
+        <div className="landing-referral-body">
+          {!isCascade && profile.ldlValue != null && (
+            <div className="landing-visual-block">
+              <LdlGauge ldlValue={profile.ldlValue} t={t} />
             </div>
-          </div>
-        ))}
+          )}
+
+          {isCascade && (
+            <div className="landing-visual-block">
+              <FamilyTreeDiagram caption="FH is inherited. Each first-degree relative has a 50% chance of carrying the same gene variant." />
+            </div>
+          )}
+
+          {rows.map((row, index) => (
+            <div
+              key={row.id}
+              className={`landing-detail-row${row.family ? ' family' : ''}${
+                index % 2 === 0 ? ' landing-detail-row--alt' : ''
+              }`}
+            >
+              <span className={`landing-detail-icon landing-detail-icon--${row.id}`}>
+                {DETAIL_ICONS[row.id]}
+              </span>
+              <div className="landing-detail-content">
+                <span className="landing-detail-label">{row.label}</span>
+                <span className="landing-detail-value">{row.value}</span>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <p className="body-text landing-reassurance">{t('landingReassurance')}</p>
+      <div className="landing-reassurance-banner">
+        <span className="landing-reassurance-icon">{INFO_ICON}</span>
+        <p>{t('landingReassurance')}</p>
+      </div>
 
-      <button className="btn btn-featured btn-block" onClick={onContinue}>
+      <button className="btn btn-featured btn-block btn-featured--cta" onClick={onContinue}>
         {t('landingCta')}
       </button>
     </section>

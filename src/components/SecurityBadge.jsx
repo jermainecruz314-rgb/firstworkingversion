@@ -1,6 +1,6 @@
 export default function SecurityBadge({ t }) {
   return (
-    <div className="security-badge" role="note">
+    <div className="security-badge security-badge--trust" role="note">
       <svg
         className="security-icon"
         width="14"

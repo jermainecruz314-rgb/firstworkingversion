@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Stepper from '../components/Stepper.jsx'
 import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 import SecurityBadge from '../components/SecurityBadge.jsx'
+import CostStackBar from '../components/CostStackBar.jsx'
 import { calculateSubsidisedCost, formatSGD } from '../logic.js'
 
 export default function CostTransparency({ profile, t }) {
@@ -160,6 +161,8 @@ export default function CostTransparency({ profile, t }) {
             </div>
           )}
         </div>
+
+        <CostStackBar cost={cost} t={t} />
 
         <div className="cost-breakdown card-data">
           <Row label={t('costRowPreSubsidy')} value={formatSGD(cost.preSubsidy)} />

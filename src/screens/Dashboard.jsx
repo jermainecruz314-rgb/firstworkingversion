@@ -1,8 +1,22 @@
-import JourneyProgress from '../components/JourneyProgress.jsx'
+import PathwayIconTracker from '../components/PathwayIconTracker.jsx'
+import StatBanner from '../components/StatBanner.jsx'
 import SecurityBadge from '../components/SecurityBadge.jsx'
 import DownloadInfoPackButton from '../components/DownloadInfoPackButton.jsx'
 import DashIcon from '../components/DashIcon.jsx'
 import { buildRemindersT, translateStatus } from '../i18n/index.js'
+
+const CALENDAR_ICON = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+    <rect x="4" y="5" width="16" height="15" rx="2" />
+    <path d="M8 3v4M16 3v4M4 11h16" strokeLinecap="round" />
+  </svg>
+)
+
+const CHEVRON_ICON = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+    <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+)
 
 export default function Dashboard({ profile, onNavigate, t }) {
   const isCascade = profile.pathwayType === 'cascade'
@@ -24,6 +38,7 @@ export default function Dashboard({ profile, onNavigate, t }) {
       id: 'why',
       title: t('dashboardCardWhyTitle'),
       body: isCascade ? t('dashboardCardWhyBodyCascade') : t('dashboardCardWhyBodyIndex'),
+      wide: true,
     },
     {
       id: 'family',
@@ -66,26 +81,30 @@ export default function Dashboard({ profile, onNavigate, t }) {
     <section className="screen">
       <SecurityBadge t={t} />
 
-      <div className="card greeting-card dashboard-greeting">
-        <span className="eyebrow">{t('dashboardEyebrow')}</span>
-        <h1 className="greeting-title">
+      <div className="card greeting-card greeting-card--hero dashboard-greeting">
+        <span className="greeting-card-decor" aria-hidden="true" />
+        <span className="eyebrow eyebrow--hero">{t('dashboardEyebrow')}</span>
+        <h1 className="greeting-title greeting-title--hero">
           {isComplete
             ? t('dashboardCompletedTitle')
             : t('dashboardWelcomeBack', { firstName: profile.name.split(' ')[0] })}
         </h1>
-        <p className="greeting-lead">
+        <p className="greeting-lead greeting-lead--hero">
           {isComplete ? t('dashboardCompletedLead') : t('dashboardLead')}
         </p>
-        <JourneyProgress currentStage={stage} t={t} />
+        <PathwayIconTracker currentStage={stage} t={t} variant="greeting" />
       </div>
+
+      <StatBanner />
 
       {showFeaturedCta && (
         <button
           type="button"
-          className="btn btn-featured btn-block"
+          className="btn btn-featured btn-block btn-featured--cta"
           onClick={() => onNavigate('book')}
         >
-          {t('dashboardCardBookTitle')}
+          <span className="btn-featured-icon">{CALENDAR_ICON}</span>
+          Book My Appointment
         </button>
       )}
 
@@ -94,14 +113,20 @@ export default function Dashboard({ profile, onNavigate, t }) {
           <button
             key={card.id}
             type="button"
-            className="dash-card"
+            className={`dash-card tap-card${card.wide ? ' dash-card--wide' : ''}`}
             onClick={() => onNavigate(card.id)}
           >
             <span className={`dash-card-tile dash-card-tile--${card.id}`}>
               <DashIcon id={card.id} />
             </span>
+            {card.id === 'why' && (
+              <span className="dash-stat-badge">
+                1 in 250 people carry an FH gene variant
+              </span>
+            )}
             <span className="dash-card-title">{card.title}</span>
             <span className="dash-card-body">{card.body}</span>
+            <span className="dash-card-chevron">{CHEVRON_ICON}</span>
           </button>
         ))}
       </div>
