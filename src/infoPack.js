@@ -1,4 +1,3 @@
-import enDict from './i18n/en.js'
 import { createT } from './i18n/index.js'
 
 // Mock downloadable info pack — English content for the text file (PoC).
@@ -29,8 +28,6 @@ export function downloadInfoPack(profile) {
     '--- FREQUENTLY ASKED QUESTIONS ---',
     '',
     ...faqItems.flatMap((item) => [`Q: ${item.q}`, '', item.a, '', '---', '']),
-    '',
-    enDict.costMohNote,
   ]
 
   const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' })

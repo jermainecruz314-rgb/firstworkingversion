@@ -1,23 +1,23 @@
-const STATS = [
-  { value: '1 in 250', label: 'carry an FH gene variant', emphasis: 'people' },
-  { value: '50%', label: 'chance per first-degree relative' },
-  { value: '<10%', label: 'of FH cases diagnosed in Singapore' },
+const STAT_KEYS = [
+  { valueKey: 'statValue1', labelKey: 'statLabel1', emphasisKey: 'statLabel1Emphasis' },
+  { valueKey: 'statValue2', labelKey: 'statLabel2' },
+  { valueKey: 'statValue3', labelKey: 'statLabel3' },
 ]
 
-export default function StatBanner() {
+export default function StatBanner({ t }) {
   return (
     <div className="stat-strip" aria-label="FH awareness statistics">
-      {STATS.map((stat, index) => (
-        <div key={stat.value} className="stat-strip-item">
+      {STAT_KEYS.map((stat, index) => (
+        <div key={stat.valueKey} className="stat-strip-item">
           {index > 0 && <span className="stat-strip-rule" aria-hidden="true" />}
-          <p className="stat-strip-value">{stat.value}</p>
+          <p className="stat-strip-value">{t(stat.valueKey)}</p>
           <p className="stat-strip-label">
-            {stat.emphasis ? (
+            {stat.emphasisKey && t(stat.emphasisKey) ? (
               <>
-                <span className="stat-strip-emphasis">{stat.emphasis}</span> {stat.label}
+                <span className="stat-strip-emphasis">{t(stat.emphasisKey)}</span> {t(stat.labelKey)}
               </>
             ) : (
-              stat.label
+              t(stat.labelKey)
             )}
           </p>
         </div>

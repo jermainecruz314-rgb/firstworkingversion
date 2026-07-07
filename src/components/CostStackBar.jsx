@@ -29,13 +29,13 @@ export default function CostStackBar({ cost, t }) {
       </div>
       <div className="cost-stack-legend">
         <span className="cost-legend-pill cost-legend-pill--subsidy">
-          Government subsidy {formatSGD(subsidyTotal)}
+          {t('costLegendSubsidy', { amount: formatSGD(subsidyTotal) })}
         </span>
         <span className="cost-legend-pill cost-legend-pill--medisave">
-          MediSave {formatSGD(mediSave)}
+          {t('costLegendMediSave', { amount: formatSGD(mediSave) })}
         </span>
         <span className="cost-legend-pill cost-legend-pill--oop">
-          You pay {formatSGD(oop)}
+          {t('costLegendYouPay', { amount: formatSGD(oop) })}
         </span>
       </div>
     </div>

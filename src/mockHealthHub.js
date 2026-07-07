@@ -1,4 +1,4 @@
-import { isoDaysAgo, isoDaysAhead, formatSlotLabel } from './utils.js'
+import { formatSlotLabel, resolveAppointmentSlotLabel } from './utils.js'
 
 // Build mock profiles with dates relative to today so demo logic stays realistic.
 function buildMarcusAppointment() {
@@ -6,6 +6,7 @@ function buildMarcusAppointment() {
   return {
     appointmentSlotId: 'slot-booked',
     appointmentDate: date,
+    appointmentTime: '10:00',
     appointmentSlotLabel: formatSlotLabel(date, '10:00'),
   }
 }

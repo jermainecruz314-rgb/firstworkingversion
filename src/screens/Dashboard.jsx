@@ -6,6 +6,7 @@ import LogoMark from '../components/LogoMark.jsx'
 import DownloadInfoPackButton from '../components/DownloadInfoPackButton.jsx'
 import DashIcon from '../components/DashIcon.jsx'
 import { buildRemindersT, translateStatus } from '../i18n/index.js'
+import { resolveAppointmentSlotLabel } from '../utils.js'
 
 const PATHWAY_ICON = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
@@ -21,7 +22,7 @@ const CHEVRON = (
   </svg>
 )
 
-export default function Dashboard({ profile, onNavigate, t }) {
+export default function Dashboard({ profile, onNavigate, t, language = 'en' }) {
   const isCascade = profile.pathwayType === 'cascade'
   const isComplete = profile.appointmentStatus === 'Completed'
   const reminderPreview = buildRemindersT(t, profile).filter((r) => r.id !== 'all-clear')[0]
@@ -31,10 +32,11 @@ export default function Dashboard({ profile, onNavigate, t }) {
   const statusLabel = translateStatus(profile.appointmentStatus, t)
   const pathwayMeta = isCascade ? t('pathwayCascade') : t('pathwayIndex')
 
-  const bookBody = profile.appointmentSlotLabel
+  const localizedSlot = resolveAppointmentSlotLabel(profile, language)
+  const bookBody = localizedSlot
     ? t('dashboardCardBookBodyStatusSlot', {
         status: statusLabel,
-        slot: profile.appointmentSlotLabel,
+        slot: localizedSlot,
       })
     : t('dashboardCardBookBodyStatus', { status: statusLabel })
 
@@ -101,12 +103,12 @@ export default function Dashboard({ profile, onNavigate, t }) {
           {isComplete ? t('dashboardCompletedLead') : t('dashboardLead')}
         </p>
         <PathwayIconTracker currentStage={stage} t={t} variant="hb" />
-        <StatBanner />
+        <StatBanner t={t} />
       </div>
 
       {showFeaturedCta && (
         <button type="button" className="hb-btn-orange tap-card" onClick={() => onNavigate('book')}>
-          Book My Appointment
+          {t('dashboardBookCta')}
         </button>
       )}
 
@@ -114,7 +116,7 @@ export default function Dashboard({ profile, onNavigate, t }) {
 
       <div className="hb-section-head">
         <span className="hb-section-icon">{PATHWAY_ICON}</span>
-        <h2 className="hb-section-title">Your pathway</h2>
+        <h2 className="hb-section-title">{t('dashboardEyebrow')}</h2>
       </div>
 
       <nav className="hb-menu" aria-label={t('dashboardEyebrow')}>
@@ -131,7 +133,7 @@ export default function Dashboard({ profile, onNavigate, t }) {
             <span className="hb-menu-copy">
               <span className="hb-menu-title">{card.title}</span>
               {card.featured && (
-                <span className="hb-menu-note">1 in 250 people carry an FH gene variant</span>
+                <span className="hb-menu-note">{t('dashboardFeaturedNote')}</span>
               )}
               <span className="hb-menu-body">{card.body}</span>
             </span>

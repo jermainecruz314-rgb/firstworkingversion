@@ -3,11 +3,15 @@ import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 import SecurityBadge from '../components/SecurityBadge.jsx'
 import LogoMark from '../components/LogoMark.jsx'
 import RiskComparison from '../components/RiskComparison.jsx'
+import DownloadInfoPackButton from '../components/DownloadInfoPackButton.jsx'
 import { buildRiskSummaryT, buildCascadeSummaryT, localizeProfile } from '../i18n/index.js'
 import { LDL_THRESHOLD } from '../logic.js'
 
 export default function WhyThisMatters({ profile, t }) {
+  if (!profile) return null
+
   const isCascade = profile.pathwayType === 'cascade'
+  const isIndex = profile.pathwayType === 'index'
   const localized = localizeProfile(t, profile)
   const summary = isCascade
     ? buildCascadeSummaryT(t, profile)
@@ -24,9 +28,9 @@ export default function WhyThisMatters({ profile, t }) {
         <h1 className="screen-title">{t('whyTitle')}</h1>
         <p className="lead">{t('whyLead')}</p>
 
-        <RiskComparison t={t} />
+        {isIndex && <RiskComparison t={t} />}
 
-        {!isCascade && profile.ldlValue != null && (
+        {isIndex && profile.ldlValue != null && (
           <div className="highlight card-data">
             <p className="highlight-label">{t('whyLdlLabel')}</p>
             <p className="highlight-value">

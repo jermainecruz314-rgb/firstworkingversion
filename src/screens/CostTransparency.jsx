@@ -207,8 +207,6 @@ export default function CostTransparency({ profile, t }) {
           </div>
         </div>
 
-        <p className="source-note">{t('costMohNote')}</p>
-
         {cost.copayWaived && <p className="hsg-note">{t('costHsgNote')}</p>}
       </div>
     </section>

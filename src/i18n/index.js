@@ -58,11 +58,12 @@ const ldlAboveThreshold = (ldlValue, threshold) =>
 
 export function createT(lang) {
   const resolvedLang = resolveLang(lang)
-  const dict = translations[resolvedLang] ?? translations.en
-  const fallback = translations.en
 
   return (key, vars = {}) => {
-    const template = dict[key] ?? fallback[key]
+    const template =
+      translations[resolvedLang]?.[key] ??
+      translations.en?.[key] ??
+      key
     if (typeof template !== 'string') return key
     return interpolate(template, vars)
   }

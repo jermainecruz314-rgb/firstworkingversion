@@ -41,7 +41,7 @@ export default function PersonalisedLanding({ profile, onContinue, t, language }
               <span className="ldl-value-number">{profile.ldlValue}</span>
               <span className="ldl-value-unit">mmol/L</span>
               {profile.ldlValue > LDL_THRESHOLD && (
-                <span className="ldl-threshold-badge">Above threshold</span>
+                <span className="ldl-threshold-badge">{t('ldlAboveThreshold')}</span>
               )}
             </span>
           )}
@@ -80,7 +80,7 @@ export default function PersonalisedLanding({ profile, onContinue, t, language }
 
       <div className="hb-section-head">
         <span className="hb-section-icon">{REFERRAL_ICON}</span>
-        <h2 className="hb-section-title">Your referral details</h2>
+        <h2 className="hb-section-title">{t('landingReferralDetails')}</h2>
       </div>
 
       <div className="hb-card hb-card--white hb-referral-card">

@@ -16,6 +16,7 @@ import NavBar from './components/NavBar.jsx'
 import AppHeader from './components/AppHeader.jsx'
 import { createT } from './i18n/index.js'
 import { fetchPatientProfile } from './mockHealthHub.js'
+import { formatSlotLabel } from './utils.js'
 
 const SCREENS = {
   LOGIN: 'login',
@@ -126,8 +127,9 @@ export default function App() {
       ...p,
       appointmentStatus: 'Booked',
       appointmentSlotId: slot.id,
-      appointmentSlotLabel: slot.label,
+      appointmentSlotLabel: formatSlotLabel(slot.date, slot.time, language),
       appointmentDate: slot.date,
+      appointmentTime: slot.time,
     }))
   }
 
@@ -179,7 +181,12 @@ export default function App() {
           />
         )}
         {currentScreen === SCREENS.DASHBOARD && profile && (
-          <Dashboard profile={profile} onNavigate={navigateFromDashboard} t={t} />
+          <Dashboard
+            profile={profile}
+            onNavigate={navigateFromDashboard}
+            language={language}
+            t={t}
+          />
         )}
         {currentScreen === SCREENS.WHY && profile && (
           <WhyThisMatters {...screenProps} />
@@ -201,6 +208,7 @@ export default function App() {
             profile={profile}
             onBook={handleBook}
             onRemindLater={handleRemindLater}
+            language={language}
             t={t}
           />
         )}

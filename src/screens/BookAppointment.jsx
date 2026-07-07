@@ -3,6 +3,7 @@ import SecurityBadge from '../components/SecurityBadge.jsx'
 import AnimatedSuccessCheck from '../components/AnimatedSuccessCheck.jsx'
 import { GAC_SLOTS } from '../reminders.js'
 import { translateStatus } from '../i18n/index.js'
+import { formatSlotLabel, parseSlotLabel, resolveAppointmentSlotLabel } from '../utils.js'
 import { useState } from 'react'
 
 const CALENDAR_ICON = (
@@ -32,22 +33,17 @@ const BELL = (
   </svg>
 )
 
-function parseSlotLabel(label) {
-  const parts = label.split(',')
-  if (parts.length >= 2) {
-    return { date: parts[0].trim(), time: parts.slice(1).join(',').trim() }
-  }
-  return { date: label, time: '' }
-}
-
-export default function BookAppointment({ profile, onBook, onRemindLater, t }) {
+export default function BookAppointment({ profile, onBook, onRemindLater, t, language = 'en' }) {
   const [selectedSlot, setSelectedSlot] = useState(null)
 
   const isBooked = profile.appointmentStatus === 'Booked'
   const isCompleted = profile.appointmentStatus === 'Completed'
   const displaySlot =
-    profile.appointmentSlotLabel ??
-    GAC_SLOTS.find((s) => s.id === profile.appointmentSlotId)?.label
+    resolveAppointmentSlotLabel(profile, language) ||
+    (() => {
+      const slot = GAC_SLOTS.find((s) => s.id === profile.appointmentSlotId)
+      return slot ? formatSlotLabel(slot.date, slot.time, language) : ''
+    })()
 
   const handleConfirm = () => {
     const slot = GAC_SLOTS.find((s) => s.id === selectedSlot)
@@ -97,7 +93,8 @@ export default function BookAppointment({ profile, onBook, onRemindLater, t }) {
           >
             {GAC_SLOTS.map((slot) => {
               const selected = selectedSlot === slot.id
-              const { date, time } = parseSlotLabel(slot.label)
+              const formatted = formatSlotLabel(slot.date, slot.time, language)
+              const { date, time } = parseSlotLabel(formatted)
               return (
                 <button
                   key={slot.id}
@@ -112,7 +109,7 @@ export default function BookAppointment({ profile, onBook, onRemindLater, t }) {
                     <span className="slot-card-date">{date}</span>
                     {time && <span className="slot-card-time">{time}</span>}
                   </span>
-                  {!selected && <span className="slot-available-badge">Available</span>}
+                  {!selected && <span className="slot-available-badge">{t('slotAvailable')}</span>}
                   <span className="slot-card-action">
                     {selected ? CHECK : CHEVRON}
                   </span>
@@ -132,7 +129,7 @@ export default function BookAppointment({ profile, onBook, onRemindLater, t }) {
         </div>
       ) : (
         <div className="card">
-          <AnimatedSuccessCheck title="Appointment Confirmed">
+          <AnimatedSuccessCheck title={t('bookAppointmentConfirmed')}>
             <div className="booking-summary-card">
               <span className="booking-summary-icon">{CALENDAR_ICON}</span>
               <div className="booking-summary-content">
@@ -144,7 +141,7 @@ export default function BookAppointment({ profile, onBook, onRemindLater, t }) {
 
           <div className="booking-reminder-banner">
             <span className="booking-reminder-icon">{BELL}</span>
-            <p>We&apos;ll remind you 3 days and 1 day before your appointment.</p>
+            <p>{t('bookReminderBanner')}</p>
           </div>
 
           <dl className="record-list card-data">

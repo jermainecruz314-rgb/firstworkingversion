@@ -17,14 +17,14 @@ export default function LdlGauge({ ldlValue, t }) {
         />
       </div>
       <div className="ldl-gauge-labels">
-        <span className="ldl-gauge-label ldl-gauge-label--low">Normal</span>
+        <span className="ldl-gauge-label ldl-gauge-label--low">{t('ldlGaugeNormal')}</span>
         <span className="ldl-gauge-label ldl-gauge-label--result">
-          Your result: {ldl} mmol/L
+          {t('ldlGaugeYourResult', { ldlValue: ldl })}
         </span>
-        <span className="ldl-gauge-label ldl-gauge-label--high">High risk</span>
+        <span className="ldl-gauge-label ldl-gauge-label--high">{t('ldlGaugeHighRisk')}</span>
       </div>
       {ldl > LDL_THRESHOLD && (
-        <span className="ldl-threshold-badge">Above threshold</span>
+        <span className="ldl-threshold-badge">{t('ldlAboveThreshold')}</span>
       )}
     </div>
   )
