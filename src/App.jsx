@@ -89,9 +89,13 @@ export default function App() {
   const handleSignIn = async () => {
     if (!selectedProfileId) return
     setCurrentScreen(SCREENS.LOADING)
-    const data = await fetchPatientProfile(selectedProfileId)
-    setProfile({ ...data, preferredLanguage: language })
-    setCurrentScreen(SCREENS.CONSENT)
+    try {
+      const data = await fetchPatientProfile(selectedProfileId)
+      setProfile({ ...data, preferredLanguage: language })
+      setCurrentScreen(SCREENS.CONSENT)
+    } catch {
+      setCurrentScreen(SCREENS.LOGIN)
+    }
   }
 
   const handleConsent = () => {
