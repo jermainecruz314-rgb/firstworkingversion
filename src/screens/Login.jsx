@@ -1,24 +1,25 @@
 import LanguagePicker from '../components/LanguagePicker.jsx'
-import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 import { translatePathwayStage } from '../i18n/index.js'
 
 const PROFILE_CARDS = [
   {
     id: 'weiLing',
     nameKey: 'loginProfileWeiLing',
+    initials: 'WL',
     pathwayType: 'index',
     pathwayStage: 0,
   },
   {
     id: 'marcus',
     nameKey: 'loginProfileMarcus',
+    initials: 'MT',
     pathwayType: 'cascade',
     pathwayStage: 1,
-    family: true,
   },
   {
     id: 'aishah',
     nameKey: 'loginProfileAishah',
+    initials: 'AR',
     pathwayType: 'index',
     pathwayStage: 3,
   },
@@ -53,25 +54,27 @@ export default function Login({
                 <button
                   key={card.id}
                   type="button"
-                  className={`profile-card${selectedProfile === card.id ? ' selected' : ''}${
-                    card.family ? ' family' : ''
-                  }`}
+                  className={`profile-card${selectedProfile === card.id ? ' selected' : ''}`}
                   onClick={() => onSelectProfile(card.id)}
                 >
-                  <div className="profile-card-top">
-                    {card.family && <FamilyTreeIcon size={20} />}
-                    <span className="profile-card-name">{t(card.nameKey)}</span>
+                  <div className="profile-card-row">
+                    <span className={`profile-avatar profile-avatar--${card.id}`}>
+                      {card.initials}
+                    </span>
+                    <div className="profile-card-content">
+                      <span className="profile-card-name">{t(card.nameKey)}</span>
+                      <span
+                        className={`profile-badge${
+                          card.pathwayType === 'cascade' ? ' profile-badge-cascade' : ''
+                        }`}
+                      >
+                        {badgeLabel}
+                      </span>
+                      <span className="profile-card-stage">
+                        {t('loginProfileStage', { stage: stageLabel })}
+                      </span>
+                    </div>
                   </div>
-                  <span
-                    className={`profile-badge${
-                      card.pathwayType === 'cascade' ? ' profile-badge-cascade' : ''
-                    }`}
-                  >
-                    {badgeLabel}
-                  </span>
-                  <span className="profile-card-stage">
-                    {t('loginProfileStage', { stage: stageLabel })}
-                  </span>
                 </button>
               )
             })}

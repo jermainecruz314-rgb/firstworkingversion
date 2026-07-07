@@ -2,7 +2,12 @@ import { useState } from 'react'
 import { downloadInfoPack } from '../infoPack.js'
 import SuccessState from './SuccessState.jsx'
 
-export default function DownloadInfoPackButton({ profile, t, className = '' }) {
+export default function DownloadInfoPackButton({
+  profile,
+  t,
+  className = '',
+  variant = 'button',
+}) {
   const [downloaded, setDownloaded] = useState(false)
 
   const handleDownload = () => {
@@ -19,6 +24,18 @@ export default function DownloadInfoPackButton({ profile, t, className = '' }) {
         actionLabel={t('downloadInfoPack')}
         onAction={() => setDownloaded(false)}
       />
+    )
+  }
+
+  if (variant === 'link') {
+    return (
+      <button
+        type="button"
+        className={`text-link download-link ${className}`.trim()}
+        onClick={handleDownload}
+      >
+        {t('downloadInfoPack')}
+      </button>
     )
   }
 
