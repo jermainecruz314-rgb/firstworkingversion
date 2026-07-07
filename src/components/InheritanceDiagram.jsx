@@ -1,32 +1,108 @@
-export default function InheritanceDiagram({ caption }) {
+export default function InheritanceDiagram({ t }) {
   return (
     <div className="inheritance-diagram">
-      <svg viewBox="0 0 300 160" className="inheritance-svg" aria-hidden="true">
-        <line x1="150" y1="56" x2="70" y2="108" stroke="#CBD5E0" strokeWidth="1.5" />
-        <line x1="150" y1="56" x2="150" y2="108" stroke="#CBD5E0" strokeWidth="1.5" />
-        <line x1="150" y1="56" x2="230" y2="108" stroke="#CBD5E0" strokeWidth="1.5" />
-        <circle cx="150" cy="32" r="22" fill="#1B4F9B" />
-        <text x="150" y="78" textAnchor="middle" className="inheritance-svg-label">
-          You (FH confirmed)
+      <svg width="100%" viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="160" cy="30" r="24" fill="#1B4F9B" />
+        <text
+          x="160"
+          y="68"
+          textAnchor="middle"
+          fontFamily="Inter,sans-serif"
+          fontSize="11"
+          fill="#718096"
+        >
+          {t('inheritanceParentLabel')}
         </text>
-        <circle cx="70" cy="124" r="18" fill="url(#halfBlue)" stroke="#1B4F9B" strokeWidth="1.5" />
-        <circle cx="150" cy="124" r="18" fill="url(#halfBlue)" stroke="#1B4F9B" strokeWidth="1.5" />
-        <circle cx="230" cy="124" r="18" fill="#FFFFFF" stroke="#CBD5E0" strokeWidth="2" />
-        <text x="70" y="152" textAnchor="middle" className="inheritance-svg-label">Child 1</text>
-        <text x="150" y="152" textAnchor="middle" className="inheritance-svg-label">Child 2</text>
-        <text x="230" y="152" textAnchor="middle" className="inheritance-svg-label">Child 3</text>
-        <defs>
-          <linearGradient id="halfBlue" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="50%" stopColor="#1B4F9B" />
-            <stop offset="50%" stopColor="#FFFFFF" />
-          </linearGradient>
-        </defs>
+
+        <line x1="160" y1="54" x2="80" y2="108" stroke="#CBD5E0" strokeWidth="1.5" />
+        <line x1="160" y1="54" x2="160" y2="108" stroke="#CBD5E0" strokeWidth="1.5" />
+        <line x1="160" y1="54" x2="240" y2="108" stroke="#CBD5E0" strokeWidth="1.5" />
+
+        <circle cx="80" cy="122" r="20" fill="#FFFFFF" stroke="#1B4F9B" strokeWidth="1.5" />
+        <path d="M 80 102 A 20 20 0 0 0 80 142 Z" fill="#1B4F9B" />
+        <circle cx="80" cy="122" r="20" fill="none" stroke="#1B4F9B" strokeWidth="1.5" />
+        <text
+          x="80"
+          y="151"
+          textAnchor="middle"
+          fontFamily="Inter,sans-serif"
+          fontSize="11"
+          fill="#718096"
+        >
+          {t('inheritanceChild1Label')}
+        </text>
+        <rect x="44" y="156" width="72" height="20" rx="10" fill="#FFF3EB" />
+        <text
+          x="80"
+          y="170"
+          textAnchor="middle"
+          fontFamily="Inter,sans-serif"
+          fontSize="11"
+          fill="#E8703A"
+          fontWeight="500"
+        >
+          {t('inheritanceRiskBadge')}
+        </text>
+
+        <circle cx="160" cy="122" r="20" fill="#FFFFFF" stroke="#1B4F9B" strokeWidth="1.5" />
+        <path d="M 160 102 A 20 20 0 0 0 160 142 Z" fill="#1B4F9B" />
+        <circle cx="160" cy="122" r="20" fill="none" stroke="#1B4F9B" strokeWidth="1.5" />
+        <text
+          x="160"
+          y="151"
+          textAnchor="middle"
+          fontFamily="Inter,sans-serif"
+          fontSize="11"
+          fill="#718096"
+        >
+          {t('inheritanceChild2Label')}
+        </text>
+        <rect x="124" y="156" width="72" height="20" rx="10" fill="#FFF3EB" />
+        <text
+          x="160"
+          y="170"
+          textAnchor="middle"
+          fontFamily="Inter,sans-serif"
+          fontSize="11"
+          fill="#E8703A"
+          fontWeight="500"
+        >
+          {t('inheritanceRiskBadge')}
+        </text>
+
+        <circle cx="240" cy="122" r="20" fill="#FFFFFF" stroke="#CBD5E0" strokeWidth="1.5" />
+        <text
+          x="240"
+          y="151"
+          textAnchor="middle"
+          fontFamily="Inter,sans-serif"
+          fontSize="11"
+          fill="#718096"
+        >
+          {t('inheritanceChild3Label')}
+        </text>
+        <rect x="204" y="156" width="72" height="20" rx="10" fill="#F0F4F8" />
+        <text
+          x="240"
+          y="170"
+          textAnchor="middle"
+          fontFamily="Inter,sans-serif"
+          fontSize="11"
+          fill="#718096"
+          fontWeight="500"
+        >
+          {t('inheritanceMayNotCarry')}
+        </text>
+
+        <path
+          d="M 60 122 C 60 108, 260 108, 260 122"
+          fill="none"
+          stroke="#CBD5E0"
+          strokeWidth="1"
+          strokeDasharray="3 2"
+        />
       </svg>
-      <div className="inheritance-badges">
-        <span className="inheritance-risk-pill">50% risk</span>
-        <span className="inheritance-risk-pill">50% risk</span>
-      </div>
-      {caption && <p className="inheritance-caption">{caption}</p>}
+      <p className="inheritance-caption">{t('familyImpactDiagramCaption')}</p>
     </div>
   )
 }

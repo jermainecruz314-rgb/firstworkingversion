@@ -4202,3 +4202,64 @@ body {
   background: var(--hb-orange-soft);
   font-weight: 800;
 }
+
+/* Inheritance diagram */
+.inheritance-diagram {
+  overflow: visible;
+  min-height: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+}
+
+.inheritance-diagram svg {
+  overflow: visible;
+  display: block;
+  min-height: 240px;
+}
+
+.inheritance-caption {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--muted);
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Logo mark pill */
+.logo-mark {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 28px;
+  background: #1b4f9b;
+  border-radius: 0 14px 14px 0;
+  padding: 16px 6px;
+  pointer-events: none;
+  display: none;
+}
+
+.screen--with-logo .logo-mark {
+  display: block;
+}
+
+.logo-mark-svg {
+  width: 16px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.screen--with-logo {
+  padding-left: 36px;
+}
+
+@media (min-width: 520px) {
+  .logo-mark {
+    left: max(0px, calc(50% - 230px - 28px));
+  }
+}

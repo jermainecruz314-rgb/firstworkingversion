@@ -2,6 +2,7 @@ import PathwayIconTracker from '../components/PathwayIconTracker.jsx'
 import StatBanner from '../components/StatBanner.jsx'
 import SecurityBadge from '../components/SecurityBadge.jsx'
 import ProfileStrip from '../components/ProfileStrip.jsx'
+import LogoMark from '../components/LogoMark.jsx'
 import DownloadInfoPackButton from '../components/DownloadInfoPackButton.jsx'
 import DashIcon from '../components/DashIcon.jsx'
 import { buildRemindersT, translateStatus } from '../i18n/index.js'
@@ -84,7 +85,8 @@ export default function Dashboard({ profile, onNavigate, t }) {
   const firstName = profile.name.split(' ')[0]
 
   return (
-    <section className="screen screen--hb">
+    <section className="screen screen--hb screen--with-logo">
+      <LogoMark />
       <SecurityBadge t={t} />
       <ProfileStrip name={profile.name} meta={pathwayMeta} />
 

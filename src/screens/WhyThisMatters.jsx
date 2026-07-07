@@ -1,7 +1,7 @@
 import Stepper from '../components/Stepper.jsx'
 import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 import SecurityBadge from '../components/SecurityBadge.jsx'
-import DownloadInfoPackButton from '../components/DownloadInfoPackButton.jsx'
+import LogoMark from '../components/LogoMark.jsx'
 import RiskComparison from '../components/RiskComparison.jsx'
 import { buildRiskSummaryT, buildCascadeSummaryT, localizeProfile } from '../i18n/index.js'
 import { LDL_THRESHOLD } from '../logic.js'
@@ -14,15 +14,17 @@ export default function WhyThisMatters({ profile, t }) {
     : buildRiskSummaryT(t, profile, LDL_THRESHOLD)
 
   return (
-    <section className="screen">
+    <section className="screen screen--with-logo">
+      <LogoMark />
       <Stepper currentStage={profile.pathwayStage ?? 1} t={t} />
       <SecurityBadge t={t} />
 
       <div className="card">
         <span className="eyebrow">{t('whyEyebrow')}</span>
         <h1 className="screen-title">{t('whyTitle')}</h1>
+        <p className="lead">{t('whyLead')}</p>
 
-        <RiskComparison />
+        <RiskComparison t={t} />
 
         {!isCascade && profile.ldlValue != null && (
           <div className="highlight card-data">
