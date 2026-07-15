@@ -2,14 +2,26 @@ import { useEffect, useState } from 'react'
 import { LDL_THRESHOLD } from '../logic.js'
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion.js'
 
+function afterPaint(callback) {
+  let outer = 0
+  let inner = 0
+  outer = requestAnimationFrame(() => {
+    inner = requestAnimationFrame(callback)
+  })
+  return () => {
+    cancelAnimationFrame(outer)
+    cancelAnimationFrame(inner)
+  }
+}
+
 export default function LdlGauge({ ldlValue, t }) {
   const ldl = Number(ldlValue)
   const min = 3
   const max = 8
   const markerPct = Math.min(100, Math.max(0, ((ldl - min) / (max - min)) * 100))
   const reducedMotion = usePrefersReducedMotion()
-  const [markerReady, setMarkerReady] = useState(reducedMotion)
-  const [showBadge, setShowBadge] = useState(reducedMotion && ldl > LDL_THRESHOLD)
+  const [markerReady, setMarkerReady] = useState(false)
+  const [showBadge, setShowBadge] = useState(false)
 
   useEffect(() => {
     if (reducedMotion) {
@@ -20,13 +32,13 @@ export default function LdlGauge({ ldlValue, t }) {
 
     setMarkerReady(false)
     setShowBadge(false)
-    const frame = requestAnimationFrame(() => setMarkerReady(true))
+    const cancelPaint = afterPaint(() => setMarkerReady(true))
     const badgeTimer = setTimeout(() => {
       if (ldl > LDL_THRESHOLD) setShowBadge(true)
-    }, 800)
+    }, 850)
 
     return () => {
-      cancelAnimationFrame(frame)
+      cancelPaint()
       clearTimeout(badgeTimer)
     }
   }, [ldl, reducedMotion])

@@ -381,4 +381,5 @@ export default {
   audioDuration: "1:00",
   audioPlay: "Play",
   audioPause: "Pause",
+  audioVoiceUnavailable: "Audio isn't available in this language on your device. Try English or Mandarin, or install a system voice for this language.",
 }

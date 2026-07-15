@@ -381,4 +381,5 @@ export default {
   audioDuration: "1:00",
   audioPlay: "播放",
   audioPause: "暂停",
+  audioVoiceUnavailable: "您的设备不支持此语言的语音播放。请改用英语或中文，或安装该语言的系统语音。",
 }

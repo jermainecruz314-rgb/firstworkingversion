@@ -13,14 +13,10 @@ const CONVERSATION_SCRIPTS = {
 }
 
 const VOICE_LANG = {
-  en: 'en-SG',
+  en: 'en-GB',
   zh: 'zh-CN',
   ms: 'ms-MY',
   ta: 'ta-IN',
-}
-
-const VOICE_FALLBACK = {
-  en: 'en-GB',
 }
 
 const LANG_ALIASES = {
@@ -29,6 +25,27 @@ const LANG_ALIASES = {
   Malay: 'ms',
   Tamil: 'ta',
 }
+
+/** Prefer natural / neural English voices when the browser provides them. */
+const EN_VOICE_PREFERENCE = [
+  /google uk english female/i,
+  /google us english/i,
+  /microsoftsonia.*natural/i,
+  /microsoft.*aria.*natural/i,
+  /microsoft.*jenny.*natural/i,
+  /microsoftsonia/i,
+  /samantha/i,
+  /karen/i,
+  /moira/i,
+  /serena/i,
+  /fiona/i,
+  /karen/i,
+  /english.*united kingdom/i,
+  /english.*united states/i,
+  /en-gb/i,
+  /en-us/i,
+  /en-sg/i,
+]
 
 export const AUDIO_DURATION_MS = 60000
 
@@ -48,18 +65,90 @@ export function getSpeechScript(scriptType, language) {
   return scripts[lang] ?? scripts.en
 }
 
-function pickVoice(langCode) {
-  const voices = window.speechSynthesis.getVoices()
-  const primary = VOICE_LANG[langCode] ?? VOICE_LANG.en
-  const fallback = VOICE_FALLBACK[langCode]
+function getVoicesSafe() {
+  if (!isSpeechSupported()) return []
+  return window.speechSynthesis.getVoices() || []
+}
 
-  return (
+function scoreEnglishVoice(voice) {
+  const hay = `${voice.name} ${voice.lang}`
+  let score = 0
+
+  EN_VOICE_PREFERENCE.forEach((pattern, index) => {
+    if (pattern.test(hay)) score += EN_VOICE_PREFERENCE.length - index
+  })
+
+  if (/natural|neural|premium|enhanced/i.test(hay)) score += 40
+  if (/female|woman|samantha|sonia|aria|jenny|karen|moira|serena/i.test(hay)) score += 12
+  if (/male|daniel|david|fred|alex(?!a)/i.test(hay) && !/female/i.test(hay)) score -= 8
+  if (/compact|eloquence|novelty|whisper|zarvox|bad news|good news/i.test(hay)) score -= 50
+  if (voice.localService) score += 6
+  if (/^en(-|$)/i.test(voice.lang)) score += 5
+  if (/en-GB/i.test(voice.lang)) score += 8
+  if (/en-US/i.test(voice.lang)) score += 5
+  if (/en-SG/i.test(voice.lang)) score += 4
+
+  return score
+}
+
+function pickEnglishVoice(voices) {
+  const english = voices.filter((v) => /^en([-_]|$)/i.test(v.lang) || /english/i.test(v.name))
+  if (english.length === 0) return null
+  return [...english].sort((a, b) => scoreEnglishVoice(b) - scoreEnglishVoice(a))[0]
+}
+
+function pickLangVoice(voices, langCode) {
+  const primary = VOICE_LANG[langCode]
+  const prefix = primary.split('-')[0]
+
+  if (langCode === 'en') return pickEnglishVoice(voices)
+
+  const exact =
     voices.find((v) => v.lang === primary) ??
-    voices.find((v) => v.lang.startsWith(primary.split('-')[0])) ??
-    (fallback ? voices.find((v) => v.lang === fallback || v.lang.startsWith('en')) : null) ??
-    voices[0] ??
-    null
-  )
+    voices.find((v) => v.lang.toLowerCase().startsWith(prefix.toLowerCase()))
+
+  if (exact) return exact
+
+  // Tamil / Malay often missing — try alternate locale tags
+  if (langCode === 'ta') {
+    return (
+      voices.find((v) => /ta[-_]IN/i.test(v.lang)) ??
+      voices.find((v) => /ta[-_]LK/i.test(v.lang)) ??
+      voices.find((v) => /^ta/i.test(v.lang) || /tamil/i.test(v.name)) ??
+      null
+    )
+  }
+
+  if (langCode === 'ms') {
+    return (
+      voices.find((v) => /ms[-_]MY/i.test(v.lang)) ??
+      voices.find((v) => /ms[-_]SG/i.test(v.lang)) ??
+      voices.find((v) => /^ms/i.test(v.lang) || /malay/i.test(v.name)) ??
+      null
+    )
+  }
+
+  if (langCode === 'zh') {
+    return (
+      voices.find((v) => /zh[-_]CN/i.test(v.lang)) ??
+      voices.find((v) => /zh[-_]SG/i.test(v.lang)) ??
+      voices.find((v) => /zh[-_]TW/i.test(v.lang)) ??
+      voices.find((v) => /^zh/i.test(v.lang) || /chinese|mandarin/i.test(v.name)) ??
+      null
+    )
+  }
+
+  return null
+}
+
+export function hasVoiceForLanguage(language) {
+  if (!isSpeechSupported()) return false
+  const lang = resolveLang(language)
+  const voices = getVoicesSafe()
+  // Voices list can be empty until voiceschanged fires.
+  // English/Mandarin usually still speak via the browser default.
+  if (voices.length === 0) return lang === 'en' || lang === 'zh'
+  return Boolean(pickLangVoice(voices, lang))
 }
 
 export function speakSummary(text, language, { onStart, onEnd, onError } = {}) {
@@ -70,21 +159,34 @@ export function speakSummary(text, language, { onStart, onEnd, onError } = {}) {
   const speak = () => {
     const utterance = new SpeechSynthesisUtterance(text)
     const lang = resolveLang(language)
-    utterance.lang = VOICE_LANG[lang] ?? VOICE_LANG.en
-    utterance.rate = 0.95
+    const voice = pickLangVoice(getVoicesSafe(), lang)
 
-    const voice = pickVoice(lang)
+    if (!voice && (lang === 'ta' || lang === 'ms')) {
+      onError?.(new Error(`No ${lang} voice available`))
+      return null
+    }
+
+    utterance.lang = voice?.lang || VOICE_LANG[lang] || VOICE_LANG.en
     if (voice) utterance.voice = voice
+
+    // Slightly slower + warmer for healthcare narration
+    utterance.rate = lang === 'en' ? 0.9 : 0.95
+    utterance.pitch = lang === 'en' ? 1.05 : 1
+    utterance.volume = 1
 
     utterance.onstart = onStart
     utterance.onend = onEnd
     utterance.onerror = onError
 
-    window.speechSynthesis.speak(utterance)
+    // Chrome sometimes drops the first utterance after cancel — nudge it
+    window.setTimeout(() => {
+      window.speechSynthesis.speak(utterance)
+    }, 40)
+
     return utterance
   }
 
-  const voices = window.speechSynthesis.getVoices()
+  const voices = getVoicesSafe()
   if (voices.length === 0) {
     window.speechSynthesis.onvoiceschanged = () => {
       window.speechSynthesis.onvoiceschanged = null

@@ -3,6 +3,7 @@ import {
   AUDIO_DURATION_MS,
   cancelSpeech,
   getSpeechScript,
+  hasVoiceForLanguage,
   isSpeechPaused,
   isSpeechSpeaking,
   isSpeechSupported,
@@ -25,20 +26,36 @@ export default function AudioSummaryPlayer({
   labelKey = 'audioListenSummary',
 }) {
   const [supported, setSupported] = useState(false)
+  const [voiceReady, setVoiceReady] = useState(true)
   const [playing, setPlaying] = useState(false)
   const [paused, setPaused] = useState(false)
   const [progress, setProgress] = useState(0)
+  const [voiceError, setVoiceError] = useState(false)
   const intervalRef = useRef(null)
   const elapsedRef = useRef(0)
   const segmentStartRef = useRef(0)
 
   useEffect(() => {
-    setSupported(isSpeechSupported())
+    const ok = isSpeechSupported()
+    setSupported(ok)
+    if (!ok) return undefined
+
+    const refreshVoices = () => {
+      setVoiceReady(hasVoiceForLanguage(language))
+    }
+
+    refreshVoices()
+    window.speechSynthesis.addEventListener?.('voiceschanged', refreshVoices)
+    // Some browsers only populate voices after a tick
+    const timer = setTimeout(refreshVoices, 250)
+
     return () => {
       cancelSpeech()
       if (intervalRef.current) clearInterval(intervalRef.current)
+      clearTimeout(timer)
+      window.speechSynthesis.removeEventListener?.('voiceschanged', refreshVoices)
     }
-  }, [])
+  }, [language])
 
   const clearTimer = useCallback(() => {
     if (intervalRef.current) {
@@ -67,6 +84,14 @@ export default function AudioSummaryPlayer({
   }, [clearTimer])
 
   const handlePlay = useCallback(() => {
+    if (!hasVoiceForLanguage(language)) {
+      setVoiceError(true)
+      setVoiceReady(false)
+      return
+    }
+
+    setVoiceError(false)
+
     if (paused) {
       resumeSpeech()
       setPaused(false)
@@ -86,7 +111,10 @@ export default function AudioSummaryPlayer({
         startProgressTimer()
       },
       onEnd: resetPlayer,
-      onError: resetPlayer,
+      onError: () => {
+        setVoiceError(true)
+        resetPlayer()
+      },
     })
   }, [language, paused, resetPlayer, scriptType, startProgressTimer])
 
@@ -113,29 +141,33 @@ export default function AudioSummaryPlayer({
         <span className="audio-summary-label-icon">{HEADPHONES_ICON}</span>
         {t(labelKey)}
       </p>
-      <div className="audio-summary-bar">
-        <button
-          type="button"
-          className="audio-summary-play"
-          onClick={toggle}
-          aria-label={playing ? t('audioPause') : t('audioPlay')}
-        >
-          {playing ? (
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <rect x="7" y="6" width="3" height="12" rx="0.5" />
-              <rect x="14" y="6" width="3" height="12" rx="0.5" />
-            </svg>
-          ) : (
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M9 7.5v9l8-4.5-8-4.5z" />
-            </svg>
-          )}
-        </button>
-        <div className="audio-summary-progress" aria-hidden="true">
-          <div className="audio-summary-progress-fill" style={{ width: `${progress * 100}%` }} />
+      {!voiceReady || voiceError ? (
+        <p className="audio-summary-fallback">{t('audioVoiceUnavailable')}</p>
+      ) : (
+        <div className="audio-summary-bar">
+          <button
+            type="button"
+            className="audio-summary-play"
+            onClick={toggle}
+            aria-label={playing ? t('audioPause') : t('audioPlay')}
+          >
+            {playing ? (
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <rect x="7" y="6" width="3" height="12" rx="0.5" />
+                <rect x="14" y="6" width="3" height="12" rx="0.5" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M9 7.5v9l8-4.5-8-4.5z" />
+              </svg>
+            )}
+          </button>
+          <div className="audio-summary-progress" aria-hidden="true">
+            <div className="audio-summary-progress-fill" style={{ width: `${progress * 100}%` }} />
+          </div>
+          <span className="audio-summary-duration">{t('audioDuration')}</span>
         </div>
-        <span className="audio-summary-duration">{t('audioDuration')}</span>
-      </div>
+      )}
     </div>
   )
 }

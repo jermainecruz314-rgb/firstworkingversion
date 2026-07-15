@@ -384,4 +384,5 @@ export default {
   audioDuration: "1:00",
   audioPlay: "Main",
   audioPause: "Jeda",
+  audioVoiceUnavailable: "Audio tidak tersedia dalam bahasa ini pada peranti anda. Cuba bahasa Inggeris atau Mandarin, atau pasang suara sistem untuk bahasa ini.",
 }

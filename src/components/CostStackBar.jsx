@@ -2,6 +2,18 @@ import { useEffect, useState } from 'react'
 import { formatSGD } from '../logic.js'
 import usePrefersReducedMotion from '../hooks/usePrefersReducedMotion.js'
 
+function afterPaint(callback) {
+  let outer = 0
+  let inner = 0
+  outer = requestAnimationFrame(() => {
+    inner = requestAnimationFrame(callback)
+  })
+  return () => {
+    cancelAnimationFrame(outer)
+    cancelAnimationFrame(inner)
+  }
+}
+
 function useCountUp(target, duration, enabled) {
   const [value, setValue] = useState(enabled ? 0 : target)
 
@@ -30,7 +42,7 @@ function useCountUp(target, duration, enabled) {
 
 export default function CostStackBar({ cost, t }) {
   const reducedMotion = usePrefersReducedMotion()
-  const [barsReady, setBarsReady] = useState(reducedMotion)
+  const [barsReady, setBarsReady] = useState(false)
   const [oopBounce, setOopBounce] = useState(false)
 
   const pre = cost.preSubsidy || 1
@@ -57,8 +69,7 @@ export default function CostStackBar({ cost, t }) {
 
     setBarsReady(false)
     setOopBounce(false)
-    const frame = requestAnimationFrame(() => setBarsReady(true))
-    return () => cancelAnimationFrame(frame)
+    return afterPaint(() => setBarsReady(true))
   }, [subsidyWidth, mediSaveWidth, oopWidth, reducedMotion])
 
   const animatedSubsidy = useCountUp(subsidyTotal, 500, animate && barsReady)
@@ -67,13 +78,13 @@ export default function CostStackBar({ cost, t }) {
 
   useEffect(() => {
     if (!animate || !barsReady) return undefined
-    const timer = setTimeout(() => setOopBounce(true), 500)
+    const timer = setTimeout(() => setOopBounce(true), 520)
     return () => clearTimeout(timer)
   }, [animate, barsReady, oop])
 
   useEffect(() => {
     if (!oopBounce) return undefined
-    const timer = setTimeout(() => setOopBounce(false), 200)
+    const timer = setTimeout(() => setOopBounce(false), 220)
     return () => clearTimeout(timer)
   }, [oopBounce])
 
