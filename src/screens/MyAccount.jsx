@@ -1,8 +1,17 @@
 import { useState } from 'react'
 import SecurityBadge from '../components/SecurityBadge.jsx'
 import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
+import DashIcon from '../components/DashIcon.jsx'
+import CardWatermark from '../components/CardWatermark.jsx'
 import { formatDate } from '../utils.js'
 import { translateStatus, LANG_OPTIONS, localizeProfile } from '../i18n/index.js'
+
+const SHIELD_ICON = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+    <path d="M12 3l7 3v6c0 5-3.5 7.5-7 9-3.5-1.5-7-4-7-9V6l7-3z" strokeLinejoin="round" />
+    <path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
+)
 
 export default function MyAccount({ profile, dataAccessGranted, onToggleAccess, onOpenFaq, t }) {
   const [deleteRequested, setDeleteRequested] = useState(false)
@@ -25,8 +34,12 @@ export default function MyAccount({ profile, dataAccessGranted, onToggleAccess, 
     <section className="screen">
       <SecurityBadge t={t} />
 
-      <div className="card">
-        <span className="eyebrow">{t('accountEyebrow')}</span>
+      <div className="card card--decorated">
+        <CardWatermark id="account" />
+        <div className="screen-hero">
+          <DashIcon id="account" />
+          <span className="eyebrow">{t('accountEyebrow')}</span>
+        </div>
         <h1 className="screen-title">{t('accountTitle')}</h1>
 
         <dl className="record-list card-data">
@@ -94,27 +107,36 @@ export default function MyAccount({ profile, dataAccessGranted, onToggleAccess, 
         <span className="eyebrow">{t('accountSecurityEyebrow')}</span>
         <h2 className="section-title">{t('accountSecurityTitle')}</h2>
         <div className="info-list">
-          <div className="info-item">
-            <p className="info-body">{t('accountSecurityPoint1')}</p>
+          <div className="info-item sage">
+            <span className="icon-chip icon-chip--sage">{SHIELD_ICON}</span>
+            <span className="info-item-copy">
+              <p className="info-body">{t('accountSecurityPoint1')}</p>
+            </span>
           </div>
-          <div className="info-item">
-            <p className="info-body">{t('accountSecurityPoint2')}</p>
+          <div className="info-item sage">
+            <span className="icon-chip icon-chip--sage">{SHIELD_ICON}</span>
+            <span className="info-item-copy">
+              <p className="info-body">{t('accountSecurityPoint2')}</p>
+            </span>
           </div>
-          <div className="info-item">
-            <p className="info-body">{t('accountSecurityPoint3')}</p>
-            {deleteRequested ? (
-              <p className="confirmation-inline" role="status">
-                {t('accountDeleteRequested')}
-              </p>
-            ) : (
-              <button
-                type="button"
-                className="btn btn-secondary btn-sm"
-                onClick={() => setDeleteRequested(true)}
-              >
-                {t('accountDeleteButton')}
-              </button>
-            )}
+          <div className="info-item sage">
+            <span className="icon-chip icon-chip--sage">{SHIELD_ICON}</span>
+            <span className="info-item-copy">
+              <p className="info-body">{t('accountSecurityPoint3')}</p>
+              {deleteRequested ? (
+                <p className="confirmation-inline" role="status">
+                  {t('accountDeleteRequested')}
+                </p>
+              ) : (
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-sm"
+                  onClick={() => setDeleteRequested(true)}
+                >
+                  {t('accountDeleteButton')}
+                </button>
+              )}
+            </span>
           </div>
         </div>
       </div>

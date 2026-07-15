@@ -14,6 +14,7 @@ export default function Consent({ onConsent, t }) {
     'consentPointAppointmentStatus',
     'consentPointPreferredLanguage',
     'consentPointCareTeamContact',
+    'consentPointSmsReminders',
   ]
 
   return (

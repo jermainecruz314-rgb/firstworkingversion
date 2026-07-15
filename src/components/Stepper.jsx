@@ -1,5 +1,3 @@
-import SecurityBadge from './SecurityBadge.jsx'
-
 // A simple horizontal stepper — stage labels come from translations.
 export default function Stepper({ currentStage = 0, t }) {
   const stages = [

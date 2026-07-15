@@ -14,9 +14,11 @@ import PrivacyFaq from './screens/PrivacyFaq.jsx'
 import MyAccount from './screens/MyAccount.jsx'
 import NavBar from './components/NavBar.jsx'
 import AppHeader from './components/AppHeader.jsx'
+import HelpChat from './components/HelpChat.jsx'
+import Stepper from './components/Stepper.jsx'
 import { createT } from './i18n/index.js'
-import { fetchPatientProfile } from './mockHealthHub.js'
-import { formatSlotLabel } from './utils.js'
+import { fetchPatientProfile, saveBookingState } from './mockHealthHub.js'
+import { formatSlotLabel, getPathwayStage } from './utils.js'
 
 const SCREENS = {
   LOGIN: 'login',
@@ -80,6 +82,11 @@ export default function App() {
   const showBack = BACK_SCREENS.has(currentScreen)
   const headerTitleKey = HEADER_TITLE_KEYS[currentScreen]
   const headerTitle = headerTitleKey ? t(headerTitleKey) : ''
+  const showStepper =
+    !!profile &&
+    currentScreen !== SCREENS.LOGIN &&
+    currentScreen !== SCREENS.LOADING &&
+    currentScreen !== SCREENS.CONSENT
 
   const setLanguage = (lang) => {
     setLanguageState(lang)
@@ -127,22 +134,44 @@ export default function App() {
   const navCurrent = currentScreen === SCREENS.ACCOUNT ? 'account' : 'home'
 
   const handleBook = (slot) => {
-    setProfile((p) => ({
-      ...p,
-      appointmentStatus: 'Booked',
-      appointmentSlotId: slot.id,
-      appointmentSlotLabel: formatSlotLabel(slot.date, slot.time, language),
-      appointmentDate: slot.date,
-      appointmentTime: slot.time,
-    }))
+    setProfile((p) => {
+      const booking = {
+        appointmentStatus: 'Booked',
+        appointmentSlotId: slot.id,
+        appointmentSlotLabel: formatSlotLabel(slot.date, slot.time, language),
+        appointmentDate: slot.date,
+        appointmentTime: slot.time,
+        appointmentLocationId: slot.locationId,
+        remindOnDay: !!slot.remindOnDay,
+      }
+      saveBookingState(p.id, booking)
+      return { ...p, ...booking }
+    })
   }
 
   const handleRemindLater = () => {
-    setProfile((p) => ({
-      ...p,
-      appointmentStatus: 'Reminder scheduled',
-    }))
+    setProfile((p) => {
+      const booking = { appointmentStatus: 'Reminder scheduled' }
+      saveBookingState(p.id, booking)
+      return { ...p, ...booking }
+    })
     setCurrentScreen(SCREENS.DASHBOARD)
+  }
+
+  const handleCancelBooking = () => {
+    setProfile((p) => {
+      const booking = {
+        appointmentStatus: 'Not yet booked',
+        appointmentSlotId: null,
+        appointmentSlotLabel: null,
+        appointmentDate: null,
+        appointmentTime: null,
+        appointmentLocationId: null,
+        remindOnDay: false,
+      }
+      saveBookingState(p.id, booking)
+      return { ...p, ...booking }
+    })
   }
 
   const screenProps = { profile, t }
@@ -158,8 +187,11 @@ export default function App() {
         language={language}
         onLanguageChange={setLanguage}
         backLabel={t('headerBackAria')}
+        showWordmark={currentScreen === SCREENS.LOGIN}
         t={t}
       />
+
+      {showStepper && <Stepper currentStage={getPathwayStage(profile)} t={t} />}
 
       <main className="app-main">
         {currentScreen === SCREENS.LOGIN && (
@@ -212,12 +244,13 @@ export default function App() {
             profile={profile}
             onBook={handleBook}
             onRemindLater={handleRemindLater}
+            onCancelBooking={handleCancelBooking}
             language={language}
             t={t}
           />
         )}
         {currentScreen === SCREENS.REMINDERS && profile && (
-          <Reminders {...screenProps} />
+          <Reminders {...screenProps} language={language} />
         )}
         {currentScreen === SCREENS.FAQ && profile && <PrivacyFaq t={t} />}
         {currentScreen === SCREENS.ACCOUNT && profile && (
@@ -232,6 +265,8 @@ export default function App() {
       </main>
 
       {showNav && <NavBar current={navCurrent} onNavigate={handleNav} t={t} />}
+
+      {profile && <HelpChat profile={profile} t={t} />}
 
       <TestPanel
         profile={profile}

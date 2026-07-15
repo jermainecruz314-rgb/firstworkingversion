@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import Stepper from '../components/Stepper.jsx'
 import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 import SecurityBadge from '../components/SecurityBadge.jsx'
 import SuccessState from '../components/SuccessState.jsx'
+import CardWatermark from '../components/CardWatermark.jsx'
 import { buildShareMessageT } from '../i18n/index.js'
 
 const SECTIONS = [
@@ -33,12 +33,14 @@ export default function FamilyConversation({ profile, t }) {
 
   return (
     <section className="screen">
-      <Stepper currentStage={profile.pathwayStage ?? 1} t={t} />
       <SecurityBadge t={t} />
 
-      <div className="card family-card">
+      <div className="card family-card card--decorated">
+        <CardWatermark id="familyTalk" />
         <div className="family-head">
-          <FamilyTreeIcon size={28} />
+          <span className="icon-chip icon-chip--teal">
+            <FamilyTreeIcon size={20} />
+          </span>
           <span className="eyebrow family-eyebrow">{t('familyConversationEyebrow')}</span>
         </div>
         <h1 className="screen-title">{t('familyConversationTitle')}</h1>
@@ -47,16 +49,21 @@ export default function FamilyConversation({ profile, t }) {
         <div className="info-list">
           {SECTIONS.map((section) => (
             <div className="info-item family" key={section.titleKey}>
-              <h2 className="info-title">{t(section.titleKey)}</h2>
-              {section.bodyKey && (
-                <p className="info-body explain">{t(section.bodyKey)}</p>
-              )}
-              {section.faqs?.map((faq) => (
-                <div className="faq-mini" key={faq.q}>
-                  <p className="faq-mini-q">{t(faq.q)}</p>
-                  <p className="faq-mini-a">{t(faq.a)}</p>
-                </div>
-              ))}
+              <span className="icon-chip icon-chip--teal">
+                <FamilyTreeIcon size={20} />
+              </span>
+              <span className="info-item-copy">
+                <h2 className="info-title">{t(section.titleKey)}</h2>
+                {section.bodyKey && (
+                  <p className="info-body explain">{t(section.bodyKey)}</p>
+                )}
+                {section.faqs?.map((faq) => (
+                  <div className="faq-mini" key={faq.q}>
+                    <p className="faq-mini-q">{t(faq.q)}</p>
+                    <p className="faq-mini-a">{t(faq.a)}</p>
+                  </div>
+                ))}
+              </span>
             </div>
           ))}
         </div>

@@ -49,8 +49,24 @@ const ICONS = {
   ),
 }
 
+const CHIP_CATEGORY = {
+  why: 'teal',
+  family: 'teal',
+  familyTalk: 'teal',
+  cost: 'terracotta',
+  book: 'terracotta',
+  reminders: 'sage',
+  faq: 'sage',
+  account: 'sage',
+}
+
+export { ICONS, CHIP_CATEGORY }
+
 export default function DashIcon({ id, className = '' }) {
   const icon = ICONS[id]
   if (!icon) return null
-  return <span className={`dash-icon ${className}`.trim()}>{icon}</span>
+  const category = CHIP_CATEGORY[id] ?? 'teal'
+  return (
+    <span className={`icon-chip icon-chip--${category} dash-icon ${className}`.trim()}>{icon}</span>
+  )
 }

@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import SecurityBadge from '../components/SecurityBadge.jsx'
+import DashIcon from '../components/DashIcon.jsx'
+import CardWatermark from '../components/CardWatermark.jsx'
 import { getFaqItems } from '../i18n/index.js'
 
 const FAQ_ICONS = {
@@ -28,6 +30,13 @@ const FAQ_ICONS = {
   ),
 }
 
+const FAQ_CATEGORY = {
+  insurance: 'terracotta',
+  'who-sees': 'teal',
+  protected: 'teal',
+  'change-mind': 'sage',
+}
+
 const CHEVRON = (
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
     <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
@@ -42,8 +51,12 @@ export default function PrivacyFaq({ t }) {
     <section className="screen">
       <SecurityBadge t={t} />
 
-      <div className="card">
-        <span className="eyebrow">{t('faqEyebrow')}</span>
+      <div className="card card--decorated">
+        <CardWatermark id="faq" />
+        <div className="screen-hero">
+          <DashIcon id="faq" />
+          <span className="eyebrow">{t('faqEyebrow')}</span>
+        </div>
         <h1 className="screen-title">{t('faqTitle')}</h1>
         <p className="lead">{t('faqLead')}</p>
 
@@ -61,7 +74,7 @@ export default function PrivacyFaq({ t }) {
                   aria-expanded={open}
                   onClick={() => setOpenId(open ? null : item.id)}
                 >
-                  <span className={`faq-category-icon faq-category-icon--${item.id}`}>
+                  <span className={`icon-chip icon-chip--sm icon-chip--${FAQ_CATEGORY[item.id] ?? 'teal'}`}>
                     {FAQ_ICONS[item.id]}
                   </span>
                   <span className="accordion-trigger-text">{item.q}</span>

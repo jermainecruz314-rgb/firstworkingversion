@@ -33,13 +33,17 @@ export function isoDaysAhead(days) {
   return d.toISOString().slice(0, 10)
 }
 
-export function formatSlotLabel(dateIso, time24, lang = 'en') {
-  const d = new Date(dateIso)
+export function formatTimeOnly(time24) {
   const [h, m] = time24.split(':')
   const hour = parseInt(h, 10)
   const ampm = hour >= 12 ? 'PM' : 'AM'
   const h12 = hour % 12 || 12
-  const timeStr = `${h12}:${m} ${ampm}`
+  return `${h12}:${m} ${ampm}`
+}
+
+export function formatSlotLabel(dateIso, time24, lang = 'en') {
+  const d = new Date(dateIso)
+  const timeStr = formatTimeOnly(time24)
 
   if (lang !== 'en') {
     const day = String(d.getDate()).padStart(2, '0')
@@ -66,4 +70,13 @@ export function resolveAppointmentSlotLabel(profile, lang = 'en') {
     return formatSlotLabel(profile.appointmentDate, profile.appointmentTime, lang)
   }
   return profile.appointmentSlotLabel ?? ''
+}
+
+// Pathway stage (0 = Referral, 1 = Counselling, 2 = Test, 3 = Results),
+// derived from appointment status so the pathway stepper is always in sync.
+export function getPathwayStage(profile) {
+  const status = profile?.appointmentStatus
+  if (status === 'Completed') return 3
+  if (status === 'Booked') return 1
+  return 0
 }

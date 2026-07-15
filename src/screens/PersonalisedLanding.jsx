@@ -2,7 +2,7 @@ import SecurityBadge from '../components/SecurityBadge.jsx'
 import ProfileStrip from '../components/ProfileStrip.jsx'
 import LdlGauge from '../components/LdlGauge.jsx'
 import FamilyTreeDiagram from '../components/FamilyTreeDiagram.jsx'
-import { formatDate } from '../utils.js'
+import { formatDate, resolveAppointmentSlotLabel } from '../utils.js'
 import { translateStatus, LANG_OPTIONS, localizeProfile } from '../i18n/index.js'
 import { LDL_THRESHOLD } from '../logic.js'
 
@@ -58,11 +58,16 @@ export default function PersonalisedLanding({ profile, onContinue, t, language }
     })
   }
 
+  const appointmentSlot = resolveAppointmentSlotLabel(profile, langCode)
+  const appointmentValue = appointmentSlot
+    ? `${translateStatus(profile.appointmentStatus, t)} · ${appointmentSlot}`
+    : translateStatus(profile.appointmentStatus, t)
+
   rows.push(
     {
       id: 'appointment',
       label: t('labelAppointment'),
-      value: translateStatus(profile.appointmentStatus, t),
+      value: appointmentValue,
     },
     { id: 'language', label: t('labelPreferredLanguage'), value: langLabel }
   )

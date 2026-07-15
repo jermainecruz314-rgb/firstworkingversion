@@ -2,6 +2,7 @@ import enDict from './en.js'
 import zhDict from './zh.js'
 import msDict from './ms.js'
 import taDict from './ta.js'
+import { formatDate, formatTimeOnly } from '../utils.js'
 
 export const LANG_OPTIONS = [
   { code: 'en', native: 'English' },
@@ -251,6 +252,37 @@ export function buildRemindersT(t, profile, todayIso = mockTodayISO()) {
   }
 
   return reminders
+}
+
+const isoDaysBefore = (dateIso, days) => {
+  const d = new Date(dateIso)
+  d.setDate(d.getDate() - days)
+  return d.toISOString().slice(0, 10)
+}
+
+// Mock SMS reminders sent ahead of a booked appointment (3 days and 1 day
+// before), rendered as message-bubble cards on the Reminders screen.
+export function buildSmsRemindersT(t, profile, lang = 'en') {
+  if (profile?.appointmentStatus !== 'Booked' || !profile?.appointmentDate || !profile?.appointmentTime) {
+    return []
+  }
+
+  const name = profile?.name?.split(' ')[0] ?? ''
+  const dateLabel = formatDate(profile.appointmentDate, lang)
+  const timeLabel = formatTimeOnly(profile.appointmentTime)
+
+  return [
+    {
+      id: 'sms-3-day',
+      sentIso: isoDaysBefore(profile.appointmentDate, 3),
+      message: t('smsReminder3DayBody', { name, date: dateLabel, time: timeLabel }),
+    },
+    {
+      id: 'sms-1-day',
+      sentIso: isoDaysBefore(profile.appointmentDate, 1),
+      message: t('smsReminder1DayBody', { name, time: timeLabel }),
+    },
+  ]
 }
 
 export function buildShareMessageT(t, profile) {

@@ -1,4 +1,5 @@
 import LanguageToggle from './LanguageToggle.jsx'
+import logoIcon from '../assets/logo-icon.png'
 
 export default function AppHeader({
   appName,
@@ -9,6 +10,7 @@ export default function AppHeader({
   language,
   onLanguageChange,
   backLabel,
+  showWordmark,
   t,
 }) {
   return (
@@ -25,7 +27,15 @@ export default function AppHeader({
               <ChevronLeft />
             </button>
           ) : (
-            <span className="app-name">{appName}</span>
+            <span className="app-brand">
+              <img
+                src={logoIcon}
+                alt={showWordmark ? '' : appName}
+                aria-hidden={showWordmark ? 'true' : undefined}
+                className="app-header-icon"
+              />
+              {showWordmark && <span className="app-name">{appName}</span>}
+            </span>
           )}
         </div>
 

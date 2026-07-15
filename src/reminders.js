@@ -1,11 +1,61 @@
-// Mock appointment slots at the Genetic Assessment Centre (GAC).
-export const GAC_SLOTS = [
-  { id: 'slot-1', label: 'Tue 14 July, 10:00 AM', date: '2026-07-14', time: '10:00' },
-  { id: 'slot-2', label: 'Wed 15 July, 2:30 PM', date: '2026-07-15', time: '14:30' },
-  { id: 'slot-3', label: 'Thu 16 July, 9:00 AM', date: '2026-07-16', time: '09:00' },
-  { id: 'slot-4', label: 'Mon 20 July, 11:30 AM', date: '2026-07-20', time: '11:30' },
-  { id: 'slot-5', label: 'Tue 21 July, 3:00 PM', date: '2026-07-21', time: '15:00' },
-]
+const GAC_SLOT_TIMES = ['09:00', '10:30', '14:00', '15:30']
+
+// Deterministic pseudo-random generator seeded from a string (e.g. a date),
+// so slot availability is stable across re-renders instead of using Math.random().
+function seededRandom(seed) {
+  let h = 0
+  for (let i = 0; i < seed.length; i++) {
+    h = (Math.imul(31, h) + seed.charCodeAt(i)) | 0
+  }
+  return function next() {
+    h = (Math.imul(1103515245, h) + 12345) | 0
+    return ((h >>> 0) % 1000) / 1000
+  }
+}
+
+// Next `count` weekday (Mon–Fri) ISO dates, starting tomorrow.
+function nextWeekdayDates(fromIso, count) {
+  const dates = []
+  const d = new Date(fromIso)
+  d.setDate(d.getDate() + 1)
+  while (dates.length < count) {
+    const day = d.getDay()
+    if (day !== 0 && day !== 6) {
+      dates.push(d.toISOString().slice(0, 10))
+    }
+    d.setDate(d.getDate() + 1)
+  }
+  return dates
+}
+
+// Mock appointment slots at the Genetic Assessment Centre (GAC): the next
+// 10 weekdays, each with 4 fixed daily times. 1–2 slots per day are marked
+// unavailable using a date-seeded random so the schedule is deterministic.
+export function generateGacSlots(todayIso = mockTodayISO()) {
+  const slots = []
+
+  nextWeekdayDates(todayIso, 10).forEach((dateIso) => {
+    const rand = seededRandom(dateIso)
+    const unavailableCount = rand() < 0.5 ? 1 : 2
+    const unavailableIndexes = new Set()
+    while (unavailableIndexes.size < unavailableCount) {
+      unavailableIndexes.add(Math.floor(rand() * GAC_SLOT_TIMES.length))
+    }
+
+    GAC_SLOT_TIMES.forEach((time, index) => {
+      slots.push({
+        id: `slot-${dateIso}-${time.replace(':', '')}`,
+        date: dateIso,
+        time,
+        available: !unavailableIndexes.has(index),
+      })
+    })
+  })
+
+  return slots
+}
+
+export const GAC_SLOTS = generateGacSlots()
 
 // Days between two ISO date strings (mock — uses local midnight).
 export function daysBetween(fromIso, toIso) {

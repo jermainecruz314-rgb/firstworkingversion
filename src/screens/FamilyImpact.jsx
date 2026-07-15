@@ -1,7 +1,7 @@
-import Stepper from '../components/Stepper.jsx'
 import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 import SecurityBadge from '../components/SecurityBadge.jsx'
 import InheritanceDiagram from '../components/InheritanceDiagram.jsx'
+import CardWatermark from '../components/CardWatermark.jsx'
 import { buildFamilyImpactT, buildCascadeSummaryT } from '../i18n/index.js'
 
 export default function FamilyImpact({ profile, onOpenFamilyTalk, t }) {
@@ -12,12 +12,14 @@ export default function FamilyImpact({ profile, onOpenFamilyTalk, t }) {
 
   return (
     <section className="screen">
-      <Stepper currentStage={profile.pathwayStage ?? 1} t={t} />
       <SecurityBadge t={t} />
 
-      <div className="card">
+      <div className="card card--decorated">
+        <CardWatermark id="family" />
         <div className="family-head">
-          <FamilyTreeIcon size={28} />
+          <span className="icon-chip icon-chip--teal">
+            <FamilyTreeIcon size={20} />
+          </span>
           <span className="eyebrow family-eyebrow">{t('familyImpactEyebrow')}</span>
         </div>
         <h1 className="screen-title">
@@ -31,8 +33,13 @@ export default function FamilyImpact({ profile, onOpenFamilyTalk, t }) {
         <div className="info-list">
           {content.points.map((point) => (
             <div className="info-item family" key={point.title}>
-              <h2 className="info-title">{point.title}</h2>
-              <p className="info-body explain">{point.body}</p>
+              <span className="icon-chip icon-chip--teal">
+                <FamilyTreeIcon size={20} />
+              </span>
+              <span className="info-item-copy">
+                <h2 className="info-title">{point.title}</h2>
+                <p className="info-body explain">{point.body}</p>
+              </span>
             </div>
           ))}
         </div>

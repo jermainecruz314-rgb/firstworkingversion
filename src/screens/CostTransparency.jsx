@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import Stepper from '../components/Stepper.jsx'
 import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 import SecurityBadge from '../components/SecurityBadge.jsx'
 import CostStackBar from '../components/CostStackBar.jsx'
+import DashIcon from '../components/DashIcon.jsx'
+import CardWatermark from '../components/CardWatermark.jsx'
 import { calculateSubsidisedCost, formatSGD } from '../logic.js'
 
 export default function CostTransparency({ profile, t }) {
@@ -46,11 +47,14 @@ export default function CostTransparency({ profile, t }) {
 
   return (
     <section className="screen">
-      <Stepper currentStage={profile.pathwayStage ?? 2} t={t} />
       <SecurityBadge t={t} />
 
-      <div className="card">
-        <span className="eyebrow">{t('costEyebrow')}</span>
+      <div className="card card--decorated">
+        <CardWatermark id="cost" />
+        <div className="screen-hero">
+          <DashIcon id="cost" />
+          <span className="eyebrow">{t('costEyebrow')}</span>
+        </div>
         <h1 className="screen-title">{t('costTitle')}</h1>
         <p className="lead">{t('costLead')}</p>
 

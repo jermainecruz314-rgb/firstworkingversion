@@ -1,18 +1,25 @@
-import { isoDaysAgo, isoDaysAhead, formatSlotLabel } from './utils.js'
+import { isoDaysAgo } from './utils.js'
 
-// Build mock profiles with dates relative to today so demo logic stays realistic.
-function buildMarcusAppointment() {
-  const date = isoDaysAhead(12)
-  return {
-    appointmentSlotId: 'slot-booked',
-    appointmentDate: date,
-    appointmentTime: '10:00',
-    appointmentSlotLabel: formatSlotLabel(date, '10:00'),
+const BOOKING_STORAGE_PREFIX = 'gac-booking-'
+
+function loadStoredBooking(profileId) {
+  try {
+    const raw = localStorage.getItem(BOOKING_STORAGE_PREFIX + profileId)
+    return raw ? JSON.parse(raw) : null
+  } catch {
+    return null
+  }
+}
+
+export function saveBookingState(profileId, booking) {
+  try {
+    localStorage.setItem(BOOKING_STORAGE_PREFIX + profileId, JSON.stringify(booking))
+  } catch {
+    // storage unavailable (e.g. private browsing) — booking still works for this session
   }
 }
 
 export function getMockProfiles() {
-  const marcusAppt = buildMarcusAppointment()
   return {
     weiLing: {
       id: 'weiLing',
@@ -26,27 +33,13 @@ export function getMockProfiles() {
       pathwayStage: 0,
       preferredLanguage: 'en',
     },
-    marcus: {
-      id: 'marcus',
-      name: 'Marcus Tan',
-      pathwayType: 'cascade',
-      relationToIndexKey: 'mockRelationMarcus',
-      inheritanceRiskKey: 'mockInheritanceRiskStandard',
-      referredByKey: 'mockReferredByMarcusCascade',
-      referralDate: isoDaysAgo(2),
-      referralReasonKey: 'mockReferralReasonCascadeRelative',
-      appointmentStatus: 'Booked',
-      pathwayStage: 1,
-      preferredLanguage: 'en',
-      ...marcusAppt,
-    },
     aishah: {
       id: 'aishah',
       name: 'Aishah Rahman',
       pathwayType: 'index',
       ldlValue: 7.1,
       referredByKey: 'mockReferredByAishah',
-      referralDate: isoDaysAgo(42),
+      referralDate: isoDaysAgo(52),
       referralReasonKey: 'mockReferralReasonLdlThreshold',
       appointmentStatus: 'Completed',
       pathwayStage: 3,
@@ -55,13 +48,15 @@ export function getMockProfiles() {
   }
 }
 
-export const PROFILE_IDS = ['weiLing', 'marcus', 'aishah']
+export const PROFILE_IDS = ['weiLing', 'aishah']
 
 export function fetchPatientProfile(profileId, delayMs = 1500) {
   const profiles = getMockProfiles()
   const profile = profiles[profileId]
   if (!profile) return Promise.reject(new Error('Unknown profile'))
+  const storedBooking = loadStoredBooking(profileId)
+  const merged = storedBooking ? { ...profile, ...storedBooking } : { ...profile }
   return new Promise((resolve) => {
-    setTimeout(() => resolve({ ...profile }), delayMs)
+    setTimeout(() => resolve(merged), delayMs)
   })
 }

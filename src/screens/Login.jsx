@@ -1,24 +1,20 @@
 import LanguagePicker from '../components/LanguagePicker.jsx'
+import Logo from '../components/Logo.jsx'
 import { translatePathwayStage } from '../i18n/index.js'
 
 const PROFILE_CARDS = [
   {
     id: 'weiLing',
     nameKey: 'loginProfileWeiLing',
+    descKey: 'profileWeiLingDesc',
     initials: 'WL',
     pathwayType: 'index',
     pathwayStage: 0,
   },
   {
-    id: 'marcus',
-    nameKey: 'loginProfileMarcus',
-    initials: 'MT',
-    pathwayType: 'cascade',
-    pathwayStage: 1,
-  },
-  {
     id: 'aishah',
     nameKey: 'loginProfileAishah',
+    descKey: 'profileAishahDesc',
     initials: 'AR',
     pathwayType: 'index',
     pathwayStage: 3,
@@ -36,6 +32,7 @@ export default function Login({
   return (
     <section className="screen auth-screen">
       <div className="card auth-card">
+        <Logo size={48} className="auth-logo" />
         <span className="eyebrow">{t('loginWelcome')}</span>
         <h1 className="screen-title">{t('loginTitle')}</h1>
         <p className="lead">{t('loginLead')}</p>
@@ -73,6 +70,9 @@ export default function Login({
                       <span className="profile-card-stage">
                         {t('loginProfileStage', { stage: stageLabel })}
                       </span>
+                      {card.descKey && (
+                        <span className="profile-card-desc">{t(card.descKey)}</span>
+                      )}
                     </div>
                   </div>
                 </button>

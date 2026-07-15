@@ -1,4 +1,3 @@
-import PathwayIconTracker from '../components/PathwayIconTracker.jsx'
 import StatBanner from '../components/StatBanner.jsx'
 import SecurityBadge from '../components/SecurityBadge.jsx'
 import ProfileStrip from '../components/ProfileStrip.jsx'
@@ -16,17 +15,10 @@ const PATHWAY_ICON = (
   </svg>
 )
 
-const CHEVRON = (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-    <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-)
-
 export default function Dashboard({ profile, onNavigate, t, language = 'en' }) {
   const isCascade = profile.pathwayType === 'cascade'
   const isComplete = profile.appointmentStatus === 'Completed'
   const reminderPreview = buildRemindersT(t, profile).filter((r) => r.id !== 'all-clear')[0]
-  const stage = profile.pathwayStage ?? 0
   const showFeaturedCta = !isComplete
 
   const statusLabel = translateStatus(profile.appointmentStatus, t)
@@ -102,7 +94,6 @@ export default function Dashboard({ profile, onNavigate, t, language = 'en' }) {
         <p className="hb-card-lead">
           {isComplete ? t('dashboardCompletedLead') : t('dashboardLead')}
         </p>
-        <PathwayIconTracker currentStage={stage} t={t} variant="hb" />
         <StatBanner t={t} />
       </div>
 
@@ -119,28 +110,35 @@ export default function Dashboard({ profile, onNavigate, t, language = 'en' }) {
         <h2 className="hb-section-title">{t('dashboardEyebrow')}</h2>
       </div>
 
-      <nav className="hb-menu" aria-label={t('dashboardEyebrow')}>
-        {cards.map((card) => (
-          <button
-            key={card.id}
-            type="button"
-            className={`hb-menu-item tap-card${card.featured ? ' hb-menu-item--featured' : ''}`}
-            onClick={() => onNavigate(card.id)}
-          >
-            <span className="hb-menu-icon">
+      <div className="hb-tile-grid" role="navigation" aria-label={t('dashboardEyebrow')}>
+        {cards.map((card) =>
+          card.featured ? (
+            <button
+              key={card.id}
+              type="button"
+              className="hb-tile hb-tile--wide tap-card"
+              onClick={() => onNavigate(card.id)}
+            >
               <DashIcon id={card.id} />
-            </span>
-            <span className="hb-menu-copy">
-              <span className="hb-menu-title">{card.title}</span>
-              {card.featured && (
-                <span className="hb-menu-note">{t('dashboardFeaturedNote')}</span>
-              )}
-              <span className="hb-menu-body">{card.body}</span>
-            </span>
-            <span className="hb-menu-chevron">{CHEVRON}</span>
-          </button>
-        ))}
-      </nav>
+              <span className="hb-tile-copy">
+                <span className="hb-tile-title">{card.title}</span>
+                <span className="hb-tile-note">{t('dashboardFeaturedNote')}</span>
+                <span className="hb-tile-body">{card.body}</span>
+              </span>
+            </button>
+          ) : (
+            <button
+              key={card.id}
+              type="button"
+              className="hb-tile tap-card"
+              onClick={() => onNavigate(card.id)}
+            >
+              <DashIcon id={card.id} />
+              <span className="hb-tile-title">{card.title}</span>
+            </button>
+          )
+        )}
+      </div>
 
       <DownloadInfoPackButton profile={profile} t={t} variant="link" className="dash-download-link" />
     </section>
