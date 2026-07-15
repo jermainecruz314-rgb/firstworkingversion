@@ -374,4 +374,11 @@ export default {
   chatbotNextStepAnswer: "You're currently at the {stage} step of your pathway. Check your Dashboard to see full progress and what's next.",
   chatbotRemindersIntro: "Here's what's on your list right now:",
   chatbotNoRemindersAnswer: "You're all caught up - no reminders right now.",
+
+  audioListenSummary: "Listen to a summary",
+  audioHearConversation: "Hear how to start this conversation",
+  audioPlayAgain: "Play again",
+  audioDuration: "1:00",
+  audioPlay: "Play",
+  audioPause: "Pause",
 }

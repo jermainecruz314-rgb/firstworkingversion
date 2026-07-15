@@ -174,7 +174,7 @@ export default function App() {
     })
   }
 
-  const screenProps = { profile, t }
+  const screenProps = { profile, t, language }
 
   return (
     <div className={`app${showNav ? ' has-nav' : ''}`}>

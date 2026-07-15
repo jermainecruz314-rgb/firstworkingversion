@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import FamilyTreeIcon from '../components/FamilyTreeIcon.jsx'
 import SecurityBadge from '../components/SecurityBadge.jsx'
+import AudioSummaryPlayer from '../components/AudioSummaryPlayer.jsx'
 import SuccessState from '../components/SuccessState.jsx'
 import CardWatermark from '../components/CardWatermark.jsx'
 import { buildShareMessageT } from '../i18n/index.js'
@@ -18,7 +19,7 @@ const SECTIONS = [
   },
 ]
 
-export default function FamilyConversation({ profile, t }) {
+export default function FamilyConversation({ profile, t, language = 'en' }) {
   const [copied, setCopied] = useState(false)
   const message = buildShareMessageT(t, profile)
 
@@ -56,6 +57,14 @@ export default function FamilyConversation({ profile, t }) {
                 <h2 className="info-title">{t(section.titleKey)}</h2>
                 {section.bodyKey && (
                   <p className="info-body explain">{t(section.bodyKey)}</p>
+                )}
+                {section.titleKey === 'familyConversationSection2Title' && (
+                  <AudioSummaryPlayer
+                    scriptType="familyConversation"
+                    language={language}
+                    t={t}
+                    labelKey="audioHearConversation"
+                  />
                 )}
                 {section.faqs?.map((faq) => (
                   <div className="faq-mini" key={faq.q}>

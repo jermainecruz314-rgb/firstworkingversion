@@ -374,4 +374,11 @@ export default {
   chatbotNextStepAnswer: "您目前处于诊疗流程中的“{stage}”阶段。请查看仪表板了解完整进度和下一步。",
   chatbotRemindersIntro: "以下是您目前的提醒事项：",
   chatbotNoRemindersAnswer: "您目前没有需要处理的提醒事项。",
+
+  audioListenSummary: "收听摘要",
+  audioHearConversation: "听听如何开启这段对话",
+  audioPlayAgain: "重新播放",
+  audioDuration: "1:00",
+  audioPlay: "播放",
+  audioPause: "暂停",
 }

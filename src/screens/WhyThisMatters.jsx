@@ -4,6 +4,7 @@ import LogoMark from '../components/LogoMark.jsx'
 import DashIcon from '../components/DashIcon.jsx'
 import CardWatermark from '../components/CardWatermark.jsx'
 import RiskComparison from '../components/RiskComparison.jsx'
+import AudioSummaryPlayer from '../components/AudioSummaryPlayer.jsx'
 import DownloadInfoPackButton from '../components/DownloadInfoPackButton.jsx'
 import { buildRiskSummaryT, localizeProfile } from '../i18n/index.js'
 import { LDL_THRESHOLD } from '../logic.js'
@@ -29,7 +30,7 @@ const SHIELD_ICON = (
   </svg>
 )
 
-export default function WhyThisMatters({ profile, t }) {
+export default function WhyThisMatters({ profile, t, language = 'en' }) {
   if (!profile) return null
 
   const isCascade = profile.pathwayType === 'cascade'
@@ -81,6 +82,8 @@ export default function WhyThisMatters({ profile, t }) {
             <p className="highlight-note">{localized.relationToIndex}</p>
           </div>
         )}
+
+        <AudioSummaryPlayer scriptType="whySummary" language={language} t={t} />
 
         <div className="risk-timeline">
           <div className="risk-timeline-card risk-timeline-card--short">

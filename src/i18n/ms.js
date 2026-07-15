@@ -377,4 +377,11 @@ export default {
   chatbotNextStepAnswer: "Anda kini berada di peringkat {stage} dalam laluan anda. Semak papan pemuka anda untuk melihat kemajuan penuh dan langkah seterusnya.",
   chatbotRemindersIntro: "Berikut adalah senarai peringatan anda sekarang:",
   chatbotNoRemindersAnswer: "Semuanya sudah kemas kini - tiada peringatan pada masa ini.",
+
+  audioListenSummary: "Dengar ringkasan",
+  audioHearConversation: "Dengar cara memulakan perbualan ini",
+  audioPlayAgain: "Main semula",
+  audioDuration: "1:00",
+  audioPlay: "Main",
+  audioPause: "Jeda",
 }

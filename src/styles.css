@@ -4982,3 +4982,299 @@ body {
     left: max(0px, calc(50% - 240px - 28px));
   }
 }
+
+/* Audio summary player */
+.audio-summary-player {
+  margin: 16px 0 20px;
+}
+
+.audio-summary-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #1b4f9b;
+}
+
+.audio-summary-label-icon {
+  display: flex;
+  width: 16px;
+  height: 16px;
+}
+
+.audio-summary-label-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.audio-summary-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #eef4ff;
+  border-radius: 12px;
+  padding: 12px 16px;
+}
+
+.audio-summary-play {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: #1b4f9b;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.audio-summary-play svg {
+  width: 16px;
+  height: 16px;
+}
+
+.audio-summary-progress {
+  flex: 1;
+  min-width: 0;
+  height: 4px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.audio-summary-progress-fill {
+  height: 100%;
+  background: #1b4f9b;
+  border-radius: 999px;
+  transition: width 0.08s linear;
+}
+
+.audio-summary-duration {
+  flex: none;
+  font-size: 12px;
+  color: #718096;
+}
+
+/* Inheritance diagram animations */
+.inheritance-diagram--static .inherit-parent,
+.inheritance-diagram--static .inherit-parent-label,
+.inheritance-diagram--static .inherit-line,
+.inheritance-diagram--static .inherit-child,
+.inheritance-diagram--static .inherit-badge {
+  opacity: 1;
+  transform: none;
+  stroke-dashoffset: 0;
+}
+
+.inheritance-diagram--animate .inherit-parent {
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  animation: inherit-parent-in 0.4s ease forwards;
+}
+
+.inheritance-diagram--animate .inherit-parent-label {
+  opacity: 0;
+  animation: inherit-fade-in 0.3s ease 0.2s forwards;
+}
+
+.inheritance-diagram--animate .inherit-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: inherit-line-draw 0.4s ease 0.4s forwards;
+}
+
+.inheritance-diagram--animate .inherit-child {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: inherit-child-in 0.4s ease forwards;
+}
+
+.inheritance-diagram--animate .inherit-child-1 {
+  animation-delay: 0.8s;
+}
+
+.inheritance-diagram--animate .inherit-child-2 {
+  animation-delay: 0.9s;
+}
+
+.inheritance-diagram--animate .inherit-child-3 {
+  animation-delay: 1s;
+}
+
+.inheritance-diagram--animate .inherit-badge {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: inherit-badge-in 0.4s ease forwards;
+}
+
+.inheritance-diagram--animate .inherit-child-1 .inherit-badge {
+  animation-delay: 1.2s;
+}
+
+.inheritance-diagram--animate .inherit-child-2 .inherit-badge {
+  animation-delay: 1.3s;
+}
+
+.inheritance-diagram--animate .inherit-child-3 .inherit-badge {
+  animation-delay: 1.4s;
+}
+
+@keyframes inherit-parent-in {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes inherit-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes inherit-line-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes inherit-child-in {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes inherit-badge-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.inheritance-replay {
+  align-self: center;
+  border: none;
+  background: none;
+  padding: 4px 0 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: #1b4f9b;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.inheritance-replay:hover {
+  color: #163f7d;
+}
+
+/* Cost stack bar animations */
+.cost-stack-segment {
+  display: block;
+  height: 100%;
+  min-width: 0;
+  transition: width 0.5s ease;
+}
+
+.cost-legend-pill--bounce {
+  animation: cost-oop-bounce 0.2s ease;
+}
+
+@keyframes cost-oop-bounce {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.02);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* LDL gauge load animation */
+.ldl-gauge-marker {
+  left: 0%;
+  transition: left 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ldl-gauge-gradient {
+  background: linear-gradient(to right, #38a169 0%, #eab308 50%, #dc2626 100%);
+}
+
+.ldl-threshold-badge--fade-in {
+  opacity: 0;
+  animation: ldl-badge-fade-in 0.3s ease forwards;
+}
+
+@keyframes ldl-badge-fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inheritance-diagram--animate .inherit-parent,
+  .inheritance-diagram--animate .inherit-parent-label,
+  .inheritance-diagram--animate .inherit-line,
+  .inheritance-diagram--animate .inherit-child,
+  .inheritance-diagram--animate .inherit-badge {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+
+  .cost-stack-segment {
+    transition: none !important;
+  }
+
+  .cost-legend-pill--bounce {
+    animation: none !important;
+  }
+
+  .ldl-gauge-marker {
+    transition: none !important;
+  }
+
+  .ldl-threshold-badge--fade-in {
+    animation: none !important;
+    opacity: 1 !important;
+  }
+
+  .audio-summary-progress-fill {
+    transition: none !important;
+  }
+}

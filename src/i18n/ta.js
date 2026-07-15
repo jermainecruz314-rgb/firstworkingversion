@@ -374,4 +374,11 @@ export default {
   chatbotNextStepAnswer: "நீங்கள் தற்போது உங்கள் பாதையில் {stage} கட்டத்தில் உள்ளீர்கள். முழு முன்னேற்றத்தையும் அடுத்த படியையும் பார்க்க உங்கள் டாஷ்போர்டைச் சரிபார்க்கவும்.",
   chatbotRemindersIntro: "இப்போது உங்கள் பட்டியலில் உள்ளவை:",
   chatbotNoRemindersAnswer: "நீங்கள் தற்போது எந்த நினைவூட்டலும் இல்லை.",
+
+  audioListenSummary: "சுருக்கத்தைக் கேளுங்கள்",
+  audioHearConversation: "இந்தப் பேச்சை எவ்வாறு தொடங்குவது என்பதைக் கேளுங்கள்",
+  audioPlayAgain: "மீண்டும் இயக்கு",
+  audioDuration: "1:00",
+  audioPlay: "இயக்கு",
+  audioPause: "இடைநிறுத்து",
 }
