@@ -1,0 +1,23 @@
+{
+  "name": "fh-pathway-companion",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "FH Pathway Companion — a calm, guided 3-screen web app for patients referred into Singapore's National FH Genetic Testing Program.",
+  "scripts": {
+    "start": "vite --host 127.0.0.1 --port 5173",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@fontsource/manrope": "^5.2.8",
+    "@fontsource/nunito": "^5.2.7",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^5.4.11"
+  }
+}
